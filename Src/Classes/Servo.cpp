@@ -15,20 +15,25 @@ Servo servo(1450, 450, 45.f);
 
 void Servo::Init(void){
 	MX_TIM2_Init();
-	SetPWM(pwm_middle);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+	SetPWM(pwm_middle,FRONT);
+	SetPWM(pwm_middle,BACK);
 }
 
 void Servo::Disarm(void) {
 	pwm_last = GetPWM();
-	SetPWM(0);
+	SetPWM(0,FRONT);
+	SetPWM(0,BACK);
 	if (HAL_GPIO_ReadPin(O1_GPIO_Port, O1_Pin) == GPIO_PIN_RESET)
-		if (HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4) == HAL_OK)
+		if ((HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4) == HAL_OK) && (HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2) /* NEW SERVO */ == HAL_OK))
 			tim_running = 0;
 }
 void Servo::Arm(void) {
 	if (!tim_running) {
-		SetPWM(pwm_last);
-		if (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4) == HAL_OK)
+		SetPWM(pwm_last, FRONT);
+		SetPWM(pwm_last,  BACK);
+		if ((HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4) == HAL_OK) && (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2) /* NEW SERVO */ == HAL_OK))
 			tim_running = 1;
 	}
 }
@@ -58,12 +63,14 @@ void Servo::PositionTracking(void) {
 
 	current_angle = set_angle;
 
-	SetPWM(current_angle / max_degrees * pwm_band + pwm_middle);
+	SetPWM( current_angle / max_degrees * pwm_band + pwm_middle, FRONT);
+	SetPWM(-current_angle / max_degrees * pwm_band + pwm_middle, BACK);
 	//before = now;
 }
 
-void Servo::SetPWM(uint16_t value){
-	TIM2->CCR4 = value;
+void Servo::SetPWM(uint16_t value, servo_num serv){
+	if(serv == FRONT) TIM2->CCR4 = value;
+	else 			  TIM2->CCR2 = value; //NEW SERVO
 }
 uint16_t Servo::GetPWM(void){
 	return TIM2->CCR4;

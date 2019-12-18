@@ -18,9 +18,14 @@ class Servo {
 	float max_degrees;
 	float max_radians;
 
+	enum{
+		FRONT,
+		BACK
+	}typedef servo_num;
+
 
 	uint8_t tim_running = 0;
-	void SetPWM(uint16_t value);
+	void SetPWM(uint16_t value,  servo_num serv);
 	uint16_t GetPWM(void);
 
 
