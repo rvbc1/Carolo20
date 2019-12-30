@@ -11,29 +11,30 @@
 
 #include "tim.h"
 
-Servo servo(1450, 450, 45.f);
+Servo servo_front(1450, 450, 45.f, FRONT_SERVO);
+Servo servo_back(1450, 450, 45.f, BACK_SERVO);
 
 void Servo::Init(void){
 	MX_TIM2_Init();
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
-	SetPWM(pwm_middle,FRONT);
-	SetPWM(pwm_middle,BACK);
+	if(current_servo == FRONT_SERVO)    HAL_TIM_PWM_Start(&FRONT_SERVO_TIM , FRONT_SERVO_CHANNEL);
+	else if(current_servo == BACK_SERVO)HAL_TIM_PWM_Start(&BACK_SERVO_TIM,   BACK_SERVO_CHANNEL);
+	SetPWM(pwm_middle);
+
 }
 
 void Servo::Disarm(void) {
 	pwm_last = GetPWM();
-	SetPWM(0,FRONT);
-	SetPWM(0,BACK);
+	SetPWM(0);
+
 	if (HAL_GPIO_ReadPin(O1_GPIO_Port, O1_Pin) == GPIO_PIN_RESET)
-		if ((HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4) == HAL_OK) && (HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2) /* NEW SERVO */ == HAL_OK))
+		if ((HAL_TIM_PWM_Stop(&BACK_SERVO_TIM, BACK_SERVO_CHANNEL) == HAL_OK) && (HAL_TIM_PWM_Stop(&FRONT_SERVO_TIM , FRONT_SERVO_CHANNEL) /* NEW SERVO */ == HAL_OK))
 			tim_running = 0;
 }
 void Servo::Arm(void) {
 	if (!tim_running) {
-		SetPWM(pwm_last, FRONT);
-		SetPWM(pwm_last,  BACK);
-		if ((HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4) == HAL_OK) && (HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2) /* NEW SERVO */ == HAL_OK))
+		SetPWM(pwm_last);
+
+		if ((HAL_TIM_PWM_Start(&BACK_SERVO_TIM, BACK_SERVO_CHANNEL) == HAL_OK) && (HAL_TIM_PWM_Start(&FRONT_SERVO_TIM , FRONT_SERVO_CHANNEL) /* NEW SERVO */ == HAL_OK))
 			tim_running = 1;
 	}
 }
@@ -63,19 +64,20 @@ void Servo::PositionTracking(void) {
 
 	current_angle = set_angle;
 
-	SetPWM( current_angle / max_degrees * pwm_band + pwm_middle, FRONT);
-	SetPWM(-current_angle / max_degrees * pwm_band + pwm_middle, BACK);
+	SetPWM( current_angle / max_degrees * pwm_band + pwm_middle);
 	//before = now;
 }
 
-void Servo::SetPWM(uint16_t value, servo_num serv){
-	if(serv == FRONT) TIM2->CCR4 = value;
-	else 			  TIM2->CCR2 = value; //NEW SERVO
+void Servo::SetPWM(uint16_t value){
+	if      (current_servo == FRONT_SERVO)   FRONT_SERVO_TIM.Instance->FRONT_SERVO_CCR = value;
+	else if (current_servo == BACK_SERVO)    BACK_SERVO_TIM.Instance ->BACK_SERVO_CCR  = value;
 }
 uint16_t Servo::GetPWM(void){
-	return TIM2->CCR4;
+	if      (current_servo == FRONT_SERVO) return  FRONT_SERVO_TIM.Instance->FRONT_SERVO_CCR;
+    else if (current_servo == BACK_SERVO)  return  BACK_SERVO_TIM.Instance->BACK_SERVO_CCR;
+
 }
-Servo::Servo(uint16_t middle, uint16_t band, float angle): pwm_middle(middle), pwm_band(band), max_degrees(angle) {
+Servo::Servo(uint16_t middle, uint16_t band, float angle, servo_num serv): pwm_middle(middle), pwm_band(band), max_degrees(angle), current_servo(serv) {
 	pwm_last = pwm_middle;
 	max_radians = DEGREES_TO_RADIANS(max_degrees);
 }

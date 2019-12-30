@@ -10,6 +10,15 @@
 
 #include "stdint.h"
 
+#define FRONT_SERVO_TIM  htim2
+#define BACK_SERVO_TIM	htim2
+#define FRONT_SERVO_CHANNEL TIM_CHANNEL_2
+#define BACK_SERVO_CHANNEL  TIM_CHANNEL_4
+#define FRONT_SERVO_CCR CCR2
+#define BACK_SERVO_CCR  CCR4
+
+enum{FRONT_SERVO, BACK_SERVO }typedef servo_num;
+
 class Servo {
 	uint16_t pwm_middle;
 	uint16_t pwm_band;
@@ -18,14 +27,11 @@ class Servo {
 	float max_degrees;
 	float max_radians;
 
-	enum{
-		FRONT,
-		BACK
-	}typedef servo_num;
 
+	servo_num current_servo;
 
 	uint8_t tim_running = 0;
-	void SetPWM(uint16_t value,  servo_num serv);
+	void SetPWM(uint16_t value);
 	uint16_t GetPWM(void);
 
 
@@ -40,8 +46,10 @@ public:
 	void Arm(void);
 	void SetAngleD(float angle = 0.f, float velocity = 0.f);
 	void SetAngleR(float angle = 0.f, float velocity = 0.f);
-	Servo(uint16_t middle = 1500, uint16_t band = 500, float angle = 45.f);
+
+	Servo(uint16_t middle = 1500, uint16_t band = 500, float angle = 45.f, servo_num serv = FRONT_SERVO);
 	virtual ~Servo();
 };
-extern Servo servo;
+extern Servo servo_front;
+extern Servo servo_back;
 #endif /* CLASSES_SERVO_H_ */
