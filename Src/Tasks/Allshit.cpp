@@ -184,9 +184,10 @@ void StartSteeringTask(void const * argument) {
 	HAL_TIM_PWM_Start(&htim2 , TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim2,   TIM_CHANNEL_4);
 
-	//Servo* s1;
-//	s1 = new Servo(&TIM2->CCR2);
-
+	Servo* servo_back;
+	Servo* servo_front;
+	servo_back = new Servo(&TIM2->CCR2);
+	servo_front = new Servo(&TIM2->CCR4);
 //	servo_front.Init();
 //	servo_back.Init();
 
@@ -221,8 +222,8 @@ void StartSteeringTask(void const * argument) {
 				rc_mode = MODE_ACRO;
 
 
-				//s1->setAngle(90);
-
+				servo_back->setAngle(-int16_t(futaba.SmoothDeflection[YAW] * 90.f) + 90);
+				servo_front->setAngle(int16_t(futaba.SmoothDeflection[YAW] * 90.f) + 90);
 				//servo_front.SetAngleD(futaba.SmoothDeflection[YAW] * 45.f, 0.f);
 				//servo_back.SetAngleD(futaba.SmoothDeflection[YAW] * 45.f, 0.f); // przy recznym po prostu z minusem
 				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
@@ -245,7 +246,7 @@ void StartSteeringTask(void const * argument) {
 //				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
 				motor.SetVelocity(odroid_setpoints.velocity, odroid_setpoints.acceleration, odroid_setpoints.jerk);
 			}
-			TIM2->CCR2 = 1450;
+	//		TIM2->CCR2 = 1450;
 	//		servo_front.PositionTracking();
 	//		servo_back.PositionTracking();
 			motor.Arm();
