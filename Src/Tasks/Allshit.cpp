@@ -5,6 +5,7 @@
  *      Author: mice
  */
 
+#include <ButtonsManager.h>
 #include "cmsis_os.h"
 #include "Allshit.h"
 #include "USBTask.h"
@@ -22,7 +23,7 @@
 #include "crc.h"
 #include "OLED.h"
 #include "Lights.h"
-#include "Buttons.h"
+#include "ButtonsManager.h"
 #include "Mathematics.h"
 #include "tim.h"
 
@@ -136,7 +137,7 @@ void StartFutabaTask(void const * argument) {
 		} else{
 			right_indicator = 1;
 		}
-		
+
 	}
 
 }
@@ -179,7 +180,17 @@ void StartSteeringTask(void const * argument) {
 
 	futaba.ConfigureSmoothing(50.f, task_dt * 1e-3); /* Nyquist frequency - 1/2 Radio frequency * 0.9; 8CH - 9ms, 16CH - 18ms,*/
 
-	servo.Init();
+	MX_TIM2_Init();
+	osDelay(200);
+	HAL_TIM_PWM_Start(&htim2 , TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim2,   TIM_CHANNEL_4);
+
+	Servo* servo_back;
+	Servo* servo_front;
+	servo_back = new Servo(&TIM2->CCR2);
+	servo_front = new Servo(&TIM2->CCR4);
+	//	servo_front.Init();
+	//	servo_back.Init();
 
 	uint8_t reczny = 0;
 	osDelay(200);
@@ -194,7 +205,8 @@ void StartSteeringTask(void const * argument) {
 
 			rc_mode = DISARMED;
 
-			servo.Disarm();
+			//			servo_front.Disarm();
+			//			servo_back.Disarm();
 			motor.Disarm();
 			if (futaba.Get_RCState() == 0)
 				StickCommandProccess();
@@ -202,15 +214,19 @@ void StartSteeringTask(void const * argument) {
 
 			if (futaba.SwitchB == SWITCH_UP) {
 
-//				if (reczny == true){
-//					HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_SET);
-//					motor.SetVelocity(0, 10000.f, 50000.f);
-//					osDelay(1000);
-//				}
+				//				if (reczny == true){
+				//					HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_SET);
+				//					motor.SetVelocity(0, 10000.f, 50000.f);
+				//					osDelay(1000);
+				//				}
 				reczny = false;
 				rc_mode = MODE_ACRO;
 
-				servo.SetAngleD(futaba.SmoothDeflection[YAW] * 45.f, 0.f);
+
+				servo_back->setAngle(-int16_t(futaba.SmoothDeflection[YAW] * 90.f) + 90);
+				servo_front->setAngle(int16_t(futaba.SmoothDeflection[YAW] * 90.f) + 90);
+				//servo_front.SetAngleD(futaba.SmoothDeflection[YAW] * 45.f, 0.f);
+				//servo_back.SetAngleD(futaba.SmoothDeflection[YAW] * 45.f, 0.f); // przy recznym po prostu z minusem
 				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 10000.f, 50000.f);
 
@@ -218,18 +234,22 @@ void StartSteeringTask(void const * argument) {
 				reczny = true;
 				rc_mode = MODE_SEMI;
 
-				servo.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
+
+				//			servo_front.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
+				//				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi); // trzeba dac inny parametr jak ma byc niezaleznie
 				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
 			} else if (futaba.SwitchB == SWITCH_DOWN) {
 				reczny = true;
 				rc_mode = MODE_AUTONOMOUS;
 
-				servo.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
+				//			servo_front.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
+				//				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
 				motor.SetVelocity(odroid_setpoints.velocity, odroid_setpoints.acceleration, odroid_setpoints.jerk);
 			}
-
-			servo.PositionTracking();
+			//		TIM2->CCR2 = 1450;
+			//		servo_front.PositionTracking();
+			//		servo_back.PositionTracking();
 			motor.Arm();
 		}
 
@@ -258,13 +278,13 @@ void StartSteeringTask(void const * argument) {
 		}
 
 		if(futaba.SwitchB == SWITCH_UP){
-				vision_reset_ack = 0;
-				vision_reset_sent = 0;
-				vision_reset = 0;
-			} else if(futaba.SwitchB == SWITCH_DOWN){
-				if(vision_reset_sent == 0){
-					vision_reset = 1;
-					vision_reset_ack = 1;
+			vision_reset_ack = 0;
+			vision_reset_sent = 0;
+			vision_reset = 0;
+		} else if(futaba.SwitchB == SWITCH_DOWN){
+			if(vision_reset_sent == 0){
+				vision_reset = 1;
+				vision_reset_ack = 1;
 			}else {
 				vision_reset = 0;
 			}
@@ -369,8 +389,10 @@ void StartLightsTask(void const * argument){
 
 
 void StartButtonsTask(void const * argument){
-	buttons.Init();
+	buttons_manager.Init();
 	while(1){
-		buttons.process();
+		buttons_manager.process();
+
+		osDelay(5);
 	}
 }

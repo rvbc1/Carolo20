@@ -5,23 +5,26 @@
  *      Author: Igor
  */
 
-#ifndef CLASSES_BUTTONS_H_
-#define CLASSES_BUTTONS_H_
+#ifndef CLASSES_BUTTONSMANAGER_H_
+#define CLASSES_BUTTONSMANAGER_H_
 
 
 #include "cmsis_os.h"
 #include "USBTask.h"
+#include "Button.h"
+//#include <vector>
 
 extern uint8_t start_parking_USB;
 extern uint8_t start_obstacle_USB;
 extern uint8_t start_parking_sent;
 extern uint8_t start_obstacle_sent;
 
-class Buttons {
+class ButtonsManager {
 private:
-
-
-
+	Button *button_one;
+	Button *button_two;
+	void check();
+	//std::vector<Button *> buttons;
 public:
 	void process();
 	uint8_t start1_state_of_pressing;
@@ -31,10 +34,10 @@ public:
 	uint8_t screen3_state_of_pressing;
 	uint8_t any_button_was_pressed;
 	void Init();
-	Buttons();
-	virtual ~Buttons();
+	ButtonsManager();
+	virtual ~ButtonsManager();
 };
 
-extern Buttons buttons;
+extern ButtonsManager buttons_manager;
 
-#endif /* CLASSES_BUTTONS_H_ */
+#endif /* CLASSES_BUTTONSMANAGER_H_ */

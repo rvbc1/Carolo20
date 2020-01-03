@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2019 STMicroelectronics International N.V. 
+  * Copyright (c) 2020 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -93,7 +93,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, LED_RED_Pin|LED_BLUE_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : PAPin PAPin */
-  GPIO_InitStruct.Pin = START_BUTTON_2_Pin|START_BUTTON_1_Pin;
+  GPIO_InitStruct.Pin = START_BUTTON_1_O7_Pin|START_BUTTON_2_O6_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);

@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2019 STMicroelectronics International N.V. 
+  * Copyright (c) 2020 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -58,6 +58,8 @@
  extern "C" {
 #endif
 
+#include "stm32f7xx_hal.h"
+
 void systemResetToBootloader(void);
 /* USER CODE END Includes */
 
@@ -69,10 +71,10 @@ void systemResetToBootloader(void);
 #define CURRENT_GPIO_Port GPIOC
 #define AN_IN_Pin GPIO_PIN_2
 #define AN_IN_GPIO_Port GPIOC
-#define START_BUTTON_2_Pin GPIO_PIN_0
-#define START_BUTTON_2_GPIO_Port GPIOA
-#define START_BUTTON_1_Pin GPIO_PIN_2
-#define START_BUTTON_1_GPIO_Port GPIOA
+#define START_BUTTON_1_O7_Pin GPIO_PIN_0
+#define START_BUTTON_1_O7_GPIO_Port GPIOA
+#define START_BUTTON_2_O6_Pin GPIO_PIN_2
+#define START_BUTTON_2_O6_GPIO_Port GPIOA
 #define O1_Pin GPIO_PIN_3
 #define O1_GPIO_Port GPIOA
 #define MPU_CS_Pin GPIO_PIN_4

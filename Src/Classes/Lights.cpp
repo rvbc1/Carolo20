@@ -11,7 +11,7 @@
 
 #define HIGH_PWM_BIT_VALUE 			91
 #define LOW_PWM_BIT_VALUE 			47
-#define NUMBER_OF_LED_PCB			3
+#define NUMBER_OF_LED_PCB			4
 #define NUMBER_OF_LEDS_PER_PCB		8
 #define NUMBER_OF_LEDS 				NUMBER_OF_LED_PCB * NUMBER_OF_LEDS_PER_PCB
 #define BYTES_PER_LED 				3
@@ -21,14 +21,14 @@
 // 1BIT TAKE 1,25us
 #define WS2812_BYTES_BUFFER_SIZE 	NUMBER_OF_LEDS * BITS_PER_LED + DATA_LOAD_BYTES
 
-#define FRONT_LEFT_START_INDEX 4
-#define FRONT_LEFT_END_INDEX 7
+#define FRONT_LEFT_START_INDEX 8
+#define FRONT_LEFT_END_INDEX 15
 #define FRONT_RIGHT_START_INDEX 0
-#define FRONT_RIGHT_END_INDEX 3
-#define BACK_LEFT_START_INDEX 8
-#define BACK_LEFT_END_INDEX 15
-#define BACK_RIGHT_START_INDEX 16
-#define BACK_RIGHT_END_INDEX 23
+#define FRONT_RIGHT_END_INDEX 7
+#define BACK_LEFT_START_INDEX 16
+#define BACK_LEFT_END_INDEX 23
+#define BACK_RIGHT_START_INDEX 24
+#define BACK_RIGHT_END_INDEX 31
 
 #define SCALE 4
 
@@ -82,9 +82,9 @@ void Lights::process(){
 		HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
 		if(left_indicator && right_indicator){
 
-			ws2812_set_color(FRONT_LEFT_START_INDEX + light_process_counter/SCALE/2, 255,100,0);
+			ws2812_set_color(FRONT_LEFT_START_INDEX + light_process_counter/SCALE, 255,100,0);
 
-			ws2812_set_color(FRONT_RIGHT_END_INDEX - light_process_counter/SCALE/2, 255,100,0);
+			ws2812_set_color(FRONT_RIGHT_END_INDEX - light_process_counter/SCALE, 255,100,0);
 
 
 			ws2812_set_color(BACK_RIGHT_START_INDEX + light_process_counter/SCALE, 255,100,0);
@@ -96,12 +96,12 @@ void Lights::process(){
 
 		} else if (left_indicator){
 
-			ws2812_set_color(FRONT_LEFT_START_INDEX + light_process_counter/SCALE/2, 255,100,0);
+			ws2812_set_color(FRONT_LEFT_START_INDEX + light_process_counter/SCALE, 255,100,0);
 
 			ws2812_set_color(BACK_LEFT_END_INDEX - light_process_counter/SCALE, 255,100,0);
 		} else if (right_indicator){
 
-			ws2812_set_color(FRONT_RIGHT_END_INDEX - light_process_counter/SCALE/2, 255,100,0);
+			ws2812_set_color(FRONT_RIGHT_END_INDEX - light_process_counter/SCALE, 255,100,0);
 
 			ws2812_set_color(BACK_RIGHT_START_INDEX + light_process_counter/SCALE, 255,100,0);
 		} else {
@@ -128,10 +128,10 @@ void Lights::process(){
 		ws2812_set_color(FRONT_RIGHT_END_INDEX, 255,255,255);
 		ws2812_set_color(BACK_LEFT_START_INDEX, 20,0,0);
 		ws2812_set_color(BACK_RIGHT_END_INDEX, 20,0,0);
-		//ws2812_set_color(FRONT_LEFT_START_INDEX + 1, 255,255,255);
-		//ws2812_set_color(FRONT_RIGHT_END_INDEX - 1, 255,255,255);
-		//ws2812_set_color(FRONT_LEFT_START_INDEX + 2, 255,255,255);
-		//ws2812_set_color(FRONT_RIGHT_END_INDEX - 2, 255,255,255);
+		ws2812_set_color(FRONT_LEFT_START_INDEX + 1, 255,255,255);
+		ws2812_set_color(FRONT_RIGHT_END_INDEX - 1, 255,255,255);
+		ws2812_set_color(FRONT_LEFT_START_INDEX + 2, 255,255,255);
+		ws2812_set_color(FRONT_RIGHT_END_INDEX - 2, 255,255,255);
 
 		HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
 		light_process_counter++;
@@ -158,10 +158,10 @@ void Lights::process(){
 		ws2812_set_color(FRONT_RIGHT_END_INDEX, 255,255,255);
 		ws2812_set_color(BACK_LEFT_START_INDEX, 20,0,0);
 		ws2812_set_color(BACK_RIGHT_END_INDEX, 20,0,0);
-//		ws2812_set_color(FRONT_LEFT_START_INDEX + 1, 255,255,255);
-//		ws2812_set_color(FRONT_RIGHT_END_INDEX - 1, 255,255,255);
-//		ws2812_set_color(FRONT_LEFT_START_INDEX + 2, 255,255,255);
-//		ws2812_set_color(FRONT_RIGHT_END_INDEX - 2, 255,255,255);
+		ws2812_set_color(FRONT_LEFT_START_INDEX + 1, 255,255,255);
+		ws2812_set_color(FRONT_RIGHT_END_INDEX - 1, 255,255,255);
+		ws2812_set_color(FRONT_LEFT_START_INDEX + 2, 255,255,255);
+		ws2812_set_color(FRONT_RIGHT_END_INDEX - 2, 255,255,255);
 
 		HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
 

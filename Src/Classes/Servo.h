@@ -1,42 +1,36 @@
 /*
  * Servo.h
  *
- *  Created on: 17.09.2018
- *      Author: mice
+ *  Created on: Apr 7, 2019
+ *      Author: rvbc-
  */
 
-#ifndef CLASSES_SERVO_H_
-#define CLASSES_SERVO_H_
+#ifndef SERVO_H_
+#define SERVO_H_
 
-#include "stdint.h"
+#define MIN_PULSE_WIDTH 			1000
+#define MAX_PULSE_WIDTH 			1900
+#define DEFAULT_MIN_ANGLE 			0
+#define DEFAULT_MAX_ANGLE 			180
+#define DEFAULT_CORRECTION_ANGLE 	0
+
+#include "main.h"
 
 class Servo {
-	uint16_t pwm_middle;
-	uint16_t pwm_band;
-	uint16_t pwm_last;
+private:
 
-	float max_degrees;
-	float max_radians;
-
-
-	uint8_t tim_running = 0;
-	void SetPWM(uint16_t value);
-	uint16_t GetPWM(void);
-
-
-	float current_angle = 0.f;
-	float set_angle = 0.f;
-	float set_velocity = 0.f;
+	uint8_t min_angle;
+	uint8_t max_angle;
+	int16_t correction_angle;
 public:
-	void Init(void);
-	void PositionTracking(void);
-
-	void Disarm(void);
-	void Arm(void);
-	void SetAngleD(float angle = 0.f, float velocity = 0.f);
-	void SetAngleR(float angle = 0.f, float velocity = 0.f);
-	Servo(uint16_t middle = 1500, uint16_t band = 500, float angle = 45.f);
+	volatile uint32_t* PWM_Register;
+	void setPulse(uint16_t pulse);
+	void setAngle(int16_t angle);
+	void setMinAngle(uint8_t min_angle);
+	void setMaxAngle(uint8_t max_angle);
+	void setCorrectionAngle(int16_t correction_angle);
+	Servo(volatile uint32_t* PWM_Register);
 	virtual ~Servo();
 };
-extern Servo servo;
-#endif /* CLASSES_SERVO_H_ */
+
+#endif /* SERVO_H_ */
