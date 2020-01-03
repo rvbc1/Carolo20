@@ -11,6 +11,7 @@
 
 #include "cmsis_os.h"
 #include "USBTask.h"
+#include "Button.h"
 
 extern uint8_t start_parking_USB;
 extern uint8_t start_obstacle_USB;
@@ -19,8 +20,8 @@ extern uint8_t start_obstacle_sent;
 
 class Buttons {
 private:
-
-
+	Button *button_one;
+	Button *button_two;
 
 public:
 	void process();

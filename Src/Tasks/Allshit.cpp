@@ -23,6 +23,7 @@
 #include "OLED.h"
 #include "Lights.h"
 #include "Buttons.h"
+#include "Button.h"
 #include "Mathematics.h"
 #include "tim.h"
 
@@ -136,7 +137,7 @@ void StartFutabaTask(void const * argument) {
 		} else{
 			right_indicator = 1;
 		}
-		
+
 	}
 
 }
@@ -188,8 +189,8 @@ void StartSteeringTask(void const * argument) {
 	Servo* servo_front;
 	servo_back = new Servo(&TIM2->CCR2);
 	servo_front = new Servo(&TIM2->CCR4);
-//	servo_front.Init();
-//	servo_back.Init();
+	//	servo_front.Init();
+	//	servo_back.Init();
 
 	uint8_t reczny = 0;
 	osDelay(200);
@@ -204,8 +205,8 @@ void StartSteeringTask(void const * argument) {
 
 			rc_mode = DISARMED;
 
-//			servo_front.Disarm();
-//			servo_back.Disarm();
+			//			servo_front.Disarm();
+			//			servo_back.Disarm();
 			motor.Disarm();
 			if (futaba.Get_RCState() == 0)
 				StickCommandProccess();
@@ -213,11 +214,11 @@ void StartSteeringTask(void const * argument) {
 
 			if (futaba.SwitchB == SWITCH_UP) {
 
-//				if (reczny == true){
-//					HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_SET);
-//					motor.SetVelocity(0, 10000.f, 50000.f);
-//					osDelay(1000);
-//				}
+				//				if (reczny == true){
+				//					HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_SET);
+				//					motor.SetVelocity(0, 10000.f, 50000.f);
+				//					osDelay(1000);
+				//				}
 				reczny = false;
 				rc_mode = MODE_ACRO;
 
@@ -234,21 +235,21 @@ void StartSteeringTask(void const * argument) {
 				rc_mode = MODE_SEMI;
 
 
-	//			servo_front.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
-//				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi); // trzeba dac inny parametr jak ma byc niezaleznie
+				//			servo_front.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
+				//				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi); // trzeba dac inny parametr jak ma byc niezaleznie
 				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
 			} else if (futaba.SwitchB == SWITCH_DOWN) {
 				reczny = true;
 				rc_mode = MODE_AUTONOMOUS;
 
-	//			servo_front.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
-//				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
+				//			servo_front.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
+				//				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
 				motor.SetVelocity(odroid_setpoints.velocity, odroid_setpoints.acceleration, odroid_setpoints.jerk);
 			}
-	//		TIM2->CCR2 = 1450;
-	//		servo_front.PositionTracking();
-	//		servo_back.PositionTracking();
+			//		TIM2->CCR2 = 1450;
+			//		servo_front.PositionTracking();
+			//		servo_back.PositionTracking();
 			motor.Arm();
 		}
 
@@ -277,13 +278,13 @@ void StartSteeringTask(void const * argument) {
 		}
 
 		if(futaba.SwitchB == SWITCH_UP){
-				vision_reset_ack = 0;
-				vision_reset_sent = 0;
-				vision_reset = 0;
-			} else if(futaba.SwitchB == SWITCH_DOWN){
-				if(vision_reset_sent == 0){
-					vision_reset = 1;
-					vision_reset_ack = 1;
+			vision_reset_ack = 0;
+			vision_reset_sent = 0;
+			vision_reset = 0;
+		} else if(futaba.SwitchB == SWITCH_DOWN){
+			if(vision_reset_sent == 0){
+				vision_reset = 1;
+				vision_reset_ack = 1;
 			}else {
 				vision_reset = 0;
 			}
@@ -391,5 +392,7 @@ void StartButtonsTask(void const * argument){
 	buttons.Init();
 	while(1){
 		buttons.process();
+
+		osDelay(5);
 	}
 }

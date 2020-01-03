@@ -15,7 +15,6 @@
 #define DEFAULT_CORRECTION_ANGLE 	0
 
 #include "main.h"
-#include "stm32f7xx_hal.h"
 
 class Servo {
 private:

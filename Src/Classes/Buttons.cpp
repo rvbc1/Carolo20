@@ -24,31 +24,25 @@ void Buttons::Init(){
 	screen3_state_of_pressing = false;
 	any_button_was_pressed = false;
 
+	button_one = new Button(START_BUTTON_1_O7_GPIO_Port, START_BUTTON_1_O7_Pin);
+
+	button_two = new Button(START_BUTTON_2_O6_GPIO_Port, START_BUTTON_2_O6_Pin);
+
 }
 void Buttons::process(){
-	//if(!start_parking_sent){
-		if(HAL_GPIO_ReadPin(START_BUTTON_1_GPIO_Port, START_BUTTON_1_Pin) == GPIO_PIN_RESET){
-			osDelay(40);
-			if(HAL_GPIO_ReadPin(START_BUTTON_1_GPIO_Port, START_BUTTON_1_Pin) == GPIO_PIN_RESET){
-				start_parking_USB = 1;
-				left_indicator = !left_indicator;
-			}
-		}
-//	}
-//	else{
-//		start_parking_USB = 0;
-//	}
-	//if(!start_obstacle_sent){
-		if(HAL_GPIO_ReadPin(START_BUTTON_2_GPIO_Port, START_BUTTON_2_Pin) == GPIO_PIN_RESET){
-			osDelay(40);
-			if(HAL_GPIO_ReadPin(START_BUTTON_2_GPIO_Port, START_BUTTON_2_Pin) == GPIO_PIN_RESET){
-				start_obstacle_USB = 1;
-				right_indicator = !right_indicator;
-			}
-		}
-//	}else{
-//		start_obstacle_USB = 0;
-//	}
+	button_one->check();
+	if(button_one->getStatus()){
+		left_indicator = true;
+	} else {
+		left_indicator = false;
+	}
+
+	button_two->check();
+	if(button_two->getStatus()){
+		right_indicator = true;
+	} else {
+		right_indicator = false;
+	}
 	osDelay(5);
 }
 
