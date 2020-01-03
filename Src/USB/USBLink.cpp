@@ -16,8 +16,8 @@ USBLink::USBLink() {
 	initFrameTX();
 }
 
-USBLink::initFrameTX(){
-	dataTX.frame->start_code = STAT_BYTE;
+void USBLink::initFrameTX(){
+	dataTX.frame->start_code = START_BYTE;
 	dataTX.frame->end_code = END_BYTE;
 }
 

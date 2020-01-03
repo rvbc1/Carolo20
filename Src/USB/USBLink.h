@@ -10,6 +10,9 @@
 
 #include "main.h"
 
+#define START_BYTE 0xff
+#define END_BYTE 0xfe
+
 class USBLink {
 public:
     struct ValuesRX{
@@ -46,6 +49,11 @@ public:
 
         uint16_t batt;
     } __attribute__ ((__packed__));
+
+
+
+    void initFrameTX();
+
 
 	USBLink();
 	virtual ~USBLink();
