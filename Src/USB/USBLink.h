@@ -15,41 +15,45 @@
 
 class USBLink {
 public:
-    struct ValuesRX{
-        uint16_t ele_angle;
-
-        uint16_t SERVO_1;
-
-        uint16_t SERVO_2;
-
-        uint16_t SERVO_3;
-
-        uint16_t SERVO_4;
-
-    } __attribute__ ((__packed__));
-
     struct ValuesTX{
-        uint16_t ele_angle;
 
-        uint16_t enc1_raw;
+        uint8_t code;
+        uint8_t length;
 
-        uint16_t enc1_angle;
+        uint32_t timecode;
 
-        uint16_t enc2_raw;
+        int32_t distance;
+        int16_t velocity;
+        int16_t w, x, y, z;
+        uint16_t yaw;
+        int16_t rates[3];
+        int16_t acc[3];
 
-        uint16_t enc2_angle;
+        uint8_t startbutton1;
+        uint8_t startbutton2;
+        uint8_t visionrst;
+        uint8_t futabastate;
 
-        uint16_t enc3_raw;
-
-        uint16_t enc3_angle;
-
-        uint16_t enc4_raw;
-
-        uint16_t enc4_angle;
-
-        uint16_t batt;
     } __attribute__ ((__packed__));
 
+    struct ValuesRX{
+
+        uint8_t code;
+        uint8_t length;
+
+        uint32_t timecode;
+
+        int16_t steering_fi;
+        int16_t steering_dfi;
+
+        int16_t speed;
+        int16_t acceleration;
+        int16_t jerk;
+
+        uint8_t left_indicator_u;
+        uint8_t right_indicator_u;
+
+    } __attribute__ ((__packed__));
 
 
     void initFrameTX();
