@@ -5,10 +5,10 @@
  *      Author: Igor
  */
 
-#include "Buttons.h"
+#include <ButtonsManager.h>
 #include "stm32f7xx_hal.h"
 
-Buttons buttons;
+ButtonsManager buttons_manager;
 
 uint8_t start_parking_USB = 0;
 uint8_t start_obstacle_USB = 0;
@@ -16,7 +16,7 @@ uint8_t start_parking_sent = 0;
 uint8_t start_obstacle_sent = 0;
 
 
-void Buttons::Init(){
+void ButtonsManager::Init(){
 	start1_state_of_pressing = false;
 	start2_state_of_pressing = false;
 	screen1_state_of_pressing = false;
@@ -29,15 +29,20 @@ void Buttons::Init(){
 	button_two = new Button(START_BUTTON_2_O6_GPIO_Port, START_BUTTON_2_O6_Pin);
 
 }
-void Buttons::process(){
+
+void ButtonsManager::check(){
 	button_one->check();
+	button_two->check();
+}
+void ButtonsManager::process(){
+	check();
+
 	if(button_one->getStatus()){
 		left_indicator = true;
 	} else {
 		left_indicator = false;
 	}
 
-	button_two->check();
 	if(button_two->getStatus()){
 		right_indicator = true;
 	} else {
@@ -47,12 +52,12 @@ void Buttons::process(){
 }
 
 
-Buttons::Buttons() {
+ButtonsManager::ButtonsManager() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Buttons::~Buttons() {
+ButtonsManager::~ButtonsManager() {
 	// TODO Auto-generated destructor stub
 }
 

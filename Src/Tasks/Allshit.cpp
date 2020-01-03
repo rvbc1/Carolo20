@@ -5,6 +5,7 @@
  *      Author: mice
  */
 
+#include <ButtonsManager.h>
 #include "cmsis_os.h"
 #include "Allshit.h"
 #include "USBTask.h"
@@ -22,8 +23,7 @@
 #include "crc.h"
 #include "OLED.h"
 #include "Lights.h"
-#include "Buttons.h"
-#include "Button.h"
+#include "ButtonsManager.h"
 #include "Mathematics.h"
 #include "tim.h"
 
@@ -389,9 +389,9 @@ void StartLightsTask(void const * argument){
 
 
 void StartButtonsTask(void const * argument){
-	buttons.Init();
+	buttons_manager.Init();
 	while(1){
-		buttons.process();
+		buttons_manager.process();
 
 		osDelay(5);
 	}

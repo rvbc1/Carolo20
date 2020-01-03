@@ -5,6 +5,7 @@
  *      Author: mice
  */
 
+#include <ButtonsManager.h>
 #include "Allshit.h"
 
 #include "stdint.h"
@@ -17,7 +18,6 @@
 #include "USBTask.h"
 #include "AHRS.h"
 #include "Odometry.h"
-#include "Buttons.h"
 #include "tim.h"
 
 #include "string.h"
