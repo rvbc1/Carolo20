@@ -2,16 +2,34 @@
  * USBLink.h
  *
  *  Created on: 03.01.2020
- *      Author: Igor
+ *      Author: rvbc-
  */
 
 #ifndef USB_USBLINK_H_
 #define USB_USBLINK_H_
 
 #include "main.h"
+#include "Allshit.h"
+#include "usbd_cdc_if.h"
+#include "Mathematics.h"
 
-#define START_BYTE 0xff
-#define END_BYTE 0xfe
+
+
+#include "USBTask.h" ///
+
+
+
+#define START_CODE 0xff
+#define END_CODE 0xfe
+
+#define SETTINGS_RX_SIZE 4
+
+#define COMMAND_RX_SIZE 3
+
+#define TERMINAL_RX_SIZE 1
+
+
+
 
 class USBLink {
 public:
@@ -56,11 +74,16 @@ public:
     } __attribute__ ((__packed__));
 
 
-    void initFrameTX();
+    void USB_Process();
 
+
+    static int8_t MAIN_USB_Receive(uint8_t* Buf, uint32_t *Len);
 
 	USBLink();
 	virtual ~USBLink();
+
+	static uint8_t* usbRxRawBuffer;
+	static uint16_t usbRxRawSize;
 
 private:
 	struct FrameTX{
@@ -79,21 +102,52 @@ private:
 		uint8_t end_code;
 	} __attribute__ ((__packed__));
 
-	union{
+	struct CommandRX{
+		uint8_t start_code;
+
+		uint8_t command;
+
+		uint8_t end_code;
+	} __attribute__ ((__packed__));
+
+
+
+	union DataTX{
 		FrameTX* frame;
 		uint8_t* bytes;
-	}dataTX;
+	};
 
-	union{
+	union DataRX{
 		FrameRX* frame;
 		uint8_t* bytes;
-	}dataRX;
+	};
+
+	struct DataBuffer{
+		DataTX tx;
+		DataRX rx;
+		uint16_t txSize;
+		uint16_t rxSize;
+	};
+
+	static DataBuffer dataBuffer;
+
+    void initFrameTX();
+
+    void decodeRawData();
+
+    void recieveFrame();
+
+    void recieveTerminal();
 
 	uint8_t is_sending_data;
 	uint8_t is_updating_data;
 
 	uint16_t frame_TX_SIZE;
 	uint16_t frame_RX_SIZE ;
+
+
 };
+
+extern USBLink usb_link;
 
 #endif /* USB_USBLINK_H_ */
