@@ -29,6 +29,8 @@
 #include "Mathematics.h"
 #include "tim.h"
 
+#include "USBLink.h"
+
 osThreadId GyroTaskHandle;
 osThreadId AHRSTaskHandle;
 osThreadId BatteryManagerHandle;
@@ -100,8 +102,10 @@ void Allshit_begin(void) {
 	BatteryManagerHandle = osThreadCreate(osThread(BatteryManager), NULL);
 
 	/* definition and creation of USBTask */
-	osThreadDef(USBTask, StartUSBTask, osPriorityHigh, 0, 256);
-	USBTaskHandle = osThreadCreate(osThread(USBTask), NULL);
+//	osThreadDef(USBTask, StartUSBTask, osPriorityHigh, 0, 256);
+	//USBTaskHandle = osThreadCreate(osThread(USBTask), NULL);
+	osThreadDef(USBLink, StartUSBTask, osPriorityHigh, 0, 256);
+	USBTaskHandle = osThreadCreate(osThread(USBLink), NULL);
 
 	/* definition and creation of TelemetryTask */
 	osThreadDef(TelemetryTask, StartTelemetryTask, osPriorityNormal, 0, 256);
@@ -343,9 +347,12 @@ void StartBatteryManager(void const * argument) {
 
 void StartUSBTask(void const * argument) {
 	USB_Init();
+
 	while(1)
 	{
-		USB_Process();
+		usb_link.USB_Process();
+		//osDelay(5);
+		//USB_Process();
 	}
 }
 

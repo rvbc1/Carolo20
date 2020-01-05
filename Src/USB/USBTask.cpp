@@ -78,15 +78,16 @@ void USB_Process(void) {
 	/* 6 + length */
 	osEvent evt = osSignalWait(0, 500);
 	if (evt.status == osEventSignal) {
-		if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
-			static uint8_t cnt = 0;
-			if (++cnt >= usbDenominator) {
-				cnt = 0;
-				USB_Transmit_Data();
-			}
-			TIM11->CNT = 0;
-		}
+//		if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
+//			static uint8_t cnt = 0;
+//			if (++cnt >= usbDenominator) {
+//				cnt = 0;
+//				USB_Transmit_Data();
+//			}
+//			TIM11->CNT = 0;
+//		}
 		if (evt.value.signals & USB_RX_signal) {
+			HAL_GPIO_TogglePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin);
 			if (usbBytesRead == USB_RXFRAME_SIZE) {
 				/* DATA */
 				USB_Receive_Data();
