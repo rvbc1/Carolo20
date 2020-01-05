@@ -37,17 +37,17 @@ void ButtonsManager::check(){
 void ButtonsManager::process(){
 	check();
 
-	if(button_one->getStatus()){
-		left_indicator = true;
-	} else {
-		left_indicator = false;
-	}
-
-	if(button_two->getStatus()){
-		right_indicator = true;
-	} else {
-		right_indicator = false;
-	}
+//	if(button_one->getStatus()){
+//		left_indicator = true;
+//	} else {
+//		left_indicator = false;
+//	}
+//
+//	if(button_two->getStatus()){
+//		right_indicator = true;
+//	} else {
+//		right_indicator = false;
+//	}
 	osDelay(5);
 }
 

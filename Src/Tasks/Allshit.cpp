@@ -135,15 +135,6 @@ void StartFutabaTask(void const * argument) {
 	futaba.Init();
 	for (;;) {
 		futaba.Process();
-		if (futaba.SwitchC == SWITCH_UP) {
-			left_indicator = 1;
-		} else if(futaba.SwitchC == SWITCH_MIDDLE){
-			left_indicator = 0;
-			right_indicator = 0;
-		} else{
-			right_indicator = 1;
-		}
-
 	}
 
 }
@@ -208,8 +199,9 @@ void StartSteeringTask(void const * argument) {
 		futaba.ProcessSmoothing();
 
 		if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
-
 			rc_mode = DISARMED;
+			left_indicator = 1;
+			right_indicator = 1;
 
 			//			servo_front.Disarm();
 			//			servo_back.Disarm();
@@ -217,6 +209,16 @@ void StartSteeringTask(void const * argument) {
 			if (futaba.Get_RCState() == 0)
 				StickCommandProccess();
 		} else if (futaba.SwitchA == SWITCH_DOWN) {
+			if (futaba.SwitchC == SWITCH_UP) {
+				left_indicator = 0;
+				right_indicator = 1;
+			} else if(futaba.SwitchC == SWITCH_MIDDLE){
+				left_indicator = 0;
+				right_indicator = 0;
+			} else{
+				left_indicator = 1;
+				right_indicator = 0;
+			}
 
 			if (futaba.SwitchB == SWITCH_UP) {
 

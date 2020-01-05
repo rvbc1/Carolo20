@@ -54,6 +54,8 @@ uint8_t usbDenominator = 5;
 
 uint8_t left_indicator = 0;
 uint8_t right_indicator = 0;
+uint8_t road_lights = 1;
+
 uint32_t timestamp = 5;
 odroid_setpoints_t odroid_setpoints = {0.f, 0.f, 0.f, 0.f, 0.f};
 

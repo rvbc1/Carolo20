@@ -86,9 +86,6 @@ public:
 	USBLink();
 	virtual ~USBLink();
 
-	static uint8_t* usbRxRawBuffer;
-	static uint16_t usbRxRawSize;
-
 private:
 	struct FrameTX{
 		uint8_t start_code;
@@ -102,6 +99,16 @@ private:
 		uint8_t start_code;
 
 		ValuesRX values;
+
+		uint8_t end_code;
+	} __attribute__ ((__packed__));
+
+	struct SettingsRX{
+		uint8_t start_code;
+
+		uint8_t code;
+
+		uint8_t data;
 
 		uint8_t end_code;
 	} __attribute__ ((__packed__));
@@ -122,6 +129,8 @@ private:
 	};
 
 	union DataRX{
+		SettingsRX* settings_frame;
+		CommandRX* command_frame;
 		FrameRX* frame;
 		uint8_t* bytes;
 	};
@@ -140,6 +149,10 @@ private:
     void decodeRawData();
 
     void recieveFrame();
+
+    void recieveSettings();
+
+    void recieveCommand();
 
     void recieveTerminal();
 
