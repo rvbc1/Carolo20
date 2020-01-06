@@ -9,6 +9,7 @@
 #define CLASSES_LIGHTS_LIGHT_H_
 
 #include "main.h"
+#include <Lights/WS2812.h>
 
 class Light {
 public:
@@ -16,14 +17,13 @@ public:
 	void on();
 	void off();
 
+	void setColor(WS2812::Color color);
 	void setColor(uint8_t r, uint8_t g, uint8_t b);
 
 	Light();
 	virtual ~Light();
 private:
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
+	WS2812::Color color;
 
 	uint16_t* adressTab[24];
 	uint8_t added;

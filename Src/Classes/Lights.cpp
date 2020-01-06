@@ -40,30 +40,51 @@
 
 Lights lights;
 
-LED_Strip front_left(8);
-LED_Strip front_right(8);
-LED_Strip back_left(8);
-LED_Strip back_right(8);
+//LED_Strip front_left(8);
+//LED_Strip front_right(8);
+//LED_Strip back_left(8);
+//LED_Strip back_right(8);
+//
+//Light headlights;
+//Light tail_lights;
+//Light break_lights;
+//
+//Light left_indicator_l;
+//Light right_indicator_l;
 
-Light headlights;
+//WS2812::Color high_beam_color {255, 255, 255};
+//WS2812::Color low_beam_color {128, 128, 128};
+//WS2812::Color tail_light_color {20, 0 ,0};
+//WS2812::Color indicator_color {255, 100, 0};
+//WS2812::Color break_light_color {255, 100, 0};
+//WS2812::Color break_light_color {255, 100, 0};
 
 
 uint16_t ws2812BitsBuffer[WS2812_BYTES_BUFFER_SIZE];
 
 void Lights::ws2812_init() {
 
-	front_left.setBuffer(&ws2812BitsBuffer[0]);
-	front_right.setBuffer(&ws2812BitsBuffer[1*8*3*8]);
-	back_left.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
-	back_right.setBuffer(&ws2812BitsBuffer[3*8*3*8]);
+//	front_left.setBuffer(&ws2812BitsBuffer[0]);
+//	front_right.setBuffer(&ws2812BitsBuffer[1*8*3*8]);
+//	back_left.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
+//	back_right.setBuffer(&ws2812BitsBuffer[3*8*3*8]);
+
+
+
+
+//	headlights.setColor(high_beam_color);
+//	tail_lights.setColor(tail_light_color);
+//	break_lights.setColor(break_light_color);
+//	left_indicator_l.setColor(indicator_color);
+//	right_indicator_l.setColor(indicator_color);
 
 	//headlights.add(front_left.getLedAddress(5));
 
-	front_left.setHeadlights(5,7);
-	front_right.setHeadlights(0,2);
-
-	back_left.setTailLights(7,7);
-	back_right.setTailLights(0,0);
+//	front_left.setHeadlights(5,7);
+//	front_right.setHeadlights(0,2);
+//
+//	back_left.setTailLights(7,7);
+//	back_right.setTailLights(0,0);
 
 	MX_TIM4_Init();
 	memset(ws2812BitsBuffer, 0, WS2812_BYTES_BUFFER_SIZE);
@@ -152,17 +173,18 @@ void Lights::process(){
 //			}
 //		}
 
-		if(stop_light){
-
-		}
-
-		if(road_lights){
-			front_left.headlightsON();
-			front_right.headlightsON();
-
-			back_left.tailLightsON();
-			back_right.tailLightsON();
-		}
+//		if(stop_light){
+//
+//		}
+//
+//		if(road_lights){
+//			front_left.headlightsON();
+//			front_right.headlightsON();
+//
+//			back_left.tailLightsON();
+//			back_right.tailLightsON();
+//
+//		}
 
 
 

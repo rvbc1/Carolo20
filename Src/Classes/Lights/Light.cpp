@@ -41,6 +41,17 @@ void Light::ws2812_set_color(uint16_t* address, uint8_t r, uint8_t g, uint8_t b)
 	}
 }
 
+void Light::setColor(WS2812::Color color){
+	this->color = color;
+}
+
+
+void Light::setColor(uint8_t r, uint8_t g, uint8_t b){
+	color.r = r;
+	color.g = g;
+	color.b = b;
+}
+
 void Light::add(uint16_t* adress){
 	adressTab[added] = adress;
 	added++;
@@ -48,7 +59,7 @@ void Light::add(uint16_t* adress){
 
 void Light::on(){
 	for(int i = 0; i < added; i++){
-		ws2812_set_color(adressTab[i], r, g, b);
+		WS2812::setColor(adressTab[i], color);
 	}
 }
 

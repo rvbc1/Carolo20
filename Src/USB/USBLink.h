@@ -157,12 +157,16 @@ private:
 
     void recieveTerminal();
 
+    void transmitFrame();
+
+
     uint8_t checkFrameCorrectness(FrameRX* frame);
     uint8_t checkFrameCorrectness(SettingsRX* frame);
     uint8_t checkFrameCorrectness(CommandRX* frame);
 
 	uint8_t is_sending_data;
 	uint8_t is_updating_data;
+	uint8_t CommunicationOnGoing = false;
 
 	uint16_t frame_TX_SIZE;
 	uint16_t frame_RX_SIZE ;

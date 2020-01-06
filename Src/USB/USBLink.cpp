@@ -8,9 +8,20 @@
 #include <USBLink.h>
 
 #include "Futaba.h"
+#include "Telemetry.h"
+#include "Motor.h"
+#include "Gyro.h"
+#include "Tools.h"
+#include "AHRS.h"
+#include "PowerManager.h"
+#include "Buzzer.h"
+#include "Odometry.h"
+#include <ButtonsManager.h>
 
 USBLink::DataBuffer USBLink::dataBuffer;
 
+
+#define USB_TXFRAME_SIZE 40 ////////////////////////////////
 
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
@@ -18,6 +29,9 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 extern int32_t USB_TX_signal;
 
 extern int32_t USB_RX_signal;
+
+
+extern uint8_t usbDenominator;
 
 USBLink usb_link;
 
@@ -27,29 +41,64 @@ void USBLink::USB_Process(void) {
 	/* 6 + length */
 	osEvent evt = osSignalWait(0, 500);
 	if (evt.status == osEventSignal) {
+//		if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
+//			static uint8_t cnt = 0;
+//			if (++cnt >= usbDenominator) {
+//				cnt = 0;
+//				transmitFrame();
+//			}
+//			TIM11->CNT = 0;
+//		}
+
 		if (evt.value.signals & USB_RX_signal) {
 			decodeRawData();
 		}
-		//	if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
-		//		static uint8_t cnt = 0;
-		//		if (++cnt >= usbDenominator) {
-		//			cnt = 0;
-		//		USB_Transmit_Data();
-		//		}
-		//			TIM11->CNT = 0;
-		//		}
-		//	if (evt.value.signals & USB_RX_signal) {
 
-
-		//	}
-		//			static uint16_t cnt = 0;
-		//			if (cnt++ > 500) {
-		//				HAL_GPIO_TogglePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin);
-		//				cnt = 0;
-		//			}
 	} else if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
 		//			HAL_GPIO_TogglePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin);
 	}
+}
+
+void USBLink::transmitFrame(){
+	FrameTX* frame = dataBuffer.tx.frame;//Just for shorter code
+	frame->start_code = START_CODE;
+	frame->values.code = 0x40;
+	frame->values.length = USB_TXFRAME_SIZE-4;
+
+	frame->values.timecode = HAL_GetTick();
+
+	frame->values.distance = motor.getDistance();
+	frame->values.velocity = motor.getVelocity();
+
+	quaternion orientation;
+	ahrs.getQuaternion(&orientation);
+	frame->values.w = (int16_t)(orientation.w * 32767.f);
+	frame->values.x = (int16_t)(orientation.x * 32767.f);
+	frame->values.y = (int16_t)(orientation.y * 32767.f);
+	frame->values.z = (int16_t)(orientation.z * 32767.f);
+
+	frame->values.yaw = (uint16_t)(gyro.angles[2]/360.f*65536.f);
+
+	for(uint8_t axis = 0; axis < 3; axis++){
+		frame->values.rates[axis] = (int16_t)(gyro.rates[axis] * gyro.getGyroScale());
+		frame->values.acc[axis] = (int16_t)(gyro.g_rates[axis] * gyro.getAccScale());
+	}
+
+
+	frame->values.startbutton1 = start_parking_USB;
+	frame->values.startbutton2 = start_obstacle_USB;
+	frame->values.visionrst = vision_reset;
+	frame->values.futabastate = futaba.SwitchB;
+
+	frame->end_code = END_CODE;
+
+	CDC_Transmit_FS(dataBuffer.tx.bytes, USB_TXFRAME_SIZE);
+
+	if(vision_reset_ack)
+		vision_reset_sent = 1;
+
+	start_parking_USB = 0;
+	start_obstacle_USB = 0;
 }
 
 void USBLink::decodeRawData(){
@@ -86,7 +135,7 @@ uint8_t USBLink::checkFrameCorrectness(FrameRX* frame){
 void USBLink::recieveSettings(){
 	SettingsRX* frame = dataBuffer.rx.settings_frame;//Just for shorter code
 	if (checkFrameCorrectness(frame)) {
-		//usbDenominator = frame->data;
+		usbDenominator = frame->data;
 	}
 }
 
@@ -102,15 +151,15 @@ void USBLink::recieveCommand(){
 		switch (frame->command) {
 
 		case 0x01:
-			//	CommunicationOnGoing = true;
+			CommunicationOnGoing = true;
 			break;
 		case 0x02:
-			//CommunicationOnGoing = false;
+			CommunicationOnGoing = false;
 			break;
 		case 0x10:
-			//	gyro.StartCalibration();
-			//	odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
-			//	odometry.SetCurrentPosition();
+			gyro.StartCalibration();
+			odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
+			odometry.SetCurrentPosition();
 			break;
 		case 0x20:
 
@@ -145,42 +194,42 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize += sprintf((char *) dataBuffer.tx.bytes+dataBuffer.txSize, "-------\n");;
 		break;
 	case 'B':
-		//		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "\nLi-Po:\t%.2fV\nCurrent:\t%.3fA\nAN_IN:\t%.2fV\nSTM Temperature:%.2fC\n", powermanager.voltage,
-		//				powermanager.amperage, powermanager.analog_in, powermanager.temperature);
+		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "\nLi-Po:\t%.2fV\nCurrent:\t%.3fA\nAN_IN:\t%.2fV\nSTM Temperature:%.2fC\n", powermanager.voltage,
+				powermanager.amperage, powermanager.analog_in, powermanager.temperature);
 		break;
 	case 'e':
-		//	dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Current spd: %.1f\tSetspeed: %.1f\nTotalCount: %ld\tTotalRoad: %.1f\n\n", motor.getVelocity(), motor.getSetVelocity(), motor.getImpulses(), motor.getDistance());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Current spd: %.1f\tSetspeed: %.1f\nTotalCount: %ld\tTotalRoad: %.1f\n\n", motor.getVelocity(), motor.getSetVelocity(), motor.getImpulses(), motor.getDistance());
 		break;
 	case 'f':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %d\tE: %d\tT: %d\tR: %d\nSwitchA: %d\tSwitchB: %d\n", futaba.sbusChannelData[0], futaba.sbusChannelData[1],
-				futaba.sbusChannelData[2], futaba.sbusChannelData[3], futaba.SwitchE, futaba.SwitchD);
+				futaba.sbusChannelData[2], futaba.sbusChannelData[3], futaba.SwitchA, futaba.SwitchB);
 		break;
 	case 'F':
-		//	dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %f\tE: %f\tT: %f\tR: %f\n", futaba.StickDeflection[ROLL], futaba.StickDeflection[PITCH],
-		//			futaba.StickDeflection[THROTTLE], futaba.StickDeflection[YAW]);
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %f\tE: %f\tT: %f\tR: %f\n", futaba.StickDeflection[ROLL], futaba.StickDeflection[PITCH],
+				futaba.StickDeflection[THROTTLE], futaba.StickDeflection[YAW]);
 		break;
 	case 'G':
-		//	dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "\nrates:\t%.2f\t%.2f\t%.2f\nangles:\t%.2f\t%.2f\t%.2f\tFLAT: %.2f\ntemperature:\t%.1fC\naccels:\t%.2fG\t%.2fG\t%.2fG\n",
-		//			gyro.rates[0], gyro.rates[1], gyro.rates[2], ahrs.attitude.values.roll, ahrs.attitude.values.pitch, ahrs.attitude.values.yaw, gyro.angles[2], gyro.temperature,
-		//				gyro.g_rates[0], gyro.g_rates[1], gyro.g_rates[2]);
+		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "\nrates:\t%.2f\t%.2f\t%.2f\nangles:\t%.2f\t%.2f\t%.2f\tFLAT: %.2f\ntemperature:\t%.1fC\naccels:\t%.2fG\t%.2fG\t%.2fG\n",
+				gyro.rates[0], gyro.rates[1], gyro.rates[2], ahrs.attitude.values.roll, ahrs.attitude.values.pitch, ahrs.attitude.values.yaw, gyro.angles[2], gyro.temperature,
+				gyro.g_rates[0], gyro.g_rates[1], gyro.g_rates[2]);
 		break;
 	case 'q':
-		//	quaternion orientation;
-		//	ahrs.getQuaternion(&orientation);
-		//	dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "\nw = %.3f\tx = %.3f\ty = %.3f\tz = %.3f\n",
-		//				orientation.w, orientation.x, orientation.y, orientation.z);
+		quaternion orientation;
+		ahrs.getQuaternion(&orientation);
+		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "\nw = %.3f\tx = %.3f\ty = %.3f\tz = %.3f\n",
+				orientation.w, orientation.x, orientation.y, orientation.z);
 		break;
 	case 'g':
-		//	gyro.StartCalibration();
-		//	odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
-		//	odometry.SetCurrentPosition();
+		gyro.StartCalibration();
+		odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
+		odometry.SetCurrentPosition();
 		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "Gyro recalibrating . . .\n\r");
 		break;
 	case 'M':
-		//	dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "velocity: %.1f\ndistance: %.1f\n\n", motor.getVelocity(), motor.getDistance());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "velocity: %.1f\ndistance: %.1f\n\n", motor.getVelocity(), motor.getDistance());
 		break;
 	case 'o':
-		//		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "x: %.1f\ty: %.1f\nVx: %.1f\tVy: %.1f\n\n", odometry.getX(), odometry.getY(), odometry.getVx(), odometry.getVy());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "x: %.1f\ty: %.1f\nVx: %.1f\tVy: %.1f\n\n", odometry.getX(), odometry.getY(), odometry.getVx(), odometry.getVy());
 		break;
 	case 'O':
 		//	TIM3->CNT += -1500;
@@ -203,11 +252,11 @@ void USBLink::recieveTerminal(){
 		//						}
 		break;
 	case 'T':
-		//CommunicationOnGoing = !CommunicationOnGoing;
+		CommunicationOnGoing = !CommunicationOnGoing;
 		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "Switched to Terminal or ROS Mode\n");
 		break;
 	case 't':
-		//	dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "time: %lums / %luus\n",HAL_GetTick(), tools.GetMicros());
+		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "time: %lums / %luus\n",HAL_GetTick(), tools.GetMicros());
 		break;
 	case 'u':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "USBServo: %.1f\tUSBVelocity: %.1f\n", odroid_setpoints.fi, odroid_setpoints.velocity);
@@ -242,7 +291,6 @@ USBLink::USBLink() {
 	//	dataBuffer.rx.bytes = new uint8_t [frame_RX_SIZE];
 
 	initFrameTX();
-
 	MX_USB_DEVICE_Init();
 	MX_TIM11_Init();
 }
