@@ -20,6 +20,9 @@ public:
 	void setColor(WS2812::Color color);
 	void setColor(uint8_t r, uint8_t g, uint8_t b);
 
+	void setActivated(uint8_t activated);
+	uint8_t getActivated();
+
 	Light();
 	virtual ~Light();
 private:
@@ -27,6 +30,8 @@ private:
 
 	uint16_t* adressTab[24];
 	uint8_t added;
+
+	uint8_t activated = false;
 	void ws2812_set_color(uint16_t* address, uint8_t r, uint8_t g, uint8_t b);
 };
 

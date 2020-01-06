@@ -17,6 +17,8 @@
 #include "Buzzer.h"
 #include "Odometry.h"
 #include <ButtonsManager.h>
+#include <LightsManager.h>
+#include "Lights/Light.h"
 
 USBLink::DataBuffer USBLink::dataBuffer;
 
@@ -33,6 +35,7 @@ extern int32_t USB_RX_signal;
 
 extern uint8_t usbDenominator;
 
+
 USBLink usb_link;
 
 
@@ -41,14 +44,14 @@ void USBLink::USB_Process(void) {
 	/* 6 + length */
 	osEvent evt = osSignalWait(0, 500);
 	if (evt.status == osEventSignal) {
-//		if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
-//			static uint8_t cnt = 0;
-//			if (++cnt >= usbDenominator) {
-//				cnt = 0;
-//				transmitFrame();
-//			}
-//			TIM11->CNT = 0;
-//		}
+		if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
+			static uint8_t cnt = 0;
+			if (++cnt >= usbDenominator) {
+				cnt = 0;
+				transmitFrame();
+			}
+			TIM11->CNT = 0;
+		}
 
 		if (evt.value.signals & USB_RX_signal) {
 			decodeRawData();
@@ -272,8 +275,12 @@ void USBLink::recieveTerminal(){
 		systemResetToBootloader();
 		break;
 	case 'l':
-		left_indicator = !left_indicator;
-		right_indicator = !right_indicator;
+//		left_indicator = !left_indicator;
+//		right_indicator = !right_indicator;
+		headlights.setActivated(!headlights.getActivated());
+		break;
+	case 'L':
+		lights_manager.high = !lights_manager.high;
 		break;
 	default:
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "\n%c - not recognized :(\n", dataBuffer.rx.bytes[0]);
@@ -291,13 +298,16 @@ USBLink::USBLink() {
 	//	dataBuffer.rx.bytes = new uint8_t [frame_RX_SIZE];
 
 	initFrameTX();
-	MX_USB_DEVICE_Init();
-	MX_TIM11_Init();
 }
 
 void USBLink::initFrameTX(){
 	dataBuffer.tx.frame->start_code = START_CODE;
 	dataBuffer.tx.frame->end_code = END_CODE;
+}
+
+void USBLink::initHardware(){
+	MX_USB_DEVICE_Init();
+	MX_TIM11_Init();
 }
 
 int8_t USBLink::MAIN_USB_Receive(uint8_t* Buf, uint32_t *Len) {

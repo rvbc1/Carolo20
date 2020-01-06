@@ -8,6 +8,7 @@
 
 
 #include <ButtonsManager.h>
+#include <LightsManager.h>
 #include "cmsis_os.h"
 #include "Allshit.h"
 #include "USBTask.h"
@@ -24,7 +25,6 @@
 #include "Odometry.h"
 #include "crc.h"
 #include "OLED.h"
-#include "Lights.h"
 #include "ButtonsManager.h"
 #include "Mathematics.h"
 #include "tim.h"
@@ -348,6 +348,8 @@ void StartBatteryManager(void const * argument) {
 }
 
 void StartUSBTask(void const * argument) {
+
+	USBLink::initHardware();
 	//USB_Init();
 
 	while(1)
@@ -391,10 +393,10 @@ void StartOLEDTask(void const * argument){
 
 
 void StartLightsTask(void const * argument){
-	lights.ws2812_init();
+	lights_manager.ws2812_init();
 	while(1)
 	{
-		lights.process();
+		lights_manager.process();
 	}
 }
 

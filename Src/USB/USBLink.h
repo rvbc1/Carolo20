@@ -84,6 +84,8 @@ public:
 
     static int8_t MAIN_USB_Receive(uint8_t* Buf, uint32_t *Len);
 
+    static void initHardware();
+
 	USBLink();
 	virtual ~USBLink();
 
