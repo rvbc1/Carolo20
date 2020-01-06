@@ -18,8 +18,10 @@ extern Light headlights;
 extern Light tail_lights;
 extern Light break_lights;
 
-extern Indicator left_indicator_l;
-extern Indicator right_indicator_l;
+extern Indicator left_indicator_front;
+extern Indicator left_indicator_back;
+extern Indicator right_indicator_front;
+extern Indicator right_indicator_back;
 
 extern WS2812::Color high_beam_color;
 extern WS2812::Color low_beam_color;

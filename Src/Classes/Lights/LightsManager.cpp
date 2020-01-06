@@ -16,7 +16,7 @@
 
 #define HIGH_PWM_BIT_VALUE 			91
 #define LOW_PWM_BIT_VALUE 			47
-#define NUMBER_OF_LED_PCB			4
+#define NUMBER_OF_LED_PCB			5
 #define NUMBER_OF_LEDS_PER_PCB		8
 #define NUMBER_OF_LEDS 				NUMBER_OF_LED_PCB * NUMBER_OF_LEDS_PER_PCB
 #define BYTES_PER_LED 				3
@@ -34,14 +34,17 @@ LightsManager lights_manager;
 LED_Strip front_left(8);
 LED_Strip front_right(8);
 LED_Strip back_left(8);
+LED_Strip back_middle(8);
 LED_Strip back_right(8);
 
 Light headlights;
 Light tail_lights;
 Light break_lights;
 
-Indicator left_indicator_l;
-Indicator right_indicator_l;
+Indicator left_indicator_front;
+Indicator left_indicator_back;
+Indicator right_indicator_front;
+Indicator right_indicator_back;
 
 WS2812::Color high_beam_color {255, 255, 255};
 WS2812::Color low_beam_color {64, 64, 64};
@@ -56,8 +59,9 @@ void LightsManager::ws2812_init() {
 
 	front_left.setBuffer(&ws2812BitsBuffer[0]);
 	front_right.setBuffer(&ws2812BitsBuffer[1*8*3*8]);
-	back_left.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
-	back_right.setBuffer(&ws2812BitsBuffer[3*8*3*8]);
+	back_right.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
+	back_middle.setBuffer(&ws2812BitsBuffer[3*8*3*8]);
+	back_left.setBuffer(&ws2812BitsBuffer[4*8*3*8]);
 
 
 
@@ -65,8 +69,11 @@ void LightsManager::ws2812_init() {
 	headlights.setColor(high_beam_color);
 	tail_lights.setColor(tail_light_color);
 	break_lights.setColor(break_light_color);
-	left_indicator_l.setColor(indicator_color);
-	right_indicator_l.setColor(indicator_color);
+	left_indicator_front.setColor(indicator_color);
+	right_indicator_front.setColor(indicator_color);
+
+	left_indicator_back.setColor(indicator_color);
+	right_indicator_back.setColor(indicator_color);
 
 	headlights.add(front_left.getLedAddress(5));
 	headlights.add(front_left.getLedAddress(6));
@@ -76,32 +83,37 @@ void LightsManager::ws2812_init() {
 	headlights.add(front_right.getLedAddress(1));
 	headlights.add(front_right.getLedAddress(2));
 
-//	tail_lights.add(front_left.getLedAddress(0));
-//	tail_lights.add(front_right.getLedAddress(7));
+	tail_lights.add(back_left.getLedAddress(0));
+	tail_lights.add(back_right.getLedAddress(7));
 
 	//break_lights.add(front_left.getLedAddress(1));
 	//break_lights.add(front_right.getLedAddress(6));
 
-	left_indicator_l.add(front_left.getLedAddress(4));
-	left_indicator_l.add(front_left.getLedAddress(3));
-	left_indicator_l.add(front_left.getLedAddress(2));
-	left_indicator_l.add(front_left.getLedAddress(1));
-	left_indicator_l.add(front_left.getLedAddress(0));
+	left_indicator_front.add(front_left.getLedAddress(4));
+	left_indicator_front.add(front_left.getLedAddress(3));
+	left_indicator_front.add(front_left.getLedAddress(2));
+	left_indicator_front.add(front_left.getLedAddress(1));
+	left_indicator_front.add(front_left.getLedAddress(0));
 
-	right_indicator_l.add(front_right.getLedAddress(3));
-	right_indicator_l.add(front_right.getLedAddress(4));
-	right_indicator_l.add(front_right.getLedAddress(5));
-	right_indicator_l.add(front_right.getLedAddress(6));
-	right_indicator_l.add(front_right.getLedAddress(7));
+	right_indicator_front.add(front_right.getLedAddress(3));
+	right_indicator_front.add(front_right.getLedAddress(4));
+	right_indicator_front.add(front_right.getLedAddress(5));
+	right_indicator_front.add(front_right.getLedAddress(6));
+	right_indicator_front.add(front_right.getLedAddress(7));
 
+	right_indicator_back.add(back_right.getLedAddress(4));
+	right_indicator_back.add(back_right.getLedAddress(3));
+	right_indicator_back.add(back_right.getLedAddress(2));
+	right_indicator_back.add(back_right.getLedAddress(1));
+	right_indicator_back.add(back_right.getLedAddress(0));
 
 	headlights.setActivated(true);
 	tail_lights.setActivated(true);
 	break_lights.setActivated(true);
 
 
-	left_indicator_l.setActivated(false);
-	right_indicator_l.setActivated(false);
+	left_indicator_front.setActivated(false);
+	right_indicator_front.setActivated(false);
 
 
 
@@ -151,18 +163,32 @@ void LightsManager::process(){
 	}
 
 
-	if(left_indicator_l.getActivated()){
-		left_indicator_l.nextCycle();
-		left_indicator_l.on();
+	if(left_indicator_front.getActivated()){
+		left_indicator_front.nextCycle();
+		left_indicator_front.on();
 	} else {
-		left_indicator_l.off();
+		left_indicator_front.off();
 	}
 
-	if(right_indicator_l.getActivated()){
-		right_indicator_l.nextCycle();
-		right_indicator_l.on();
+	if(right_indicator_front.getActivated()){
+		right_indicator_front.nextCycle();
+		right_indicator_front.on();
 	} else {
-		right_indicator_l.off();
+		right_indicator_front.off();
+	}
+
+	if(left_indicator_back.getActivated()){
+		left_indicator_back.nextCycle();
+		left_indicator_back.on();
+	} else {
+		left_indicator_back.off();
+	}
+
+	if(right_indicator_back.getActivated()){
+		right_indicator_back.nextCycle();
+		right_indicator_back.on();
+	} else {
+		right_indicator_back.off();
 	}
 
 

@@ -202,8 +202,11 @@ void StartSteeringTask(void const * argument) {
 			rc_mode = DISARMED;
 //			left_indicator = 1;
 //			right_indicator = 1;
-			left_indicator_l.setActivated(true);
-			right_indicator_l.setActivated(true);
+			left_indicator_front.setActivated(true);
+			right_indicator_front.setActivated(true);
+
+			left_indicator_back.setActivated(true);
+			right_indicator_back.setActivated(true);
 
 			//			servo_front.Disarm();
 			//			servo_back.Disarm();
@@ -214,18 +217,27 @@ void StartSteeringTask(void const * argument) {
 			if (futaba.SwitchC == SWITCH_UP) {
 //				left_indicator = 0;
 //				right_indicator = 1;
-				left_indicator_l.setActivated(false);
-				right_indicator_l.setActivated(true);
+				left_indicator_front.setActivated(false);
+				right_indicator_front.setActivated(true);
+
+				left_indicator_back.setActivated(false);
+				right_indicator_back.setActivated(true);
 			} else if(futaba.SwitchC == SWITCH_MIDDLE){
 //				left_indicator = 0;
 //				right_indicator = 0;
-				left_indicator_l.setActivated(false);
-				right_indicator_l.setActivated(false);
+				left_indicator_front.setActivated(false);
+				right_indicator_front.setActivated(false);
+
+				left_indicator_back.setActivated(false);
+				right_indicator_back.setActivated(false);
 			} else{
 //				left_indicator = 1;
 //				right_indicator = 0;
-				left_indicator_l.setActivated(true);
-				right_indicator_l.setActivated(false);
+				left_indicator_front.setActivated(true);
+				right_indicator_front.setActivated(false);
+
+				left_indicator_back.setActivated(true);
+				right_indicator_back.setActivated(false);
 			}
 
 			if (futaba.SwitchB == SWITCH_UP) {
