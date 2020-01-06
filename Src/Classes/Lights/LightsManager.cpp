@@ -40,8 +40,8 @@ Light headlights;
 Light tail_lights;
 Light break_lights;
 
-Light left_indicator_l;
-Light right_indicator_l;
+Indicator left_indicator_l;
+Indicator right_indicator_l;
 
 WS2812::Color high_beam_color {255, 255, 255};
 WS2812::Color low_beam_color {64, 64, 64};
@@ -76,14 +76,33 @@ void LightsManager::ws2812_init() {
 	headlights.add(front_right.getLedAddress(1));
 	headlights.add(front_right.getLedAddress(2));
 
-	tail_lights.add(front_left.getLedAddress(0));
-	tail_lights.add(front_right.getLedAddress(7));
+//	tail_lights.add(front_left.getLedAddress(0));
+//	tail_lights.add(front_right.getLedAddress(7));
 
-	break_lights.add(front_left.getLedAddress(1));
-	break_lights.add(front_right.getLedAddress(6));
+	//break_lights.add(front_left.getLedAddress(1));
+	//break_lights.add(front_right.getLedAddress(6));
 
+	left_indicator_l.add(front_left.getLedAddress(4));
+	left_indicator_l.add(front_left.getLedAddress(3));
+	left_indicator_l.add(front_left.getLedAddress(2));
+	left_indicator_l.add(front_left.getLedAddress(1));
+	left_indicator_l.add(front_left.getLedAddress(0));
+
+	right_indicator_l.add(front_right.getLedAddress(3));
+	right_indicator_l.add(front_right.getLedAddress(4));
+	right_indicator_l.add(front_right.getLedAddress(5));
+	right_indicator_l.add(front_right.getLedAddress(6));
+	right_indicator_l.add(front_right.getLedAddress(7));
+
+
+	headlights.setActivated(true);
 	tail_lights.setActivated(true);
 	break_lights.setActivated(true);
+
+
+	left_indicator_l.setActivated(false);
+	right_indicator_l.setActivated(false);
+
 
 
 	MX_TIM4_Init();
@@ -132,10 +151,26 @@ void LightsManager::process(){
 	}
 
 
+	if(left_indicator_l.getActivated()){
+		left_indicator_l.nextCycle();
+		left_indicator_l.on();
+	} else {
+		left_indicator_l.off();
+	}
+
+	if(right_indicator_l.getActivated()){
+		right_indicator_l.nextCycle();
+		right_indicator_l.on();
+	} else {
+		right_indicator_l.off();
+	}
+
+
+
 
 	HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
 
-	osDelay(20);
+	osDelay(100);
 }
 
 LightsManager::LightsManager() {

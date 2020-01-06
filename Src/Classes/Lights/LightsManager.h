@@ -8,17 +8,18 @@
 #ifndef CLASSES_LIGHTSMANAGER_H_
 #define CLASSES_LIGHTSMANAGER_H_
 
-#include "Allshit.h"
+#include <AllTasks.h>
 #include "USBTask.h"
-#include <Lights/LEDStrip.h>
-#include <Lights/Light.h>
+#include "LEDStrip.h"
+#include "Light.h"
+#include "Indicator.h"
 
 extern Light headlights;
 extern Light tail_lights;
 extern Light break_lights;
 
-extern Light left_indicator_l;
-extern Light right_indicator_l;
+extern Indicator left_indicator_l;
+extern Indicator right_indicator_l;
 
 extern WS2812::Color high_beam_color;
 extern WS2812::Color low_beam_color;
@@ -34,7 +35,7 @@ private:
 public:
 	uint8_t stop_light;
 	uint8_t stop_light_duration;
-	uint8_t high = true;
+	uint8_t high = false;
 
 	void ws2812_init();
 	void reset_data_buffer();

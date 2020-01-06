@@ -43,6 +43,9 @@
 									<listOptionValue builtIn="false" value="../Src/Libraries"/>
 									<listOptionValue builtIn="false" value="../Src/Libraries/VESC_DRIVER"/>
 									<listOptionValue builtIn="false" value="../Src/Classes"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/OLED"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/Lights"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/Buttons"/>
 									<listOptionValue builtIn="false" value="../Src/USB"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F7xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy"/>
@@ -108,6 +111,9 @@
 									<listOptionValue builtIn="false" value="../Src/Tasks"/>
 									<listOptionValue builtIn="false" value="../Src/Libraries"/>
 									<listOptionValue builtIn="false" value="../Src/Libraries/VESC_DRIVER"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/Lights"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/OLED"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/Buttons"/>
 									<listOptionValue builtIn="false" value="../Src/Classes"/>
 									<listOptionValue builtIn="false" value="../Src/USB"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS"/>

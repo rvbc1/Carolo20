@@ -2,10 +2,10 @@
  * WS2812.cpp
  *
  *  Created on: Jan 6, 2020
- *      Author: Marek
+ *      Author: rvbc-
  */
 
-#include <Lights/WS2812.h>
+#include <WS2812.h>
 
 #define HIGH_PWM_BIT_VALUE 			91
 #define LOW_PWM_BIT_VALUE 			47

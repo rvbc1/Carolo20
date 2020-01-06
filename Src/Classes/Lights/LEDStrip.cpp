@@ -5,7 +5,7 @@
  *      Author: rvbc-
  */
 
-#include <Lights/LEDStrip.h>
+#include <LEDStrip.h>
 
 #define HIGH_PWM_BIT_VALUE 			91
 #define LOW_PWM_BIT_VALUE 			47

@@ -2,7 +2,7 @@
  * WS2812.h
  *
  *  Created on: Jan 6, 2020
- *      Author: Marek
+ *      Author: rvbc-
  */
 
 #ifndef CLASSES_LIGHTS_WS2812_H_

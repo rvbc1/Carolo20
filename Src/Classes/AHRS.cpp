@@ -11,8 +11,8 @@
  */
 
 #include <AHRS.h>
+#include <AllTasks.h>
 
-#include "Allshit.h"
 #include "Gyro.h"
 #include "Futaba.h"
 #include "Tools.h"

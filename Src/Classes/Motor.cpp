@@ -5,9 +5,9 @@
  *      Author: mice
  */
 
+#include <AllTasks.h>
 #include <LightsManager.h>
 #include <Motor.h>
-#include "Allshit.h"
 #include "PowerManager.h"
 #include "Tools.h"
 #include "usart.h"

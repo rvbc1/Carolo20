@@ -7,10 +7,10 @@
 
 
 
+#include <AllTasks.h>
 #include <ButtonsManager.h>
 #include <LightsManager.h>
 #include "cmsis_os.h"
-#include "Allshit.h"
 #include "USBTask.h"
 #include "Futaba.h"
 #include "Gyro.h"
@@ -200,8 +200,10 @@ void StartSteeringTask(void const * argument) {
 
 		if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 			rc_mode = DISARMED;
-			left_indicator = 1;
-			right_indicator = 1;
+//			left_indicator = 1;
+//			right_indicator = 1;
+			left_indicator_l.setActivated(true);
+			right_indicator_l.setActivated(true);
 
 			//			servo_front.Disarm();
 			//			servo_back.Disarm();
@@ -210,14 +212,20 @@ void StartSteeringTask(void const * argument) {
 				StickCommandProccess();
 		} else if (futaba.SwitchA == SWITCH_DOWN) {
 			if (futaba.SwitchC == SWITCH_UP) {
-				left_indicator = 0;
-				right_indicator = 1;
+//				left_indicator = 0;
+//				right_indicator = 1;
+				left_indicator_l.setActivated(false);
+				right_indicator_l.setActivated(true);
 			} else if(futaba.SwitchC == SWITCH_MIDDLE){
-				left_indicator = 0;
-				right_indicator = 0;
+//				left_indicator = 0;
+//				right_indicator = 0;
+				left_indicator_l.setActivated(false);
+				right_indicator_l.setActivated(false);
 			} else{
-				left_indicator = 1;
-				right_indicator = 0;
+//				left_indicator = 1;
+//				right_indicator = 0;
+				left_indicator_l.setActivated(true);
+				right_indicator_l.setActivated(false);
 			}
 
 			if (futaba.SwitchB == SWITCH_UP) {

@@ -8,8 +8,8 @@
 #ifndef USB_USBLINK_H_
 #define USB_USBLINK_H_
 
+#include <AllTasks.h>
 #include "main.h"
-#include "Allshit.h"
 #include "usbd_cdc_if.h"
 #include "usb_device.h"
 #include "Mathematics.h"

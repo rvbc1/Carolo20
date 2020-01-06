@@ -2,10 +2,10 @@
  * Light.cpp
  *
  *  Created on: Jan 6, 2020
- *      Author: Marek
+ *      Author: rvbc-
  */
 
-#include <Lights/Light.h>
+#include <Light.h>
 
 #define HIGH_PWM_BIT_VALUE 			91
 #define LOW_PWM_BIT_VALUE 			47

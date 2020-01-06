@@ -5,9 +5,8 @@
  *      Author: mice
  */
 
+#include <AllTasks.h>
 #include <ButtonsManager.h>
-#include "Allshit.h"
-
 #include "stdint.h"
 
 #include "usart.h"
