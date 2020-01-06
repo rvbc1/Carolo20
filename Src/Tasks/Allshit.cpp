@@ -348,7 +348,7 @@ void StartBatteryManager(void const * argument) {
 }
 
 void StartUSBTask(void const * argument) {
-	USB_Init();
+	//USB_Init();
 
 	while(1)
 	{

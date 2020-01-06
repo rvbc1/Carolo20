@@ -11,22 +11,23 @@
 
 USBLink::DataBuffer USBLink::dataBuffer;
 
-extern int32_t USB_TX_signal;
+
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-int32_t USB_RX_signal2 = 1 << 0;
+extern int32_t USB_TX_signal;
+
+extern int32_t USB_RX_signal;
 
 USBLink usb_link;
 
-extern void MX_USB_DEVICE_Init(void);
 
 void USBLink::USB_Process(void) {
 	/* start -> code -> length -> DATA[length] -> length -> code -> stop */
 	/* 6 + length */
 	osEvent evt = osSignalWait(0, 500);
 	if (evt.status == osEventSignal) {
-		if (evt.value.signals & USB_RX_signal2) {
+		if (evt.value.signals & USB_RX_signal) {
 			decodeRawData();
 		}
 		//	if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
@@ -66,7 +67,7 @@ void USBLink::decodeRawData(){
 
 void USBLink::recieveFrame(){
 	FrameRX* frame = dataBuffer.rx.frame;//Just for shorter code
-	if(frame->start_code == START_CODE && frame->end_code == END_CODE){
+	if (checkFrameCorrectness(frame)) {
 		odroid_setpoints.fi = (float)(frame->values.steering_fi * 18.f / 1000.f / M_PI_FLOAT);
 		odroid_setpoints.dfi = (float)(frame->values.steering_dfi * 18.f / 1000.f / M_PI_FLOAT);
 
@@ -76,28 +77,40 @@ void USBLink::recieveFrame(){
 	}
 }
 
+uint8_t USBLink::checkFrameCorrectness(FrameRX* frame){
+	if(frame->start_code == START_CODE && frame->end_code == END_CODE)
+		return true;
+	return false;
+}
+
 void USBLink::recieveSettings(){
 	SettingsRX* frame = dataBuffer.rx.settings_frame;//Just for shorter code
-	if (frame->start_code == START_CODE && frame->code == 0xBE && frame->end_code == END_CODE) {
+	if (checkFrameCorrectness(frame)) {
 		//usbDenominator = frame->data;
 	}
 }
 
+uint8_t USBLink::checkFrameCorrectness(SettingsRX* frame){
+	if (frame->start_code == START_CODE && frame->code == 0xBE && frame->end_code == END_CODE)
+		return true;
+	return false;
+}
+
 void USBLink::recieveCommand(){
 	CommandRX* frame = dataBuffer.rx.command_frame;//Just for shorter code
-	if (frame->start_code == START_CODE && frame->end_code == END_CODE) {
+	if (checkFrameCorrectness(frame)) {
 		switch (frame->command) {
 
 		case 0x01:
-		//	CommunicationOnGoing = true;
+			//	CommunicationOnGoing = true;
 			break;
 		case 0x02:
 			//CommunicationOnGoing = false;
 			break;
 		case 0x10:
-		//	gyro.StartCalibration();
-		//	odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
-		//	odometry.SetCurrentPosition();
+			//	gyro.StartCalibration();
+			//	odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
+			//	odometry.SetCurrentPosition();
 			break;
 		case 0x20:
 
@@ -116,6 +129,13 @@ void USBLink::recieveCommand(){
 
 }
 
+uint8_t USBLink::checkFrameCorrectness(CommandRX* frame){
+	if (frame->start_code == START_CODE && frame->end_code == END_CODE)
+		return true;
+	return false;
+}
+
+
 void USBLink::recieveTerminal(){
 	switch(dataBuffer.rx.bytes[0]){
 	case 's':
@@ -132,8 +152,8 @@ void USBLink::recieveTerminal(){
 		//	dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Current spd: %.1f\tSetspeed: %.1f\nTotalCount: %ld\tTotalRoad: %.1f\n\n", motor.getVelocity(), motor.getSetVelocity(), motor.getImpulses(), motor.getDistance());
 		break;
 	case 'f':
-			dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %d\tE: %d\tT: %d\tR: %d\nSwitchA: %d\tSwitchB: %d\n", futaba.sbusChannelData[0], futaba.sbusChannelData[1],
-					futaba.sbusChannelData[2], futaba.sbusChannelData[3], futaba.SwitchE, futaba.SwitchD);
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %d\tE: %d\tT: %d\tR: %d\nSwitchA: %d\tSwitchB: %d\n", futaba.sbusChannelData[0], futaba.sbusChannelData[1],
+				futaba.sbusChannelData[2], futaba.sbusChannelData[3], futaba.SwitchE, futaba.SwitchD);
 		break;
 	case 'F':
 		//	dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %f\tE: %f\tT: %f\tR: %f\n", futaba.StickDeflection[ROLL], futaba.StickDeflection[PITCH],
@@ -207,7 +227,7 @@ void USBLink::recieveTerminal(){
 		right_indicator = !right_indicator;
 		break;
 	default:
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "\nnot recognized :(\n");
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "\n%c - not recognized :(\n", dataBuffer.rx.bytes[0]);
 		break;
 	}
 	CDC_Transmit_FS(dataBuffer.tx.bytes, dataBuffer.txSize);
@@ -223,8 +243,8 @@ USBLink::USBLink() {
 
 	initFrameTX();
 
-	//	MX_USB_DEVICE_Init();
-	//	MX_TIM11_Init();
+	MX_USB_DEVICE_Init();
+	MX_TIM11_Init();
 }
 
 void USBLink::initFrameTX(){
@@ -235,11 +255,10 @@ void USBLink::initFrameTX(){
 int8_t USBLink::MAIN_USB_Receive(uint8_t* Buf, uint32_t *Len) {
 	dataBuffer.rx.bytes = Buf;
 	dataBuffer.rxSize = *Len;
-	osSignalSet(USBTaskHandle, USB_RX_signal2);
+	osSignalSet(USBTaskHandle, USB_RX_signal);
 	return 0;
 }
 
 USBLink::~USBLink() {
 	// TODO Auto-generated destructor stub
 }
-

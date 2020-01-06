@@ -9,6 +9,12 @@
 #include <tim.h>
 #include <string.h>
 
+#include <Lights/LEDStrip.h>
+#include <Lights/Light.h>
+
+
+//#include <vector>
+
 #define HIGH_PWM_BIT_VALUE 			91
 #define LOW_PWM_BIT_VALUE 			47
 #define NUMBER_OF_LED_PCB			4
@@ -34,9 +40,31 @@
 
 Lights lights;
 
+LED_Strip front_left(8);
+LED_Strip front_right(8);
+LED_Strip back_left(8);
+LED_Strip back_right(8);
+
+Light headlights;
+
+
 uint16_t ws2812BitsBuffer[WS2812_BYTES_BUFFER_SIZE];
 
 void Lights::ws2812_init() {
+
+	front_left.setBuffer(&ws2812BitsBuffer[0]);
+	front_right.setBuffer(&ws2812BitsBuffer[1*8*3*8]);
+	back_left.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
+	back_right.setBuffer(&ws2812BitsBuffer[3*8*3*8]);
+
+	//headlights.add(front_left.getLedAddress(5));
+
+	front_left.setHeadlights(5,7);
+	front_right.setHeadlights(0,2);
+
+	back_left.setTailLights(7,7);
+	back_right.setTailLights(0,0);
+
 	MX_TIM4_Init();
 	memset(ws2812BitsBuffer, 0, WS2812_BYTES_BUFFER_SIZE);
 
@@ -80,61 +108,75 @@ void Lights::reset_data_buffer(){
 void Lights::process(){
 	if(light_process_counter < NUMBER_OF_LEDS_PER_PCB*SCALE){
 		HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
-		if(left_indicator && right_indicator){
-
-			ws2812_set_color(FRONT_LEFT_START_INDEX + light_process_counter/SCALE, 255,100,0);
-
-			ws2812_set_color(FRONT_RIGHT_END_INDEX - light_process_counter/SCALE, 255,100,0);
-
-
-			ws2812_set_color(BACK_RIGHT_START_INDEX + light_process_counter/SCALE, 255,100,0);
-
-			ws2812_set_color(BACK_LEFT_END_INDEX - light_process_counter/SCALE, 255,100,0);
-
-			lights.stop_light = true;
-			lights.stop_light_duration = 0;
-
-		} else if (left_indicator){
-
-			ws2812_set_color(FRONT_LEFT_START_INDEX + light_process_counter/SCALE, 255,100,0);
-
-			ws2812_set_color(BACK_LEFT_END_INDEX - light_process_counter/SCALE, 255,100,0);
-		} else if (right_indicator){
-
-			ws2812_set_color(FRONT_RIGHT_END_INDEX - light_process_counter/SCALE, 255,100,0);
-
-			ws2812_set_color(BACK_RIGHT_START_INDEX + light_process_counter/SCALE, 255,100,0);
-		} else {
-			for(uint16_t i = 0; i < NUMBER_OF_LEDS * BITS_PER_LED; i++){
-				ws2812BitsBuffer[i]=LOW_PWM_BIT_VALUE;
-			}
-		}
+//		if(left_indicator && right_indicator){
+//
+//			ws2812_set_color(FRONT_LEFT_START_INDEX + light_process_counter/SCALE, 255,100,0);
+//
+//			ws2812_set_color(FRONT_RIGHT_END_INDEX - light_process_counter/SCALE, 255,100,0);
+//
+//
+//			ws2812_set_color(BACK_RIGHT_START_INDEX + light_process_counter/SCALE, 255,100,0);
+//
+//			ws2812_set_color(BACK_LEFT_END_INDEX - light_process_counter/SCALE, 255,100,0);
+//
+//			lights.stop_light = true;
+//			lights.stop_light_duration = 0;
+//
+//		} else if (left_indicator){
+//
+//			ws2812_set_color(FRONT_LEFT_START_INDEX + light_process_counter/SCALE, 255,100,0);
+//
+//			ws2812_set_color(BACK_LEFT_END_INDEX - light_process_counter/SCALE, 255,100,0);
+//		} else if (right_indicator){
+//
+//			ws2812_set_color(FRONT_RIGHT_END_INDEX - light_process_counter/SCALE, 255,100,0);
+//
+//			ws2812_set_color(BACK_RIGHT_START_INDEX + light_process_counter/SCALE, 255,100,0);
+//		} else {
+//			for(uint16_t i = 0; i < NUMBER_OF_LEDS * BITS_PER_LED; i++){
+//				ws2812BitsBuffer[i]=LOW_PWM_BIT_VALUE;
+//			}
+//		}
+//
+//		if(stop_light){
+//			ws2812_set_color(BACK_RIGHT_START_INDEX, 255,0,0);
+//			ws2812_set_color(BACK_RIGHT_END_INDEX, 255,0,0);
+//
+//			ws2812_set_color(BACK_LEFT_START_INDEX, 255,0,0);
+//			ws2812_set_color(BACK_LEFT_END_INDEX, 255,0,0);
+//
+//			//stop_light_duration++;
+//			if(stop_light_duration > 4){
+//				//stop_light = false;
+//				stop_light_duration = 0;
+//			}
+//		}
 
 		if(stop_light){
-			ws2812_set_color(BACK_RIGHT_START_INDEX, 255,0,0);
-			ws2812_set_color(BACK_RIGHT_END_INDEX, 255,0,0);
 
-			ws2812_set_color(BACK_LEFT_START_INDEX, 255,0,0);
-			ws2812_set_color(BACK_LEFT_END_INDEX, 255,0,0);
-
-			//stop_light_duration++;
-			if(stop_light_duration > 4){
-				//stop_light = false;
-				stop_light_duration = 0;
-			}
 		}
 
-
-		ws2812_set_color(BACK_LEFT_START_INDEX, 20,0,0);
-		ws2812_set_color(BACK_RIGHT_END_INDEX, 20,0,0);
 		if(road_lights){
-		ws2812_set_color(FRONT_LEFT_START_INDEX, 255,255,255);
-		ws2812_set_color(FRONT_RIGHT_END_INDEX, 255,255,255);
-		ws2812_set_color(FRONT_LEFT_START_INDEX + 1, 255,255,255);
-		ws2812_set_color(FRONT_RIGHT_END_INDEX - 1, 255,255,255);
-		ws2812_set_color(FRONT_LEFT_START_INDEX + 2, 255,255,255);
-		ws2812_set_color(FRONT_RIGHT_END_INDEX - 2, 255,255,255);
+			front_left.headlightsON();
+			front_right.headlightsON();
+
+			back_left.tailLightsON();
+			back_right.tailLightsON();
 		}
+
+
+
+
+//		ws2812_set_color(BACK_LEFT_START_INDEX, 20,0,0);
+//		ws2812_set_color(BACK_RIGHT_END_INDEX, 20,0,0);
+//		if(road_lights){
+//		ws2812_set_color(FRONT_LEFT_START_INDEX, 255,255,255);
+//		ws2812_set_color(FRONT_RIGHT_END_INDEX, 255,255,255);
+//		ws2812_set_color(FRONT_LEFT_START_INDEX + 1, 255,255,255);
+//		ws2812_set_color(FRONT_RIGHT_END_INDEX - 1, 255,255,255);
+//		ws2812_set_color(FRONT_LEFT_START_INDEX + 2, 255,255,255);
+//		ws2812_set_color(FRONT_RIGHT_END_INDEX - 2, 255,255,255);
+//		}
 
 		HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
 		light_process_counter++;

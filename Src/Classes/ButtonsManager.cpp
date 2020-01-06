@@ -8,6 +8,7 @@
 #include <ButtonsManager.h>
 #include "stm32f7xx_hal.h"
 
+
 ButtonsManager buttons_manager;
 
 uint8_t start_parking_USB = 0;

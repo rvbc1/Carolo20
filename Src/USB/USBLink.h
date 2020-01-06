@@ -11,6 +11,7 @@
 #include "main.h"
 #include "Allshit.h"
 #include "usbd_cdc_if.h"
+#include "usb_device.h"
 #include "Mathematics.h"
 
 
@@ -155,6 +156,10 @@ private:
     void recieveCommand();
 
     void recieveTerminal();
+
+    uint8_t checkFrameCorrectness(FrameRX* frame);
+    uint8_t checkFrameCorrectness(SettingsRX* frame);
+    uint8_t checkFrameCorrectness(CommandRX* frame);
 
 	uint8_t is_sending_data;
 	uint8_t is_updating_data;
