@@ -221,6 +221,8 @@ struct UsbOFrame_s {
     uint8_t visionrst;
     uint8_t futabastate;
 
+    uint8_t buttonsflag;
+
     uint8_t endByte;
 } __attribute__ ((__packed__));
 
@@ -258,6 +260,8 @@ void USB_Transmit_Data(void){
 	usbOframe.frame.startbutton2 = start_obstacle_USB;
 	usbOframe.frame.visionrst = vision_reset;
 	usbOframe.frame.futabastate = futaba.SwitchB;
+
+	usbOframe.frame.buttonsflag = buttons_manager.readFlag();
 
 	usbOframe.frame.endByte = 0xFE;
 

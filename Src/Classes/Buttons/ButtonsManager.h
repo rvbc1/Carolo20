@@ -8,6 +8,13 @@
 #ifndef CLASSES_BUTTONSMANAGER_H_
 #define CLASSES_BUTTONSMANAGER_H_
 
+#define BUTTON1_BIT_ACTIVE   1
+#define BUTTON1_BIT_FIRST    5
+#define BUTTON1_BIT_EVER     3
+
+#define BUTTON2_BIT_ACTIVE   0
+#define BUTTON2_BIT_FIRST    4
+#define BUTTON2_BIT_EVER     2
 
 #include "cmsis_os.h"
 #include "USBTask.h"
@@ -31,12 +38,13 @@ private:
 
 	void updateFlag(uint8_t, uint8_t);
 	void activatedFirst(uint8_t, uint8_t);
-	void activatedEver(uint8_t, uint8_t);
 	void active(uint8_t, uint8_t);
+	void activatedEver();
 	//std::vector<Button *> buttons;
 public:
 	void process();
 	uint8_t readFlag(){ return buttonFlag; }
+	void reset_activatedFirstFlag();
 	uint8_t start1_state_of_pressing;
 	uint8_t start2_state_of_pressing;
 	uint8_t screen1_state_of_pressing;
