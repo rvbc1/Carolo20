@@ -4,9 +4,9 @@
  *  Created on: 02.01.2018
  *      Author: mice
  */
+#include <AllTasks.h>
 #include "Gyro.h"
 
-#include "Allshit.h"
 #include "AHRS.h"
 #include "axis.h"
 

@@ -1,3 +1,4 @@
+
 /*
  * Buttons.cpp
  *
@@ -102,4 +103,5 @@ ButtonsManager::ButtonsManager() {
 ButtonsManager::~ButtonsManager() {
 	// TODO Auto-generated destructor stub
 }
+
 

@@ -10,9 +10,8 @@
  *
  */
 
+#include <AllTasks.h>
 #include "Futaba.h"
-
-#include "Allshit.h"
 
 #include "cmsis_os.h"
 #include "usart.h"

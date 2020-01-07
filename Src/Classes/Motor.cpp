@@ -5,13 +5,13 @@
  *      Author: mice
  */
 
+#include <AllTasks.h>
+#include <LightsManager.h>
 #include <Motor.h>
-#include "Allshit.h"
 #include "PowerManager.h"
 #include "Tools.h"
 #include "usart.h"
 #include "tim.h"
-#include "Lights.h"
 
 #define ELM 100
 
@@ -130,17 +130,17 @@ void Motor::Conversions(void) {
 		avrg_current_speed /= 30.f;
 		if( avrg_current_speed > -10){
 			if((previous_velocity > (avrg_current_speed + 30))  ){
-				lights.stop_light = true;
-				lights.stop_light_duration = 0;
+				lights_manager.stop_light = true;
+				lights_manager.stop_light_duration = 0;
 			} else {
-				lights.stop_light = false;
+				lights_manager.stop_light = false;
 			}
 		} else {
 			if((previous_velocity < (avrg_current_speed + 30))  ){
-				lights.stop_light = true;
-				lights.stop_light_duration = 0;
+				lights_manager.stop_light = true;
+				lights_manager.stop_light_duration = 0;
 			} else {
-				lights.stop_light = false;
+				lights_manager.stop_light = false;
 			}
 		}
 		previous_velocity = avrg_current_speed;

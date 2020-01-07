@@ -5,8 +5,7 @@
  *      Author: mice
  */
 
-#include "Allshit.h"
-
+#include <AllTasks.h>
 #include "main.h"
 #include "usart.h"
 #include "gpio.h"

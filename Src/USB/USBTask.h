@@ -22,6 +22,7 @@ extern int32_t USB_TX_signal;
 void USB_Init(void);
 void USB_Process(void);
 
+extern uint8_t road_lights;
 extern uint8_t left_indicator;
 extern uint8_t right_indicator;
 extern uint32_t timestamp;
