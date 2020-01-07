@@ -48,6 +48,8 @@ public:
         uint16_t enc4_angle;
 
         uint16_t batt;
+
+        uint8_t  buttons;
     } __attribute__ ((__packed__));
 
 
