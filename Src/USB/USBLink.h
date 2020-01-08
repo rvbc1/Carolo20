@@ -76,6 +76,7 @@ public:
         uint8_t left_indicator_u;
         uint8_t right_indicator_u;
 
+
     } __attribute__ ((__packed__));
 
 
