@@ -65,7 +65,7 @@ void USBLink::USB_Process(void) {
 void USBLink::transmitFrame(){
 	FrameTX* frame = dataBuffer.tx.frame;//Just for shorter code
 	frame->start_code = START_CODE;
-	frame->values.code = 0x40;
+	//frame->values.code = 0x40;
 	frame->values.length = USB_TXFRAME_SIZE-4;
 
 	frame->values.timecode = HAL_GetTick();
@@ -88,17 +88,18 @@ void USBLink::transmitFrame(){
 	}
 
 
-	frame->values.startbutton1 = start_parking_USB;
-	frame->values.startbutton2 = start_obstacle_USB;
-	frame->values.visionrst = vision_reset;
+	//frame->values.buttons = buttons_manager.;
+	//frame->values.visionrst = vision_reset;
 	frame->values.futabastate = futaba.SwitchB;
+
+	frame->values.buttons = buttons_manager.getState();
 
 	frame->end_code = END_CODE;
 
 	CDC_Transmit_FS(dataBuffer.tx.bytes, USB_TXFRAME_SIZE);
 
-	if(vision_reset_ack)
-		vision_reset_sent = 1;
+//	if(vision_reset_ack)
+//		vision_reset_sent = 1;
 
 	start_parking_USB = 0;
 	start_obstacle_USB = 0;
@@ -120,8 +121,9 @@ void USBLink::decodeRawData(){
 void USBLink::recieveFrame(){
 	FrameRX* frame = dataBuffer.rx.frame;//Just for shorter code
 	if (checkFrameCorrectness(frame)) {
-		odroid_setpoints.fi = (float)(frame->values.steering_fi * 18.f / 1000.f / M_PI_FLOAT);
-		odroid_setpoints.dfi = (float)(frame->values.steering_dfi * 18.f / 1000.f / M_PI_FLOAT);
+		odroid_setpoints.fi_front = (float)(frame->values.steering_fi_front * 18.f / 1000.f / M_PI_FLOAT);
+		odroid_setpoints.fi_back = (float)(frame->values.steering_fi_back * 18.f / 1000.f / M_PI_FLOAT);
+//		odroid_setpoints.dfi = (float)(frame->values.steering_dfi * 18.f / 1000.f / M_PI_FLOAT);
 
 		odroid_setpoints.velocity = (float)(frame->values.speed);
 		odroid_setpoints.acceleration = (float)(frame->values.acceleration);
@@ -167,9 +169,67 @@ void USBLink::recieveCommand(){
 		case 0x20:
 
 			break;
+
 		case 0x30:
 
 			break;
+
+		case 0x50:
+			headlights.setActivated(true);
+			break;
+
+		case 0x51:
+			headlights.setActivated(false);
+			break;
+
+		case 0x52:
+			headlights.setColor(low_beam_color);
+			break;
+
+		case 0x53:
+			headlights.setColor(high_beam_color);
+			break;
+
+		case 0x54:
+			tail_lights.setActivated(true);
+			break;
+
+		case 0x55:
+			tail_lights.setActivated(false);
+			break;
+
+		case 0x56:
+			break_lights.setActivated(true);
+			break;
+
+		case 0x57:
+			break_lights.setActivated(false);
+			break;
+
+		case 0x58:
+			left_indicator_front.setActivated(true);
+			left_indicator_back.setActivated(true);
+			break;
+
+		case 0x59:
+			left_indicator_front.setActivated(false);
+			left_indicator_back.setActivated(false);
+			break;
+
+		case 0x5A:
+			right_indicator_front.setActivated(true);
+			right_indicator_back.setActivated(true);
+			break;
+
+		case 0x5B:
+			right_indicator_front.setActivated(false);
+			right_indicator_back.setActivated(false);
+			break;
+
+		case 0x60:
+			buttons_manager.resert_buttons();
+			break;
+
 		case 0xDE:
 			systemResetToBootloader();
 			break;
@@ -191,11 +251,15 @@ uint8_t USBLink::checkFrameCorrectness(CommandRX* frame){
 void USBLink::recieveTerminal(){
 	switch(dataBuffer.rx.bytes[0]){
 	case 's':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Task:\t\t\t\tTick:\t\tRun Time %%\n");
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Task:\t\tTick:\t\tRun Time %%\n");
 		vTaskGetRunTimeStats((char*) dataBuffer.tx.bytes + dataBuffer.txSize);
 		dataBuffer.txSize = strlen((char*) dataBuffer.tx.bytes);
 		dataBuffer.txSize += sprintf((char *) dataBuffer.tx.bytes+dataBuffer.txSize, "-------\n");;
 		break;
+	case 'b':
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Buttons value: %d\n", buttons_manager.getState());
+	break;
+
 	case 'B':
 		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "\nLi-Po:\t%.2fV\nCurrent:\t%.3fA\nAN_IN:\t%.2fV\nSTM Temperature:%.2fC\n", powermanager.voltage,
 				powermanager.amperage, powermanager.analog_in, powermanager.temperature);
@@ -215,6 +279,12 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "\nrates:\t%.2f\t%.2f\t%.2f\nangles:\t%.2f\t%.2f\t%.2f\tFLAT: %.2f\ntemperature:\t%.1fC\naccels:\t%.2fG\t%.2fG\t%.2fG\n",
 				gyro.rates[0], gyro.rates[1], gyro.rates[2], ahrs.attitude.values.roll, ahrs.attitude.values.pitch, ahrs.attitude.values.yaw, gyro.angles[2], gyro.temperature,
 				gyro.g_rates[0], gyro.g_rates[1], gyro.g_rates[2]);
+		break;
+	case 'h':
+		headlights.setActivated(!headlights.getActivated());
+		break;
+	case 'H':
+		lights_manager.high = !lights_manager.high;
 		break;
 	case 'q':
 		quaternion orientation;
@@ -262,7 +332,7 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "time: %lums / %luus\n",HAL_GetTick(), tools.GetMicros());
 		break;
 	case 'u':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "USBServo: %.1f\tUSBVelocity: %.1f\n", odroid_setpoints.fi, odroid_setpoints.velocity);
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "USBServo: %.1f\tUSBVelocity: %.1f\n", odroid_setpoints.fi_front, odroid_setpoints.velocity);
 		break;
 	case 'r':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "\n...STM32 Resetting ..\n");
@@ -277,10 +347,10 @@ void USBLink::recieveTerminal(){
 	case 'l':
 //		left_indicator = !left_indicator;
 //		right_indicator = !right_indicator;
-		headlights.setActivated(!headlights.getActivated());
+
 		break;
 	case 'L':
-		lights_manager.high = !lights_manager.high;
+
 		break;
 	default:
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "\n%c - not recognized :(\n", dataBuffer.rx.bytes[0]);

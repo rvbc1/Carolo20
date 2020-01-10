@@ -186,7 +186,7 @@ void USB_Receive_Data(void) {
 		else if (UsbRxFrame.frame->steering_fi < - 10000.f *M_PI_FLOAT / 4)
 			UsbRxFrame.frame->steering_fi = - 10000.f * M_PI_FLOAT / 4;
 
-		odroid_setpoints.fi = (float)(UsbRxFrame.frame->steering_fi * 18.f / 1000.f / M_PI_FLOAT);
+	//	odroid_setpoints.fi = (float)(UsbRxFrame.frame->steering_fi * 18.f / 1000.f / M_PI_FLOAT);
 		odroid_setpoints.dfi = (float)(UsbRxFrame.frame->steering_dfi * 18.f / 1000.f / M_PI_FLOAT);
 
 		odroid_setpoints.velocity = (float)(UsbRxFrame.frame->speed);
@@ -409,7 +409,7 @@ void TerminalFn(){
 		CDC_Transmit_FS(usbTxBuffer, len);
 		break;
 	case 'u':
-		len = sprintf((char *) usbTxBuffer, "USBServo: %.1f\tUSBVelocity: %.1f\n", odroid_setpoints.fi, odroid_setpoints.velocity);
+		len = sprintf((char *) usbTxBuffer, "USBServo: %.1f\tUSBVelocity: %.1f\n", odroid_setpoints.fi_front, odroid_setpoints.velocity);
 		CDC_Transmit_FS(usbTxBuffer, len);
 		break;
 	case 'r':

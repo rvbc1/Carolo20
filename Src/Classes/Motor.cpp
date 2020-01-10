@@ -185,7 +185,12 @@ void Motor::Controller(void){
 
 	float error = setpoint - measurement;
 
-	Proportional = Kp * error;
+	if(setpoint > 1000){
+		Proportional = Kp * error * 2;
+	} else {
+		Proportional = Kp * error;
+	}
+
 
 	Integral += Ki *error * dt;
 	Integral = constrainf(Integral, -windup_limit, windup_limit);
