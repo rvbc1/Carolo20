@@ -57,11 +57,11 @@ uint16_t ws2812BitsBuffer[WS2812_BYTES_BUFFER_SIZE];
 
 void LightsManager::ws2812_init() {
 
-	front_left.setBuffer(&ws2812BitsBuffer[0]);
-	front_right.setBuffer(&ws2812BitsBuffer[1*8*3*8]);
-	back_right.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
+	front_right.setBuffer(&ws2812BitsBuffer[0]);
+	front_left.setBuffer(&ws2812BitsBuffer[1*8*3*8]);
+	back_left.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
 	back_middle.setBuffer(&ws2812BitsBuffer[3*8*3*8]);
-	back_left.setBuffer(&ws2812BitsBuffer[4*8*3*8]);
+	back_right.setBuffer(&ws2812BitsBuffer[4*8*3*8]);
 
 
 
@@ -75,37 +75,40 @@ void LightsManager::ws2812_init() {
 	left_indicator_back.setColor(indicator_color);
 	right_indicator_back.setColor(indicator_color);
 
-	headlights.add(front_left.getLedAddress(5));
-	headlights.add(front_left.getLedAddress(6));
-	headlights.add(front_left.getLedAddress(7));
+	headlights.add(front_right.getLedAddress(5));
+	headlights.add(front_right.getLedAddress(6));
+	headlights.add(front_right.getLedAddress(7));
 
-	headlights.add(front_right.getLedAddress(0));
-	headlights.add(front_right.getLedAddress(1));
-	headlights.add(front_right.getLedAddress(2));
+	headlights.add(front_left.getLedAddress(0));
+	headlights.add(front_left.getLedAddress(1));
+	headlights.add(front_left.getLedAddress(2));
 
-	tail_lights.add(back_left.getLedAddress(0));
-	tail_lights.add(back_right.getLedAddress(7));
+	tail_lights.add(back_left.getLedAddress(7));
+	tail_lights.add(back_right.getLedAddress(0));
 
-	//break_lights.add(front_left.getLedAddress(1));
-	//break_lights.add(front_right.getLedAddress(6));
+	break_lights.add(back_left.getLedAddress(5));
+	break_lights.add(back_left.getLedAddress(6));
 
-	left_indicator_front.add(front_left.getLedAddress(4));
-	left_indicator_front.add(front_left.getLedAddress(3));
-	left_indicator_front.add(front_left.getLedAddress(2));
-	left_indicator_front.add(front_left.getLedAddress(1));
-	left_indicator_front.add(front_left.getLedAddress(0));
+	break_lights.add(back_right.getLedAddress(1));
+	break_lights.add(back_right.getLedAddress(2));
 
-	right_indicator_front.add(front_right.getLedAddress(3));
 	right_indicator_front.add(front_right.getLedAddress(4));
-	right_indicator_front.add(front_right.getLedAddress(5));
-	right_indicator_front.add(front_right.getLedAddress(6));
-	right_indicator_front.add(front_right.getLedAddress(7));
+	right_indicator_front.add(front_right.getLedAddress(3));
+	right_indicator_front.add(front_right.getLedAddress(2));
+	right_indicator_front.add(front_right.getLedAddress(1));
+	right_indicator_front.add(front_right.getLedAddress(0));
 
-	right_indicator_back.add(back_right.getLedAddress(4));
-	right_indicator_back.add(back_right.getLedAddress(3));
-	right_indicator_back.add(back_right.getLedAddress(2));
-	right_indicator_back.add(back_right.getLedAddress(1));
-	right_indicator_back.add(back_right.getLedAddress(0));
+	left_indicator_front.add(front_left.getLedAddress(3));
+	left_indicator_front.add(front_left.getLedAddress(4));
+	left_indicator_front.add(front_left.getLedAddress(5));
+	left_indicator_front.add(front_left.getLedAddress(6));
+	left_indicator_front.add(front_left.getLedAddress(7));
+
+	left_indicator_back.add(back_left.getLedAddress(4));
+	left_indicator_back.add(back_left.getLedAddress(3));
+	left_indicator_back.add(back_left.getLedAddress(2));
+	left_indicator_back.add(back_left.getLedAddress(1));
+	left_indicator_back.add(back_left.getLedAddress(0));
 
 	headlights.setActivated(true);
 	tail_lights.setActivated(true);

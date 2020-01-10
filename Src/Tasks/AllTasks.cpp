@@ -102,7 +102,7 @@ void Allshit_begin(void) {
 	BatteryManagerHandle = osThreadCreate(osThread(BatteryManager), NULL);
 
 	/* definition and creation of USBTask */
-//	osThreadDef(USBTask, StartUSBTask, osPriorityHigh, 0, 256);
+	//	osThreadDef(USBTask, StartUSBTask, osPriorityHigh, 0, 256);
 	//USBTaskHandle = osThreadCreate(osThread(USBTask), NULL);
 	osThreadDef(USBLink, StartUSBTask, osPriorityHigh, 0, 256);
 	USBTaskHandle = osThreadCreate(osThread(USBLink), NULL);
@@ -200,8 +200,8 @@ void StartSteeringTask(void const * argument) {
 
 		if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 			rc_mode = DISARMED;
-//			left_indicator = 1;
-//			right_indicator = 1;
+			//			left_indicator = 1;
+			//			right_indicator = 1;
 			left_indicator_front.setActivated(true);
 			right_indicator_front.setActivated(true);
 
@@ -214,33 +214,33 @@ void StartSteeringTask(void const * argument) {
 			if (futaba.Get_RCState() == 0)
 				StickCommandProccess();
 		} else if (futaba.SwitchA == SWITCH_DOWN) {
-			if (futaba.SwitchC == SWITCH_UP) {
-//				left_indicator = 0;
-//				right_indicator = 1;
-				left_indicator_front.setActivated(false);
-				right_indicator_front.setActivated(true);
-
-				left_indicator_back.setActivated(false);
-				right_indicator_back.setActivated(true);
-			} else if(futaba.SwitchC == SWITCH_MIDDLE){
-//				left_indicator = 0;
-//				right_indicator = 0;
-				left_indicator_front.setActivated(false);
-				right_indicator_front.setActivated(false);
-
-				left_indicator_back.setActivated(false);
-				right_indicator_back.setActivated(false);
-			} else{
-//				left_indicator = 1;
-//				right_indicator = 0;
-				left_indicator_front.setActivated(true);
-				right_indicator_front.setActivated(false);
-
-				left_indicator_back.setActivated(true);
-				right_indicator_back.setActivated(false);
-			}
 
 			if (futaba.SwitchB == SWITCH_UP) {
+				if (futaba.SwitchC == SWITCH_UP) {
+					//				left_indicator = 0;
+					//				right_indicator = 1;
+					left_indicator_front.setActivated(false);
+					right_indicator_front.setActivated(true);
+
+					left_indicator_back.setActivated(false);
+					right_indicator_back.setActivated(true);
+				} else if(futaba.SwitchC == SWITCH_MIDDLE){
+					//				left_indicator = 0;
+					//				right_indicator = 0;
+					left_indicator_front.setActivated(false);
+					right_indicator_front.setActivated(false);
+
+					left_indicator_back.setActivated(false);
+					right_indicator_back.setActivated(false);
+				} else{
+					//				left_indicator = 1;
+					//				right_indicator = 0;
+					left_indicator_front.setActivated(true);
+					right_indicator_front.setActivated(false);
+
+					left_indicator_back.setActivated(true);
+					right_indicator_back.setActivated(false);
+				}
 
 				//				if (reczny == true){
 				//					HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_SET);
@@ -263,16 +263,20 @@ void StartSteeringTask(void const * argument) {
 				rc_mode = MODE_SEMI;
 
 
-				//			servo_front.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
-				//				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi); // trzeba dac inny parametr jak ma byc niezaleznie
+				servo_front->setAngle(odroid_setpoints.fi_front*2 + 90);
+				servo_back->setAngle(odroid_setpoints.fi_back*2 + 90);
+//				servo_front.SetAngleD(odroid_setpoints.fi_front, odroid_setpoints.dfi);
+//				servo_back.SetAngleD(odroid_setpoints.fi_back, odroid_setpoints.dfi); // trzeba dac inny parametr jak ma byc niezaleznie
 				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
 			} else if (futaba.SwitchB == SWITCH_DOWN) {
 				reczny = true;
 				rc_mode = MODE_AUTONOMOUS;
 
-				//			servo_front.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
-				//				servo_back.SetAngleD(odroid_setpoints.fi, odroid_setpoints.dfi);
+				servo_front->setAngle(odroid_setpoints.fi_front*2 + 90);
+				servo_back->setAngle(odroid_setpoints.fi_back*2 + 90);
+//				servo_front.SetAngleD(odroid_setpoints.fi_front, odroid_setpoints.dfi);
+//				servo_back.SetAngleD(odroid_setpoints.fi_back, odroid_setpoints.dfi);
 				motor.SetVelocity(odroid_setpoints.velocity, odroid_setpoints.acceleration, odroid_setpoints.jerk);
 			}
 			//		TIM2->CCR2 = 1450;

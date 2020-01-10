@@ -14,6 +14,7 @@
 #include "Button.h"
 
 
+
 extern uint8_t start_parking_USB;
 extern uint8_t start_obstacle_USB;
 extern uint8_t start_parking_sent;
@@ -23,6 +24,13 @@ class ButtonsManager {
 private:
 	Button *button_one;
 	Button *button_two;
+
+	uint8_t ever1;
+	uint8_t ever2;
+
+	uint8_t first1;
+	uint8_t first2;
+
 	void check();
 	//std::vector<Button *> buttons;
 public:
@@ -33,6 +41,8 @@ public:
 	uint8_t screen2_state_of_pressing;
 	uint8_t screen3_state_of_pressing;
 	uint8_t any_button_was_pressed;
+	uint8_t getState();
+	void resert_buttons();
 	void Init();
 	ButtonsManager();
 	virtual ~ButtonsManager();

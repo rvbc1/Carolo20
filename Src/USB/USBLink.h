@@ -40,7 +40,6 @@ class USBLink {
 public:
     struct ValuesTX{
 
-        uint8_t code;
         uint8_t length;
 
         uint32_t timecode;
@@ -52,29 +51,25 @@ public:
         int16_t rates[3];
         int16_t acc[3];
 
-        uint8_t startbutton1;
-        uint8_t startbutton2;
-        uint8_t visionrst;
+        uint8_t buttons;
+        uint8_t lights;
         uint8_t futabastate;
 
     } __attribute__ ((__packed__));
 
+
     struct ValuesRX{
 
-        uint8_t code;
         uint8_t length;
 
         uint32_t timecode;
 
-        int16_t steering_fi;
-        int16_t steering_dfi;
+        int16_t steering_fi_front;
+        int16_t steering_fi_back;
 
         int16_t speed;
         int16_t acceleration;
         int16_t jerk;
-
-        uint8_t left_indicator_u;
-        uint8_t right_indicator_u;
 
     } __attribute__ ((__packed__));
 
@@ -95,6 +90,8 @@ private:
 
 		ValuesTX values;
 
+        uint16_t crc16;
+
 		uint8_t end_code;
 	} __attribute__ ((__packed__));
 
@@ -102,6 +99,8 @@ private:
 		uint8_t start_code;
 
 		ValuesRX values;
+
+        uint16_t crc16;
 
 		uint8_t end_code;
 	} __attribute__ ((__packed__));
