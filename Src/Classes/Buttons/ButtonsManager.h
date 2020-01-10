@@ -8,8 +8,9 @@
 #ifndef CLASSES_BUTTONSMANAGER_H_
 #define CLASSES_BUTTONSMANAGER_H_
 
+#define ALL_BUTTONS_FLAGS_DATA_TYPE 	uint8_t
+#define MAX_BUTTONS_AMOUNT    			2
 
-#define MAX_BUTTON_AMOUNT    2
 
 #include "cmsis_os.h"
 #include "USBTask.h"
@@ -17,10 +18,8 @@
 #include "bitoperations.h"
 
 
-extern uint8_t start_parking_USB;
-extern uint8_t start_obstacle_USB;
-extern uint8_t start_parking_sent;
-extern uint8_t start_obstacle_sent;
+
+
 
 class ButtonsManager {
 private:
@@ -30,32 +29,17 @@ private:
 	// getData(), check(), updateFlag(), active(), activetedEver() and activatedFirst(),
 	// and in bitoperations.h and .cpp (functions work on uint8_t)
 
-	Button *all_buttons[MAX_BUTTON_AMOUNT];
-	uint8_t button_number = 0;
-	uint8_t buttonFlag = 0;
-	uint8_t isEverActivated_reset = true;
+	Button *all_buttons[MAX_BUTTONS_AMOUNT];
+	uint8_t amount_of_added_buttons = 0;
 
-	void addButton(Button *b);
-	uint8_t getData();
+	ALL_BUTTONS_FLAGS_DATA_TYPE first_clicked_button_flag;
+	void addButton(Button *button);
 	void check();
-
-	// Update button flag functions
-	void updateFlag(uint8_t);
-	void activatedFirst(uint8_t);
-	void active(uint8_t);
-	void activatedEver(uint8_t);
 
 public:
 	void process();
-	uint8_t readFlag(){ return buttonFlag; }
-	void reset_activatedFirstFlag();
-	void reset_activatedEverFlag();
-	uint8_t start1_state_of_pressing;
-	uint8_t start2_state_of_pressing;
-	uint8_t screen1_state_of_pressing;
-	uint8_t screen2_state_of_pressing;
-	uint8_t screen3_state_of_pressing;
-	uint8_t any_button_was_pressed;
+	ALL_BUTTONS_FLAGS_DATA_TYPE getData();
+	void reset();
 	void Init();
 	ButtonsManager();
 	virtual ~ButtonsManager();

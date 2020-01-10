@@ -17,22 +17,30 @@ Button::~Button() {
 }
 
 uint8_t Button::check(){
-	status = !HAL_GPIO_ReadPin(gpio_port, gpio_pin);
+	uint8_t status = !HAL_GPIO_ReadPin(gpio_port, gpio_pin);
+	changeBit(flags, STATUS_BIT, status);
 	if (status){
-		everActivated = true;
+		changeBit(flags, EVER_ACTIVETED_BIT, true);
 	}
 	return status;
 }
 
-uint8_t Button::isEverActivated(){
-	return everActivated;
-}
 
-void Button::reset(){
-
+BUTTON_FLAGS_DATA_TYPE Button::getData(){
+	return flags;
 }
 
 uint8_t Button::getStatus(){
-	return status;
+	return getBit(flags, STATUS_BIT);;
 }
+
+uint8_t Button::isEverActivated(){
+	return getBit(flags, EVER_ACTIVETED_BIT);
+}
+
+
+void Button::reset(){
+	flags = 0;
+}
+
 

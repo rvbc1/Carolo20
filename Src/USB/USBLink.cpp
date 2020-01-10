@@ -92,7 +92,7 @@ void USBLink::transmitFrame(){
 	//frame->values.visionrst = vision_reset;
 	frame->values.futabastate = futaba.SwitchB;
 
-	frame->values.buttons = buttons_manager.getState();
+	//frame->values.buttons = buttons_manager.getState();
 
 	frame->end_code = END_CODE;
 
@@ -101,8 +101,8 @@ void USBLink::transmitFrame(){
 //	if(vision_reset_ack)
 //		vision_reset_sent = 1;
 
-	start_parking_USB = 0;
-	start_obstacle_USB = 0;
+//	start_parking_USB = 0;
+//	start_obstacle_USB = 0;
 }
 
 void USBLink::decodeRawData(){
@@ -227,7 +227,7 @@ void USBLink::recieveCommand(){
 			break;
 
 		case 0x60:
-			buttons_manager.resert_buttons();
+			//buttons_manager.resert_buttons();
 			break;
 
 		case 0xDE:
@@ -257,7 +257,7 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize += sprintf((char *) dataBuffer.tx.bytes+dataBuffer.txSize, "-------\n");;
 		break;
 	case 'b':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Buttons value: %d\n", buttons_manager.getState());
+		//dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Buttons value: %d\n", buttons_manager.getState());
 	break;
 
 	case 'B':

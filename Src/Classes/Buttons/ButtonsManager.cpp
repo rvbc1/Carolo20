@@ -12,102 +12,50 @@
 
 ButtonsManager buttons_manager;
 
-uint8_t start_parking_USB = 0;
-uint8_t start_obstacle_USB = 0;
-uint8_t start_parking_sent = 0;
-uint8_t start_obstacle_sent = 0;
-
-
-
 void ButtonsManager::Init(){
-	start1_state_of_pressing = false;
-	start2_state_of_pressing = false;
-	screen1_state_of_pressing = false;
-	screen2_state_of_pressing = false;
-	screen3_state_of_pressing = false;
-	any_button_was_pressed = false;
 
 	button_one = new Button(START_BUTTON_1_O7_GPIO_Port, START_BUTTON_1_O7_Pin);
 	button_two = new Button(START_BUTTON_2_O6_GPIO_Port, START_BUTTON_2_O6_Pin);
 	addButton(button_one);
 	addButton(button_two);
 
+
 }
-void ButtonsManager::addButton(Button *b){
-	all_buttons[button_number] = b;
-	button_number++;
+void ButtonsManager::addButton(Button *button){
+	if(amount_of_added_buttons < MAX_BUTTONS_AMOUNT){
+		all_buttons[amount_of_added_buttons] = button;
+		amount_of_added_buttons++;
+	}
 }
 
-uint8_t ButtonsManager::getData(){
-	uint8_t return_value = 0;
-	for(uint8_t NumberOfBit = 0; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
-			uint8_t status = all_buttons[NumberOfBit]->check();
-			return_value |= ( status << NumberOfBit );
+ALL_BUTTONS_FLAGS_DATA_TYPE ButtonsManager::getData(){
+	ALL_BUTTONS_FLAGS_DATA_TYPE all_buttons_flags = 0;
+	for(int i = 0; i < amount_of_added_buttons; i++){
+		all_buttons_flags += all_buttons[i]->getData() << (i * AMOUNT_OF_FLAGS_PER_BUTTON);
 	}
-	return return_value;
+	all_buttons_flags += first_clicked_button_flag;
+	return all_buttons_flags;
 }
 
 void ButtonsManager::check(){
-	uint8_t status = getData();
-	updateFlag(status);
-}
-void ButtonsManager::updateFlag(uint8_t status){
-	active(status);
-	activatedEver(status);
-	activatedFirst(status);
-
-}
-
-void ButtonsManager::active(uint8_t status){
-	for(uint8_t NumberOfBit = 0; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
-		buttonFlag = changeBit(buttonFlag , NumberOfBit, getBit(status, NumberOfBit));
-	}
-}
-
-void ButtonsManager::activatedEver(uint8_t status){
-	buttonFlag |= (status << MAX_BUTTON_AMOUNT);
-}
-
-void ButtonsManager::activatedFirst(uint8_t status){
-	if(isEverActivated_reset){
-		for(uint8_t NumberOfBit = 0 ; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
-			if(getBit(status, NumberOfBit)){
-				buttonFlag = changeBit(buttonFlag, NumberOfBit + (2 * MAX_BUTTON_AMOUNT), true ); // third package of flags starts after active flags and ever activated flags
-				isEverActivated_reset = false;
-				break;
-			}
+	for(int i = 0; i < amount_of_added_buttons; i++){
+		if(all_buttons[i]->check() && (first_clicked_button_flag == 0)){
+			setBit(first_clicked_button_flag, i + amount_of_added_buttons * AMOUNT_OF_FLAGS_PER_BUTTON);
 		}
 	}
 }
 
-void ButtonsManager::reset_activatedFirstFlag(){
-	for(uint8_t NumberOfBit = 0 ; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
-		buttonFlag = changeBit(buttonFlag, NumberOfBit + (2 * MAX_BUTTON_AMOUNT), false );
+
+void ButtonsManager::reset(){
+	for(int i = 0; i < amount_of_added_buttons; i++){
+		all_buttons[i]->reset();
 	}
-	isEverActivated_reset = true;
+	first_clicked_button_flag = 0;
 }
 
-void ButtonsManager::reset_activatedEverFlag(){
-	for(uint8_t NumberOfBit = 0 ; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
-		buttonFlag = changeBit(buttonFlag, (NumberOfBit + MAX_BUTTON_AMOUNT), false );
-	}
-}
 
 void ButtonsManager::process(){
 	check();
-
-	if(button_one->getStatus()){
-		left_indicator = true;
-	} else {
-		left_indicator = false;
-	}
-
-	if(button_two->getStatus()){
-		right_indicator = true;
-	} else {
-		right_indicator = false;
-	}
-	osDelay(5);
 }
 
 
