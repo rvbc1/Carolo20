@@ -5,8 +5,8 @@
  *      Author: mice
  */
 
+#include <AllTasks.h>
 #include <PowerManager.h>
-#include "Allshit.h"
 #include "stm32f7xx_hal.h"
 #include "adc.h"
 #include "tim.h"

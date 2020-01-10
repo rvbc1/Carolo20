@@ -9,7 +9,7 @@
  extern "C" {
 #endif
 
-#include "Allshit.h"
+#include <AllTasks.h>
 #include "USBTask.h"
 
 #include "main.h"
@@ -54,6 +54,8 @@ uint8_t usbDenominator = 5;
 
 uint8_t left_indicator = 0;
 uint8_t right_indicator = 0;
+uint8_t road_lights = 1;
+
 uint32_t timestamp = 5;
 odroid_setpoints_t odroid_setpoints = {0.f, 0.f, 0.f, 0.f, 0.f};
 
@@ -78,15 +80,16 @@ void USB_Process(void) {
 	/* 6 + length */
 	osEvent evt = osSignalWait(0, 500);
 	if (evt.status == osEventSignal) {
-		if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
-			static uint8_t cnt = 0;
-			if (++cnt >= usbDenominator) {
-				cnt = 0;
-				USB_Transmit_Data();
-			}
-			TIM11->CNT = 0;
-		}
+//		if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
+//			static uint8_t cnt = 0;
+//			if (++cnt >= usbDenominator) {
+//				cnt = 0;
+//				USB_Transmit_Data();
+//			}
+//			TIM11->CNT = 0;
+//		}
 		if (evt.value.signals & USB_RX_signal) {
+			HAL_GPIO_TogglePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin);
 			if (usbBytesRead == USB_RXFRAME_SIZE) {
 				/* DATA */
 				USB_Receive_Data();
@@ -183,7 +186,7 @@ void USB_Receive_Data(void) {
 		else if (UsbRxFrame.frame->steering_fi < - 10000.f *M_PI_FLOAT / 4)
 			UsbRxFrame.frame->steering_fi = - 10000.f * M_PI_FLOAT / 4;
 
-		odroid_setpoints.fi = (float)(UsbRxFrame.frame->steering_fi * 18.f / 1000.f / M_PI_FLOAT);
+	//	odroid_setpoints.fi = (float)(UsbRxFrame.frame->steering_fi * 18.f / 1000.f / M_PI_FLOAT);
 		odroid_setpoints.dfi = (float)(UsbRxFrame.frame->steering_dfi * 18.f / 1000.f / M_PI_FLOAT);
 
 		odroid_setpoints.velocity = (float)(UsbRxFrame.frame->speed);
@@ -402,7 +405,7 @@ void TerminalFn(){
 		CDC_Transmit_FS(usbTxBuffer, len);
 		break;
 	case 'u':
-		len = sprintf((char *) usbTxBuffer, "USBServo: %.1f\tUSBVelocity: %.1f\n", odroid_setpoints.fi, odroid_setpoints.velocity);
+		len = sprintf((char *) usbTxBuffer, "USBServo: %.1f\tUSBVelocity: %.1f\n", odroid_setpoints.fi_front, odroid_setpoints.velocity);
 		CDC_Transmit_FS(usbTxBuffer, len);
 		break;
 	case 'r':

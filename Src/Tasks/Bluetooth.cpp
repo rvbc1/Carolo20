@@ -5,9 +5,8 @@
  *      Author: mice
  */
 
+#include <AllTasks.h>
 #include <ButtonsManager.h>
-#include "Allshit.h"
-
 #include "stdint.h"
 
 #include "usart.h"
@@ -94,7 +93,7 @@ void Bluetooth_Process(void) {
 			systemResetToBootloader();
 			break;
 		case 'u':
-			terminal_length = sprintf((char *) terminal_tx, "USBServo: %.1f\tUSBVelocity: %.1f\nUSB_left-indicator %d\tUSB_right-indicator %d\nTimestamp:%u\n", odroid_setpoints.fi, odroid_setpoints.velocity, left_indicator, right_indicator, timestamp);
+			terminal_length = sprintf((char *) terminal_tx, "USBServo: %.1f\tUSBVelocity: %.1f\nUSB_left-indicator %d\tUSB_right-indicator %d\nTimestamp:%u\n", odroid_setpoints.fi_front, odroid_setpoints.velocity, left_indicator, right_indicator, timestamp);
 			HAL_UART_Transmit_DMA(&huart8, terminal_tx, terminal_length);
 			break;
 		case 'q':

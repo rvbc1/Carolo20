@@ -22,11 +22,13 @@ extern int32_t USB_TX_signal;
 void USB_Init(void);
 void USB_Process(void);
 
+extern uint8_t road_lights;
 extern uint8_t left_indicator;
 extern uint8_t right_indicator;
 extern uint32_t timestamp;
 typedef struct odroid_setpoints_s{
-	float fi;
+	float fi_front;
+	float fi_back;
 	float dfi;
 	float velocity;
 	float acceleration;
