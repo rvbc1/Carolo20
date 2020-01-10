@@ -13,11 +13,13 @@
 class Button {
 private:
 	uint8_t status;
+	uint8_t everActivated;
 
 	GPIO_TypeDef* gpio_port;
 	uint16_t gpio_pin;
 public:
-	void check();
+	uint8_t check();
+	uint8_t isEverActivated();
 	void reset();
 	uint8_t getStatus();
 	Button(GPIO_TypeDef* gpio_port, uint16_t gpio_pin);

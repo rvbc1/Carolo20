@@ -16,8 +16,16 @@ Button::~Button() {
 	// TODO Auto-generated destructor stub
 }
 
-void Button::check(){
+uint8_t Button::check(){
 	status = !HAL_GPIO_ReadPin(gpio_port, gpio_pin);
+	if (status){
+		everActivated = true;
+	}
+	return status;
+}
+
+uint8_t Button::isEverActivated(){
+	return everActivated;
 }
 
 void Button::reset(){

@@ -9,12 +9,14 @@
 #include <ButtonsManager.h>
 #include "stm32f7xx_hal.h"
 
+
 ButtonsManager buttons_manager;
 
 uint8_t start_parking_USB = 0;
 uint8_t start_obstacle_USB = 0;
 uint8_t start_parking_sent = 0;
 uint8_t start_obstacle_sent = 0;
+
 
 
 void ButtonsManager::Init(){
@@ -26,55 +28,69 @@ void ButtonsManager::Init(){
 	any_button_was_pressed = false;
 
 	button_one = new Button(START_BUTTON_1_O7_GPIO_Port, START_BUTTON_1_O7_Pin);
-
 	button_two = new Button(START_BUTTON_2_O6_GPIO_Port, START_BUTTON_2_O6_Pin);
+	addButton(button_one);
+	addButton(button_two);
 
+}
+void ButtonsManager::addButton(Button *b){
+	all_buttons[button_number] = b;
+	button_number++;
+}
+
+uint8_t ButtonsManager::getData(){
+	uint8_t return_value = 0;
+	for(uint8_t NumberOfBit = 0; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
+			uint8_t status = all_buttons[NumberOfBit]->check();
+			return_value |= ( status << NumberOfBit );
+	}
+	return return_value;
 }
 
 void ButtonsManager::check(){
-	uint8_t status1, status2;
-	button_one->check();
-	button_two->check();
-	status1 = button_one->getStatus();
-	status2 = button_two->getStatus();
-	updateFlag(status1, status2);
+	uint8_t status = getData();
+	updateFlag(status);
 }
-void ButtonsManager::updateFlag(uint8_t s1, uint8_t s2){
-	activatedFirst(s1,s2);
-	activatedEver(s1,s2);
-	active(s1,s2);
+void ButtonsManager::updateFlag(uint8_t status){
+	active(status);
+	activatedEver(status);
+	activatedFirst(status);
+
 }
 
-
-void ButtonsManager::activatedFirst(uint8_t s1, uint8_t s2){
-	if (s1 < s2){//pierwszy byl 2 przycisk
-		buttonFlag = changeBit(buttonFlag,0, 5);
-		buttonFlag = changeBit(buttonFlag,1, 4);
-	}
-	else if ((s1 > s2) || ((s1==s2) && (s1 == 1))){ //kiedy pierwszy byl 1 przycisk lub oba byly jednoczesnie
-		buttonFlag = changeBit(buttonFlag,1, 5);
-		buttonFlag = changeBit(buttonFlag,0, 4);
-	}
-	else ; //zaden nie zostal wlaczony
-}
-
-void ButtonsManager::activatedEver(uint8_t s1, uint8_t s2){
-	uint8_t prev1, prev2;
-	prev1 = getBit(buttonFlag, 3);
-	prev2 = getBit(buttonFlag, 2);
-
-	if ((prev1 == 0) && (s1 == 1)){
-		buttonFlag = changeBit(buttonFlag,1, 3);
-	}
-	if ((prev2 == 0) && (s2 == 1)){
-		buttonFlag = changeBit(buttonFlag,1, 2);
+void ButtonsManager::active(uint8_t status){
+	for(uint8_t NumberOfBit = 0; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
+		buttonFlag = changeBit(buttonFlag , NumberOfBit, getBit(status, NumberOfBit));
 	}
 }
-void ButtonsManager::active(uint8_t s1, uint8_t s2){
-	if (s1 == 1) buttonFlag = changeBit(buttonFlag,1, 1);
-	else         buttonFlag = changeBit(buttonFlag,0, 1);
-	if (s2 == 1) buttonFlag = changeBit(buttonFlag,1, 0);
-	else         buttonFlag = changeBit(buttonFlag,0, 0);
+
+void ButtonsManager::activatedEver(uint8_t status){
+	buttonFlag |= (status << MAX_BUTTON_AMOUNT);
+}
+
+void ButtonsManager::activatedFirst(uint8_t status){
+	if(isEverActivated_reset){
+		for(uint8_t NumberOfBit = 0 ; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
+			if(getBit(status, NumberOfBit)){
+				buttonFlag = changeBit(buttonFlag, NumberOfBit + (2 * MAX_BUTTON_AMOUNT), true ); // third package of flags starts after active flags and ever activated flags
+				isEverActivated_reset = false;
+				break;
+			}
+		}
+	}
+}
+
+void ButtonsManager::reset_activatedFirstFlag(){
+	for(uint8_t NumberOfBit = 0 ; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
+		buttonFlag = changeBit(buttonFlag, NumberOfBit + (2 * MAX_BUTTON_AMOUNT), false );
+	}
+	isEverActivated_reset = true;
+}
+
+void ButtonsManager::reset_activatedEverFlag(){
+	for(uint8_t NumberOfBit = 0 ; NumberOfBit < MAX_BUTTON_AMOUNT; NumberOfBit++){
+		buttonFlag = changeBit(buttonFlag, (NumberOfBit + MAX_BUTTON_AMOUNT), false );
+	}
 }
 
 void ButtonsManager::process(){
@@ -103,4 +119,6 @@ ButtonsManager::ButtonsManager() {
 ButtonsManager::~ButtonsManager() {
 	// TODO Auto-generated destructor stub
 }
+
+
 
