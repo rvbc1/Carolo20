@@ -71,6 +71,7 @@ public:
         int16_t acceleration;
         int16_t jerk;
 
+
     } __attribute__ ((__packed__));
 
 

@@ -1,3 +1,4 @@
+
 /*
  * Buttons.cpp
  *
@@ -7,12 +8,6 @@
 
 #include <ButtonsManager.h>
 #include "stm32f7xx_hal.h"
-#include "bitoperations.h"
-
-//#include <vector>
-//
-//std::vector
-
 
 ButtonsManager buttons_manager;
 
@@ -22,13 +17,7 @@ uint8_t start_parking_sent = 0;
 uint8_t start_obstacle_sent = 0;
 
 
-
-
 void ButtonsManager::Init(){
-	ever1 = false;
-	ever2 = false;
-	first1 = false;
-	first2 = false;
 	start1_state_of_pressing = false;
 	start2_state_of_pressing = false;
 	screen1_state_of_pressing = false;
@@ -42,55 +31,67 @@ void ButtonsManager::Init(){
 
 }
 
-uint8_t ButtonsManager::getState(){
-	uint8_t value = 0;
-	changeBit(value, 0, button_one->getStatus());
-	changeBit(value, 1, ever1);
-	changeBit(value, 2, button_two->getStatus());
-	changeBit(value, 3, ever2);
-	changeBit(value, 4, first1);
-	changeBit(value, 5, first2);
-	return value;
-}
-
 void ButtonsManager::check(){
+	uint8_t status1, status2;
 	button_one->check();
 	button_two->check();
+	status1 = button_one->getStatus();
+	status2 = button_two->getStatus();
+	updateFlag(status1, status2);
 }
+void ButtonsManager::updateFlag(uint8_t s1, uint8_t s2){
+	activatedFirst(s1,s2);
+	activatedEver(s1,s2);
+	active(s1,s2);
+}
+
+
+void ButtonsManager::activatedFirst(uint8_t s1, uint8_t s2){
+	if (s1 < s2){//pierwszy byl 2 przycisk
+		buttonFlag = changeBit(buttonFlag,0, 5);
+		buttonFlag = changeBit(buttonFlag,1, 4);
+	}
+	else if ((s1 > s2) || ((s1==s2) && (s1 == 1))){ //kiedy pierwszy byl 1 przycisk lub oba byly jednoczesnie
+		buttonFlag = changeBit(buttonFlag,1, 5);
+		buttonFlag = changeBit(buttonFlag,0, 4);
+	}
+	else ; //zaden nie zostal wlaczony
+}
+
+void ButtonsManager::activatedEver(uint8_t s1, uint8_t s2){
+	uint8_t prev1, prev2;
+	prev1 = getBit(buttonFlag, 3);
+	prev2 = getBit(buttonFlag, 2);
+
+	if ((prev1 == 0) && (s1 == 1)){
+		buttonFlag = changeBit(buttonFlag,1, 3);
+	}
+	if ((prev2 == 0) && (s2 == 1)){
+		buttonFlag = changeBit(buttonFlag,1, 2);
+	}
+}
+void ButtonsManager::active(uint8_t s1, uint8_t s2){
+	if (s1 == 1) buttonFlag = changeBit(buttonFlag,1, 1);
+	else         buttonFlag = changeBit(buttonFlag,0, 1);
+	if (s2 == 1) buttonFlag = changeBit(buttonFlag,1, 0);
+	else         buttonFlag = changeBit(buttonFlag,0, 0);
+}
+
 void ButtonsManager::process(){
 	check();
 
 	if(button_one->getStatus()){
-		ever1 = true;
-		if(first2 == 0)
-			first1 = true;
+		left_indicator = true;
+	} else {
+		left_indicator = false;
 	}
 
 	if(button_two->getStatus()){
-		ever2 = true;
-		if(first1 == 0)
-			first2 = true;
+		right_indicator = true;
+	} else {
+		right_indicator = false;
 	}
-
-	//	if(button_one->getStatus()){
-	//		left_indicator = true;
-	//	} else {
-	//		left_indicator = false;
-	//	}
-	//
-	//	if(button_two->getStatus()){
-	//		right_indicator = true;
-	//	} else {
-	//		right_indicator = false;
-	//	}
 	osDelay(5);
-}
-
-void ButtonsManager::resert_buttons(){
-	ever1 = false;
-	ever2 = false;
-	first1 = false;
-	first2 = false;
 }
 
 
