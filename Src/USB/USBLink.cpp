@@ -23,9 +23,6 @@
 USBLink::DataBuffer USBLink::dataBuffer;
 
 
-#define USB_TXFRAME_SIZE 40 ////////////////////////////////
-
-
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
 extern int32_t USB_TX_signal;
@@ -64,9 +61,6 @@ void USBLink::USB_Process(void) {
 
 void USBLink::transmitFrame(){
 	FrameTX* frame = dataBuffer.tx.frame;//Just for shorter code
-	frame->start_code = START_CODE;
-	//frame->values.code = 0x40;
-	frame->values.length = USB_TXFRAME_SIZE-4;
 
 	frame->values.timecode = HAL_GetTick();
 
@@ -87,22 +81,23 @@ void USBLink::transmitFrame(){
 		frame->values.acc[axis] = (int16_t)(gyro.g_rates[axis] * gyro.getAccScale());
 	}
 
-
-	//frame->values.buttons = buttons_manager.;
-	//frame->values.visionrst = vision_reset;
+	frame->values.buttons = buttons_manager.getData();
 	frame->values.futabastate = futaba.SwitchB;
 
-	//frame->values.buttons = buttons_manager.getState();
+	prepareFrameTX();
 
+	CDC_Transmit_FS(dataBuffer.tx.bytes, dataBuffer.txSize);
+}
+
+void USBLink::prepareFrameTX(){
+	FrameTX* frame = dataBuffer.tx.frame;//Just for shorter code
+	frame->start_code = START_CODE;
+
+	frame->length = frame_TX_SIZE;
+	frame->crc16 = crc16((uint8_t *) &frame->values, frame_TX_values_size);
 	frame->end_code = END_CODE;
 
-	CDC_Transmit_FS(dataBuffer.tx.bytes, USB_TXFRAME_SIZE);
-
-//	if(vision_reset_ack)
-//		vision_reset_sent = 1;
-
-//	start_parking_USB = 0;
-//	start_obstacle_USB = 0;
+	dataBuffer.txSize = frame_TX_SIZE;
 }
 
 void USBLink::decodeRawData(){
@@ -123,7 +118,6 @@ void USBLink::recieveFrame(){
 	if (checkFrameCorrectness(frame)) {
 		odroid_setpoints.fi_front = (float)(frame->values.steering_fi_front * 18.f / 1000.f / M_PI_FLOAT);
 		odroid_setpoints.fi_back = (float)(frame->values.steering_fi_back * 18.f / 1000.f / M_PI_FLOAT);
-//		odroid_setpoints.dfi = (float)(frame->values.steering_dfi * 18.f / 1000.f / M_PI_FLOAT);
 
 		odroid_setpoints.velocity = (float)(frame->values.speed);
 		odroid_setpoints.acceleration = (float)(frame->values.acceleration);
@@ -227,7 +221,7 @@ void USBLink::recieveCommand(){
 			break;
 
 		case 0x60:
-			//buttons_manager.resert_buttons();
+			buttons_manager.reset();
 			break;
 
 		case 0xDE:
@@ -347,7 +341,6 @@ void USBLink::recieveTerminal(){
 	case 'l':
 //		left_indicator = !left_indicator;
 //		right_indicator = !right_indicator;
-
 		break;
 	case 'L':
 
@@ -362,6 +355,8 @@ void USBLink::recieveTerminal(){
 USBLink::USBLink() {
 	frame_TX_SIZE = sizeof(FrameTX);
 	frame_RX_SIZE = sizeof(FrameRX);
+	frame_TX_values_size = sizeof(ValuesTX);
+	frame_RX_values_size = sizeof(ValuesRX);
 	//dataBuffer.tx.bytes = new uint8_t [frame_TX_SIZE];
 	dataBuffer.tx.bytes = new uint8_t [1024];
 	dataBuffer.rxSize = 0;

@@ -221,7 +221,7 @@ struct UsbOFrame_s {
     uint8_t visionrst;
     uint8_t futabastate;
 
-    uint8_t buttonsflag;
+ //   uint8_t buttonsflag;
 
     uint8_t endByte;
 } __attribute__ ((__packed__));
