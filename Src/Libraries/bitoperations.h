@@ -1,3 +1,11 @@
+/*
+ * bitoperations.h
+ *
+ *  Created on: 03.01.2019
+ *      Author: rvbc-
+ */
+
+
 #ifndef BITOPERATIONS_H
 #define BITOPERATIONS_H
 

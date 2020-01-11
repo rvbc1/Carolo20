@@ -181,8 +181,11 @@ void StartSteeringTask(void const * argument) {
 
 	Servo* servo_back;
 	Servo* servo_front;
-	servo_back = new Servo(&htim2, TIM_CHANNEL_2);
-	servo_front = new Servo(&htim2, TIM_CHANNEL_4);
+//	servo_back = new Servo(&htim2, TIM_CHANNEL_2);   ////NEED CHECKOUT
+//	servo_front = new Servo(&htim2, TIM_CHANNEL_4);
+
+	servo_back = new Servo(&htim2, TIM_CHANNEL_4);
+	servo_front = new Servo(&htim2, TIM_CHANNEL_2);
 
 	osDelay(200);
 	motor.SetPassthroughState(false);
@@ -367,8 +370,7 @@ void StartBuzzerTask(void const * argument){
 
 void StartOLEDTask(void const * argument){
 	oled.Init();
-	while(1)
-	{
+	while(1){
 		oled.process();
 	}
 }

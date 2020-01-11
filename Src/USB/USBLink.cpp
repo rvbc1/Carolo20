@@ -126,7 +126,7 @@ void USBLink::recieveFrame(){
 }
 
 uint8_t USBLink::checkFrameCorrectness(FrameRX* frame){
-	if(frame->start_code == START_CODE && frame->end_code == END_CODE)
+	if(frame->start_code == START_CODE && frame->length == frame_RX_SIZE && frame->end_code == END_CODE)
 		return true;
 	return false;
 }
@@ -251,7 +251,7 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize += sprintf((char *) dataBuffer.tx.bytes+dataBuffer.txSize, "-------\n");;
 		break;
 	case 'b':
-		//dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Buttons value: %d\n", buttons_manager.getState());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Buttons value: %d\n", buttons_manager.getData());
 	break;
 
 	case 'B':
