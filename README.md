@@ -39,4 +39,4 @@ Taski dodawane są ręcznie, bez klikania w MXie. Wszystkie prócz USB zebrane s
 Można kombinować ze złączem SWD. Ja sobie radzę wykorzystując USB oraz UART1 (poprzez bluetooth lub ftdi adapter).
 Drukuję sobie interesujące mnie informacje. Są nawet statystyki użycia MCU przez RTOSa :)
 
-Obecnie piszę aplikację działająca w Javie do debugowania repo: 
+Obecnie piszę aplikację działająca w Javie do debugowania repo: https://github.com/rvbc1/Selfie_STM32_Debugger
