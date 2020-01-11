@@ -20,6 +20,10 @@ Servo::Servo(TIM_HandleTypeDef* htim, uint32_t channel) {
 	timer_is_on = false;
 }
 
+void Servo::setPWM_REG(volatile uint32_t* PWM_Register){
+	this->PWM_Register = PWM_Register;
+}
+
 volatile uint32_t* Servo::getPWM_Register(){
 	if(channel == TIM_CHANNEL_1){
 		return &htim->Instance->CCR1;
@@ -60,7 +64,7 @@ void Servo::setAngle(int16_t angle){
 	angle += correction_angle;
 	if(angle < min_angle) angle = min_angle;
 	if(angle > max_angle) angle = max_angle;
-	double pwm = (MAX_PWM_WIDTH - MIN_PWM_WIDTH) * (angle / (DEFAULT_MAX_ANGLE - DEFAULT_MIN_ANGLE)) + MIN_PWM_WIDTH;
+	double pwm = (MAX_PWM_WIDTH - MIN_PWM_WIDTH) * (angle / 180.0) + MIN_PWM_WIDTH;
 	setPWM(pwm);
 }
 

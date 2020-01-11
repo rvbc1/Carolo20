@@ -176,8 +176,8 @@ void StartSteeringTask(void const * argument) {
 
 	MX_TIM2_Init();
 	osDelay(200);
-//	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-//	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
 
 	Servo* servo_back;
 	Servo* servo_front;
@@ -186,6 +186,9 @@ void StartSteeringTask(void const * argument) {
 
 	servo_back = new Servo(&htim2, TIM_CHANNEL_4);
 	servo_front = new Servo(&htim2, TIM_CHANNEL_2);
+
+	servo_back->setPWM_REG(&TIM2->CCR4);
+	servo_front->setPWM_REG(&TIM2->CCR2);
 
 	osDelay(200);
 	motor.SetPassthroughState(false);
@@ -204,8 +207,8 @@ void StartSteeringTask(void const * argument) {
 			left_indicator_back.setActivated(true);
 			right_indicator_back.setActivated(true);
 
-			servo_front->Disarm();
-			servo_back->Disarm();
+//			servo_front->Disarm();
+//			servo_back->Disarm();
 			motor.Disarm();
 			if (futaba.Get_RCState() == 0)
 				StickCommandProccess();
@@ -260,8 +263,8 @@ void StartSteeringTask(void const * argument) {
 				servo_back->setAngle(odroid_setpoints.fi_back*2 + 90);
 				motor.SetVelocity(odroid_setpoints.velocity, odroid_setpoints.acceleration, odroid_setpoints.jerk);
 			}
-			servo_front->Arm();
-			servo_back->Arm();
+//			servo_front->Arm();
+//			servo_back->Arm();
 			motor.Arm();
 		}
 

@@ -34,6 +34,7 @@ private:
 public:
 	void Arm();
 	void Disarm();
+	void setPWM_REG(volatile uint32_t* PWM_Register);
 	void setPWM(uint16_t pwm);
 	void setAngle(int16_t angle);
 	void setMinAngle(int16_t min_angle);
