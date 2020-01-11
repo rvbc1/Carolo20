@@ -19,7 +19,7 @@
 #include "Tools.h"
 #include "Telemetry.h"
 #include "Buzzer.h"
-#include "Servo.h"
+#include "ServoManager.h"
 #include "Bluetooth.h"
 #include "Odometry.h"
 #include "crc.h"
@@ -173,23 +173,8 @@ void StartSteeringTask(void const * argument) {
 
 	futaba.ConfigureSmoothing(50.f, task_dt * 1e-3); /* Nyquist frequency - 1/2 Radio frequency * 0.9; 8CH - 9ms, 16CH - 18ms,*/
 
-	MX_TIM2_Init();
-	osDelay(200);
-//	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-//	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+	servo_manager.init();
 
-	Servo* servo_back;
-	Servo* servo_front;
-//	servo_back = new Servo(&htim2, TIM_CHANNEL_2);   ////NEED CHECKOUT
-//	servo_front = new Servo(&htim2, TIM_CHANNEL_4);
-
-	servo_back = new Servo(&htim2, TIM_CHANNEL_4);
-	servo_front = new Servo(&htim2, TIM_CHANNEL_2);
-
-//	servo_back->setPWM_REG(&TIM2->CCR4);
-//	servo_front->setPWM_REG(&TIM2->CCR2);
-
-	osDelay(200);
 	motor.SetPassthroughState(false);
 	//motor.setMaxVelocity(3500.f);
 	motor.setMaxVelocity(6000.f);
@@ -206,8 +191,7 @@ void StartSteeringTask(void const * argument) {
 			left_indicator_back.setActivated(true);
 			right_indicator_back.setActivated(true);
 
-			servo_front->Disarm();
-			servo_back->Disarm();
+			servo_manager.disarm();
 			motor.Disarm();
 			if (futaba.Get_RCState() == 0)
 				StickCommandProccess();
@@ -242,28 +226,23 @@ void StartSteeringTask(void const * argument) {
 				rc_mode = MODE_ACRO;
 
 
-				servo_back->setAngle(-int16_t(futaba.SmoothDeflection[YAW] * 90.f) + 90);
-				servo_front->setAngle(int16_t(futaba.SmoothDeflection[YAW] * 90.f) + 90);
+				servo_manager.setAngle(-int16_t(futaba.SmoothDeflection[YAW] * 45.f), int16_t(futaba.SmoothDeflection[YAW] * 45.f));
 				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 10000.f, 50000.f);
 
 			} else if (futaba.SwitchB == SWITCH_MIDDLE) {
 				rc_mode = MODE_SEMI;
 
-
-				servo_front->setAngle(setpoints_from_vision.fi_front*2 + 90);
-				servo_back->setAngle(setpoints_from_vision.fi_back*2 + 90);
+				servo_manager.setAngle(-setpoints_from_vision.fi_front, -setpoints_from_vision.fi_back);
 				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
 			} else if (futaba.SwitchB == SWITCH_DOWN) {
 				rc_mode = MODE_AUTONOMOUS;
 
-				servo_front->setAngle(setpoints_from_vision.fi_front*2 + 90);
-				servo_back->setAngle(setpoints_from_vision.fi_back*2 + 90);
+				servo_manager.setAngle(-setpoints_from_vision.fi_front, -setpoints_from_vision.fi_back);
 				motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
 			}
-			servo_front->Arm();
-			servo_back->Arm();
+			servo_manager.arm();
 			motor.Arm();
 		}
 
