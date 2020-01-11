@@ -33,8 +33,10 @@ Wystarczy w zakładce Firmware Flasher wybrać przez Load Firmware [Local] skomp
 
 ## How to modify?
 Trzeba pamiętać, że w obecnym wydaniu CubeMX nie ma wpływu na kluczowe pliki, m.in. main.cpp i freertos.cpp i ewentualne zmiany trzeba wprowadzać ręcznie.
-Taski dodawane są ręcznie, bez klikania w MXie. Wszystkie prócz USB zebrane są w kupę o nazwie Allshit.cpp. Ma to swoje zalety i wady :)
+Taski dodawane są ręcznie, bez klikania w MXie. Wszystkie prócz USB zebrane są w kupę o nazwie AllTasks.cpp. Ma to swoje zalety i wady :)
 
 ## How to debug?
 Można kombinować ze złączem SWD. Ja sobie radzę wykorzystując USB oraz UART1 (poprzez bluetooth lub ftdi adapter).
 Drukuję sobie interesujące mnie informacje. Są nawet statystyki użycia MCU przez RTOSa :)
+
+Obecnie piszę aplikację działająca w Javie do debugowania repo: 
