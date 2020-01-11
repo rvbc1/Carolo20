@@ -11,7 +11,6 @@
 #include <ButtonsManager.h>
 #include <LightsManager.h>
 #include "cmsis_os.h"
-#include "USBTask.h"
 #include "Futaba.h"
 #include "Gyro.h"
 #include "PowerManager.h"
@@ -187,8 +186,8 @@ void StartSteeringTask(void const * argument) {
 	servo_back = new Servo(&htim2, TIM_CHANNEL_4);
 	servo_front = new Servo(&htim2, TIM_CHANNEL_2);
 
-	servo_back->setPWM_REG(&TIM2->CCR4);
-	servo_front->setPWM_REG(&TIM2->CCR2);
+//	servo_back->setPWM_REG(&TIM2->CCR4);
+//	servo_front->setPWM_REG(&TIM2->CCR2);
 
 	osDelay(200);
 	motor.SetPassthroughState(false);
@@ -252,16 +251,16 @@ void StartSteeringTask(void const * argument) {
 				rc_mode = MODE_SEMI;
 
 
-				servo_front->setAngle(odroid_setpoints.fi_front*2 + 90);
-				servo_back->setAngle(odroid_setpoints.fi_back*2 + 90);
+				servo_front->setAngle(setpoints_from_vision.fi_front*2 + 90);
+				servo_back->setAngle(setpoints_from_vision.fi_back*2 + 90);
 				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
 			} else if (futaba.SwitchB == SWITCH_DOWN) {
 				rc_mode = MODE_AUTONOMOUS;
 
-				servo_front->setAngle(odroid_setpoints.fi_front*2 + 90);
-				servo_back->setAngle(odroid_setpoints.fi_back*2 + 90);
-				motor.SetVelocity(odroid_setpoints.velocity, odroid_setpoints.acceleration, odroid_setpoints.jerk);
+				servo_front->setAngle(setpoints_from_vision.fi_front*2 + 90);
+				servo_back->setAngle(setpoints_from_vision.fi_back*2 + 90);
+				motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
 			}
 			servo_front->Arm();
 			servo_back->Arm();

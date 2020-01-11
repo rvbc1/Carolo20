@@ -63,12 +63,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-#include "USBTask.h"
-/* USER CODE END Includes */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
+#include "USBLink.h" */
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */

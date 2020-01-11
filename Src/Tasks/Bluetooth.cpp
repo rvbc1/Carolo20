@@ -14,7 +14,7 @@
 #include "Motor.h"
 #include "Futaba.h"
 #include "Gyro.h"
-#include "USBTask.h"
+#include "USBLink.h"
 #include "AHRS.h"
 #include "Odometry.h"
 #include "tim.h"
@@ -93,8 +93,8 @@ void Bluetooth_Process(void) {
 			systemResetToBootloader();
 			break;
 		case 'u':
-			terminal_length = sprintf((char *) terminal_tx, "USBServo: %.1f\tUSBVelocity: %.1f\nUSB_left-indicator %d\tUSB_right-indicator %d\nTimestamp:%u\n", odroid_setpoints.fi_front, odroid_setpoints.velocity, left_indicator, right_indicator, timestamp);
-			HAL_UART_Transmit_DMA(&huart8, terminal_tx, terminal_length);
+		//	terminal_length = sprintf((char *) terminal_tx, "USBServo: %.1f\tUSBVelocity: %.1f\nUSB_left-indicator %d\tUSB_right-indicator %d\nTimestamp:%u\n", setpoints_from_vision.fi_front, setpoints_from_vision.velocity, left_indicator, right_indicator, timestamp);
+		//	HAL_UART_Transmit_DMA(&huart8, terminal_tx, terminal_length);
 			break;
 		case 'q':
 			quaternion orientation;
