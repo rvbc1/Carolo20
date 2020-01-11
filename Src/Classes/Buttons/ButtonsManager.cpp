@@ -7,7 +7,6 @@
  */
 
 #include <ButtonsManager.h>
-#include "stm32f7xx_hal.h"
 
 
 ButtonsManager buttons_manager;
@@ -56,6 +55,7 @@ void ButtonsManager::reset(){
 
 void ButtonsManager::process(){
 	check();
+	osDelay(5);
 }
 
 

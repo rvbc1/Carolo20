@@ -258,7 +258,7 @@ void USB_Transmit_Data(void){
 
 //	usbOframe.frame.startbutton1 = start_parking_USB;
 //	usbOframe.frame.startbutton2 = start_obstacle_USB;
-	usbOframe.frame.visionrst = vision_reset;
+//	usbOframe.frame.visionrst = vision_reset;
 	usbOframe.frame.futabastate = futaba.SwitchB;
 
 	//usbOframe.frame.buttonsflag = buttons_manager.readFlag();
@@ -267,8 +267,8 @@ void USB_Transmit_Data(void){
 
 	CDC_Transmit_FS(usbOframe.bytes, USB_TXFRAME_SIZE);
 
-	if(vision_reset_ack)
-		vision_reset_sent = 1;
+//	if(vision_reset_ack)
+//		vision_reset_sent = 1;
 
 //	start_parking_USB = 0;
 //	start_obstacle_USB = 0;

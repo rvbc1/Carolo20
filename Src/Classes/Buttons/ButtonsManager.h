@@ -11,9 +11,8 @@
 #define ALL_BUTTONS_FLAGS_DATA_TYPE 	uint8_t
 #define MAX_BUTTONS_AMOUNT    			2
 
-
+#include "main.h"
 #include "cmsis_os.h"
-#include "USBTask.h"
 #include "Button.h"
 #include "bitoperations.h"
 

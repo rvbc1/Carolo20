@@ -43,11 +43,11 @@ void USBLink::USB_Process(void) {
 	if (evt.status == osEventSignal) {
 		if (evt.value.signals & USB_TX_signal && CommunicationOnGoing && hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
 			static uint8_t cnt = 0;
-			if (++cnt >= usbDenominator) {
+			if (++cnt >= usbDenominator) {// co to jest???
 				cnt = 0;
 				transmitFrame();
 			}
-			TIM11->CNT = 0;
+			TIM11->CNT = 0; // co to jest???
 		}
 
 		if (evt.value.signals & USB_RX_signal) {
