@@ -13,7 +13,7 @@
 #include "usbd_cdc_if.h"
 #include "usb_device.h"
 #include "Mathematics.h"
-
+#include "crc.h"
 
 
 #include "USBTask.h" ///
@@ -40,8 +40,6 @@ class USBLink {
 public:
     struct ValuesTX{
 
-        uint8_t length;
-
         uint32_t timecode;
 
         int32_t distance;
@@ -60,8 +58,6 @@ public:
 
     struct ValuesRX{
 
-        uint8_t length;
-
         uint32_t timecode;
 
         int16_t steering_fi_front;
@@ -70,6 +66,7 @@ public:
         int16_t speed;
         int16_t acceleration;
         int16_t jerk;
+
 
     } __attribute__ ((__packed__));
 
@@ -88,6 +85,8 @@ private:
 	struct FrameTX{
 		uint8_t start_code;
 
+        uint8_t length;
+
 		ValuesTX values;
 
         uint16_t crc16;
@@ -97,6 +96,8 @@ private:
 
 	struct FrameRX{
 		uint8_t start_code;
+
+        uint8_t length;
 
 		ValuesRX values;
 
@@ -160,6 +161,8 @@ private:
 
     void transmitFrame();
 
+    void prepareFrameTX();
+
 
     uint8_t checkFrameCorrectness(FrameRX* frame);
     uint8_t checkFrameCorrectness(SettingsRX* frame);
@@ -170,8 +173,9 @@ private:
 	uint8_t CommunicationOnGoing = false;
 
 	uint16_t frame_TX_SIZE;
-	uint16_t frame_RX_SIZE ;
-
+	uint16_t frame_RX_SIZE;
+	uint16_t frame_TX_values_size;
+	uint16_t frame_RX_values_size;
 
 };
 

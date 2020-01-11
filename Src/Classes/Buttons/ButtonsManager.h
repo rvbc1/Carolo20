@@ -8,41 +8,37 @@
 #ifndef CLASSES_BUTTONSMANAGER_H_
 #define CLASSES_BUTTONSMANAGER_H_
 
+#define ALL_BUTTONS_FLAGS_DATA_TYPE 	uint8_t
+#define MAX_BUTTONS_AMOUNT    			2
 
+#include "main.h"
 #include "cmsis_os.h"
-#include "USBTask.h"
 #include "Button.h"
+#include "bitoperations.h"
 
 
 
-extern uint8_t start_parking_USB;
-extern uint8_t start_obstacle_USB;
-extern uint8_t start_parking_sent;
-extern uint8_t start_obstacle_sent;
+
 
 class ButtonsManager {
 private:
 	Button *button_one;
 	Button *button_two;
+	//In case of 3 or more buttons, you must change type of flag and arguments in functions:
+	// getData(), check(), updateFlag(), active(), activetedEver() and activatedFirst(),
+	// and in bitoperations.h and .cpp (functions work on uint8_t)
 
-	uint8_t ever1;
-	uint8_t ever2;
+	Button *all_buttons[MAX_BUTTONS_AMOUNT];
+	uint8_t amount_of_added_buttons = 0;
 
-	uint8_t first1;
-	uint8_t first2;
-
+	ALL_BUTTONS_FLAGS_DATA_TYPE first_clicked_button_flag;
+	void addButton(Button *button);
 	void check();
-	//std::vector<Button *> buttons;
+
 public:
 	void process();
-	uint8_t start1_state_of_pressing;
-	uint8_t start2_state_of_pressing;
-	uint8_t screen1_state_of_pressing;
-	uint8_t screen2_state_of_pressing;
-	uint8_t screen3_state_of_pressing;
-	uint8_t any_button_was_pressed;
-	uint8_t getState();
-	void resert_buttons();
+	ALL_BUTTONS_FLAGS_DATA_TYPE getData();
+	void reset();
 	void Init();
 	ButtonsManager();
 	virtual ~ButtonsManager();

@@ -221,6 +221,8 @@ struct UsbOFrame_s {
     uint8_t visionrst;
     uint8_t futabastate;
 
+ //   uint8_t buttonsflag;
+
     uint8_t endByte;
 } __attribute__ ((__packed__));
 
@@ -254,20 +256,22 @@ void USB_Transmit_Data(void){
 	}
 
 
-	usbOframe.frame.startbutton1 = start_parking_USB;
-	usbOframe.frame.startbutton2 = start_obstacle_USB;
-	usbOframe.frame.visionrst = vision_reset;
+//	usbOframe.frame.startbutton1 = start_parking_USB;
+//	usbOframe.frame.startbutton2 = start_obstacle_USB;
+//	usbOframe.frame.visionrst = vision_reset;
 	usbOframe.frame.futabastate = futaba.SwitchB;
+
+	//usbOframe.frame.buttonsflag = buttons_manager.readFlag();
 
 	usbOframe.frame.endByte = 0xFE;
 
 	CDC_Transmit_FS(usbOframe.bytes, USB_TXFRAME_SIZE);
 
-	if(vision_reset_ack)
-		vision_reset_sent = 1;
+//	if(vision_reset_ack)
+//		vision_reset_sent = 1;
 
-	start_parking_USB = 0;
-	start_obstacle_USB = 0;
+//	start_parking_USB = 0;
+//	start_obstacle_USB = 0;
 
 //	if(start_parking_USB)
 //		start_parking_sent = 1;

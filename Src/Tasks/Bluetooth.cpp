@@ -79,8 +79,8 @@ void Bluetooth_Process(void) {
 			HAL_UART_Transmit_DMA(&huart8, terminal_tx, terminal_length);
 			break;
 		case 'k':
-			terminal_length = sprintf((char*) terminal_tx, "Klawisz parking:%u\tKlawisz obstacle:%u\nCNT:%u\n", start_parking_USB, start_obstacle_USB, TIM11->CNT);
-			HAL_UART_Transmit_DMA(&huart8, terminal_tx, terminal_length);
+//			terminal_length = sprintf((char*) terminal_tx, "Klawisz parking:%u\tKlawisz obstacle:%u\nCNT:%u\n", start_parking_USB, start_obstacle_USB, TIM11->CNT);
+//			HAL_UART_Transmit_DMA(&huart8, terminal_tx, terminal_length);
 			break;
 		case 'r':
 			terminal_length = sprintf((char *) terminal_tx, "\n...STM32 Resetting ..\n");
