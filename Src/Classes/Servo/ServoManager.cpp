@@ -1,0 +1,61 @@
+/*
+ * ServoManager.cpp
+ *
+ *  Created on: Jan 11, 2020
+ *      Author: rvbc-
+ */
+
+#include <ServoManager.h>
+#include "SteeringManager.h"
+#include "USBLink.h"
+#include "Futaba.h"
+
+ServoManager servo_manager;
+
+void ServoManager::init(){
+	MX_TIM2_Init();
+
+	servo_back = new Servo(&htim2, TIM_CHANNEL_2);
+	servo_front = new Servo(&htim2, TIM_CHANNEL_4);
+}
+
+void ServoManager::arm(){
+	servo_front->Arm();
+	servo_back->Arm();
+}
+
+void ServoManager::disarm(){
+	servo_front->Disarm();
+	servo_back->Disarm();
+}
+
+void ServoManager::setAngle(uint16_t front, uint16_t back){
+	servo_front->setAngle(-front);	//check why signal is inverted
+	servo_back->setAngle(-back);	//check why signal is inverted
+}
+
+void ServoManager::process(){
+	arm();
+	switch(steering_manager.getRCmode()){
+	case SteeringManager::DISARMED:
+		disarm();
+		break;
+	case SteeringManager::MODE_ACRO:
+		setAngle(int16_t(futaba.SmoothDeflection[YAW] * 45.f), -int16_t(futaba.SmoothDeflection[YAW] * 45.f));
+		break;
+	case SteeringManager::MODE_SEMI:
+	case SteeringManager::MODE_AUTONOMOUS:
+		setAngle(setpoints_from_vision.fi_front, setpoints_from_vision.fi_back);
+		break;
+	}
+}
+
+ServoManager::ServoManager() {
+	// TODO Auto-generated constructor stub
+
+}
+
+ServoManager::~ServoManager() {
+	// TODO Auto-generated destructor stub
+}
+

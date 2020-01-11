@@ -2,7 +2,7 @@
  * ServoManager.h
  *
  *  Created on: Jan 11, 2020
- *      Author: Marek
+ *      Author: rvbc-
  */
 
 #ifndef CLASSES_SERVOMANAGER_H_
@@ -20,6 +20,8 @@ public:
 
 	void arm();
 	void disarm();
+
+	void process();
 
 	void setAngle(uint16_t front, uint16_t back);
 

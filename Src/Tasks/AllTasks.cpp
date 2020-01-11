@@ -63,8 +63,6 @@ void StartButtonsTask(void const * argument);
 #include "iwdg.h"
 #include "wwdg.h"
 
-uint16_t cnt_blueled = 999;
-
 
 
 void Allshit_begin(void) {
@@ -162,129 +160,11 @@ static void StickCommandProccess(void) {
 	}
 }
 void StartSteeringTask(void const * argument) {
-	enum {
-		DISARMED = 0,
-		MODE_AUTONOMOUS,
-		MODE_SEMI,
-		MODE_ACRO
-	} rc_mode = DISARMED;
-
-	const uint32_t task_dt = 1u;
-
-	futaba.ConfigureSmoothing(50.f, task_dt * 1e-3); /* Nyquist frequency - 1/2 Radio frequency * 0.9; 8CH - 9ms, 16CH - 18ms,*/
-
-	servo_manager.init();
-
-	motor.SetPassthroughState(false);
-	//motor.setMaxVelocity(3500.f);
-	motor.setMaxVelocity(6000.f);
-	osDelay(100);
-
-	for (;;) {
-		futaba.ProcessSmoothing();
-
-		if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
-			rc_mode = DISARMED;
-			left_indicator_front.setActivated(true);
-			right_indicator_front.setActivated(true);
-
-			left_indicator_back.setActivated(true);
-			right_indicator_back.setActivated(true);
-
-			servo_manager.disarm();
-			motor.Disarm();
-			if (futaba.Get_RCState() == 0)
-				StickCommandProccess();
-		} else if (futaba.SwitchA == SWITCH_DOWN) {
-
-			if (futaba.SwitchB == SWITCH_UP) {
-				if (futaba.SwitchC == SWITCH_UP) {
-					left_indicator_front.setActivated(false);
-					right_indicator_front.setActivated(true);
-
-					left_indicator_back.setActivated(false);
-					right_indicator_back.setActivated(true);
-				} else if(futaba.SwitchC == SWITCH_MIDDLE){
-					left_indicator_front.setActivated(false);
-					right_indicator_front.setActivated(false);
-
-					left_indicator_back.setActivated(false);
-					right_indicator_back.setActivated(false);
-				} else{
-					left_indicator_front.setActivated(true);
-					right_indicator_front.setActivated(false);
-
-					left_indicator_back.setActivated(true);
-					right_indicator_back.setActivated(false);
-				}
-
-				//				if (reczny == true){
-				//					HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_SET);
-				//					motor.SetVelocity(0, 10000.f, 50000.f);
-				//					osDelay(1000);
-				//				}
-				rc_mode = MODE_ACRO;
 
 
-				servo_manager.setAngle(-int16_t(futaba.SmoothDeflection[YAW] * 45.f), int16_t(futaba.SmoothDeflection[YAW] * 45.f));
-				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
-				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 10000.f, 50000.f);
+//	for (;;) {
+//	}
 
-			} else if (futaba.SwitchB == SWITCH_MIDDLE) {
-				rc_mode = MODE_SEMI;
-
-				servo_manager.setAngle(-setpoints_from_vision.fi_front, -setpoints_from_vision.fi_back);
-				motor.SetDuty(futaba.SmoothDeflection[PITCH]);
-				motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
-			} else if (futaba.SwitchB == SWITCH_DOWN) {
-				rc_mode = MODE_AUTONOMOUS;
-
-				servo_manager.setAngle(-setpoints_from_vision.fi_front, -setpoints_from_vision.fi_back);
-				motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
-			}
-			servo_manager.arm();
-			motor.Arm();
-		}
-
-		if (futaba.SwitchB == SWITCH_UP) {
-
-			//HAL_TIM_Base_Stop_IT(&htim11);
-			TIM11->CNT = 1;
-
-			cnt_blueled++;
-			if (cnt_blueled > 1000)
-			{
-				HAL_GPIO_TogglePin(LED_OUT_GPIO_Port, LED_OUT_Pin);
-				cnt_blueled = 1;
-			}
-
-		} else if (futaba.SwitchB == SWITCH_MIDDLE) {
-			//HAL_TIM_Base_Start_IT(&htim11);
-			TIM11->CNT = 1;
-			cnt_blueled = 999;
-			HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_RESET);
-		} else if (futaba.SwitchB == SWITCH_DOWN) {
-			//HAL_TIM_Base_Start_IT(&htim11);
-			TIM11->CNT = 1;
-			cnt_blueled = 999;
-			HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_RESET);
-		}
-
-
-		//TODO - Find best suited place for watchdog refreshes
-		static uint8_t watchdog_init_done = 0;
-		if (watchdog_init_done) {
-			HAL_WWDG_Refresh(&hwwdg);
-			HAL_IWDG_Refresh(&hiwdg);
-		} else if(HAL_GetTick() > 500) {
-			MX_IWDG_Init();
-			MX_WWDG_Init();
-			watchdog_init_done = 1;
-		}
-
-		osDelay(task_dt);
-	}
-	UNUSED(rc_mode);
 }
 
 void StartGyroTask(void const * argument) {

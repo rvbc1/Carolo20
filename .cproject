@@ -46,6 +46,8 @@
 									<listOptionValue builtIn="false" value="../Src/Classes/OLED"/>
 									<listOptionValue builtIn="false" value="../Src/Classes/Lights"/>
 									<listOptionValue builtIn="false" value="../Src/Classes/Buttons"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/Motor"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/Servo"/>
 									<listOptionValue builtIn="false" value="../Src/USB"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F7xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy"/>
@@ -108,9 +110,11 @@
 								<option id="com.atollic.truestudio.common_options.target.fpucore.1297069055" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.fpucore.fpv5-sp-d16" valueType="enumerated"/>
 								<option id="com.atollic.truestudio.gpp.directories.select.1254029146" name="Include path" superClass="com.atollic.truestudio.gpp.directories.select" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/Motor"/>
 									<listOptionValue builtIn="false" value="../Src/Tasks"/>
 									<listOptionValue builtIn="false" value="../Src/Libraries"/>
 									<listOptionValue builtIn="false" value="../Src/Libraries/VESC_DRIVER"/>
+									<listOptionValue builtIn="false" value="../Src/Classes/Servo"/>
 									<listOptionValue builtIn="false" value="../Src/Classes/Lights"/>
 									<listOptionValue builtIn="false" value="../Src/Classes/OLED"/>
 									<listOptionValue builtIn="false" value="../Src/Classes/Buttons"/>

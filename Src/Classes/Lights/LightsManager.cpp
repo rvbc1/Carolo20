@@ -138,7 +138,41 @@ void LightsManager::reset_data_buffer(){
 	}
 }
 
+void LightsManager::checkRCmode(){
+	if(steering_manager.getRCmode() == SteeringManager::DISARMED){
+		left_indicator_front.setActivated(true);
+		right_indicator_front.setActivated(true);
+
+		left_indicator_back.setActivated(true);
+		right_indicator_back.setActivated(true);
+
+	} else if (steering_manager.getRCmode() == SteeringManager::MODE_ACRO){
+
+		if (futaba.SwitchC == SWITCH_UP) {
+			left_indicator_front.setActivated(false);
+			right_indicator_front.setActivated(true);
+
+			left_indicator_back.setActivated(false);
+			right_indicator_back.setActivated(true);
+		} else if(futaba.SwitchC == SWITCH_MIDDLE){
+			left_indicator_front.setActivated(false);
+			right_indicator_front.setActivated(false);
+
+			left_indicator_back.setActivated(false);
+			right_indicator_back.setActivated(false);
+		} else{
+			left_indicator_front.setActivated(true);
+			right_indicator_front.setActivated(false);
+
+			left_indicator_back.setActivated(true);
+			right_indicator_back.setActivated(false);
+		}
+	}
+}
+
 void LightsManager::process(){
+	checkRCmode();
+
 	HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
 
 	if(high){
