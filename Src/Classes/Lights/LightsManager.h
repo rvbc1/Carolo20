@@ -9,7 +9,7 @@
 #define CLASSES_LIGHTSMANAGER_H_
 
 #include <AllTasks.h>
-#include "USBTask.h"
+#include "USBLink.h"
 #include "LEDStrip.h"
 #include "Light.h"
 #include "Indicator.h"

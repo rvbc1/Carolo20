@@ -25,12 +25,20 @@ USBLink::DataBuffer USBLink::dataBuffer;
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-extern int32_t USB_TX_signal;
+//extern int32_t USB_TX_signal;
+//
+//extern int32_t USB_RX_signal;
+//
+//
+//extern uint8_t usbDenominator;
 
-extern int32_t USB_RX_signal;
+int32_t USB_RX_signal = 1 << 0;
+int32_t USB_TX_signal = 1 << 1;
+uint8_t usbDenominator = 5;
 
+uint32_t timestamp = 5;
 
-extern uint8_t usbDenominator;
+setpoints_from_vision_t setpoints_from_vision = {0.f, 0.f, 0.f, 0.f, 0.f};
 
 
 USBLink usb_link;
@@ -116,12 +124,12 @@ void USBLink::decodeRawData(){
 void USBLink::recieveFrame(){
 	FrameRX* frame = dataBuffer.rx.frame;//Just for shorter code
 	if (checkFrameCorrectness(frame)) {
-		odroid_setpoints.fi_front = (float)(frame->values.steering_fi_front * 18.f / 1000.f / M_PI_FLOAT);
-		odroid_setpoints.fi_back = (float)(frame->values.steering_fi_back * 18.f / 1000.f / M_PI_FLOAT);
+		setpoints_from_vision.fi_front = (float)(frame->values.steering_fi_front * 18.f / 1000.f / M_PI_FLOAT);
+		setpoints_from_vision.fi_back = (float)(frame->values.steering_fi_back * 18.f / 1000.f / M_PI_FLOAT);
 
-		odroid_setpoints.velocity = (float)(frame->values.speed);
-		odroid_setpoints.acceleration = (float)(frame->values.acceleration);
-		odroid_setpoints.jerk = (float)(frame->values.jerk);
+		setpoints_from_vision.velocity = (float)(frame->values.speed);
+		setpoints_from_vision.acceleration = (float)(frame->values.acceleration);
+		setpoints_from_vision.jerk = (float)(frame->values.jerk);
 	}
 }
 
@@ -252,6 +260,7 @@ void USBLink::recieveTerminal(){
 		break;
 	case 'b':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Buttons value: %d\n", buttons_manager.getData());
+
 	break;
 
 	case 'B':
@@ -326,7 +335,7 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "time: %lums / %luus\n",HAL_GetTick(), tools.GetMicros());
 		break;
 	case 'u':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "USBServo: %.1f\tUSBVelocity: %.1f\n", odroid_setpoints.fi_front, odroid_setpoints.velocity);
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "USBServo: %.1f\tUSBVelocity: %.1f\n", setpoints_from_vision.fi_front, setpoints_from_vision.velocity);
 		break;
 	case 'r':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "\n...STM32 Resetting ..\n");

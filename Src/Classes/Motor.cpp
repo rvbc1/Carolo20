@@ -103,8 +103,8 @@ void Motor::Process(void) {
 	Conversions();
 	SpeedTracking();
 	Controller();
-	//if (tim_running)
-	Output();
+	if (tim_running)
+		Output();
 
 	osDelay(3);
 	//osDelay(_dt * 1000.f);
@@ -224,9 +224,12 @@ void Motor::Output(void) {
 }
 void Motor::Arm(void) {
 	controller_en = true;
+	tim_running = true;
 }
 void Motor::Disarm(void) {
 	controller_en = false;
+	tim_running = false;
+	bldc_interface_set_duty_cycle(0.f);
 }
 float Motor::getRPMs(void){
 	return current_rpm;
@@ -250,7 +253,7 @@ void Motor::setMaxVelocity(float velocity){
 	max_velocity = velocity;
 }
 void Motor::SpeedTracking(void) {
-	//	Arm();
+	Arm();
 	int32_t now = tools.GetMicros();
 	static int32_t before = now;
 	if (set_acceleration) {

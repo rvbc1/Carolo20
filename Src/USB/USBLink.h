@@ -16,7 +16,7 @@
 #include "crc.h"
 
 
-#include "USBTask.h" ///
+//#include "USBTask.h" ///
 #include "tim.h"
 
 
@@ -33,6 +33,18 @@
 
 #define TERMINAL_RX_SIZE 1
 
+extern int32_t USB_TX_signal;
+
+typedef struct setpoints_from_vision_s{
+	float fi_front;
+	float fi_back;
+	float dfi;
+	float velocity;
+	float acceleration;
+	float jerk;
+} setpoints_from_vision_t;
+
+extern setpoints_from_vision_t setpoints_from_vision;
 
 
 
