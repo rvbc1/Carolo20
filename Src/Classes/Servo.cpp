@@ -17,6 +17,7 @@ Servo::Servo(TIM_HandleTypeDef* htim, uint32_t channel) {
 	this->max_user_angle = DEFAULT_MAX_USER_ANGLE;
 	this->min_user_angle = DEFAULT_MIN_USER_ANGLE;
 	this->correction_angle = DEFAULT_CORRECTION_ANGLE;
+	timer_is_on = false;
 }
 
 volatile uint32_t* Servo::getPWM_Register(){

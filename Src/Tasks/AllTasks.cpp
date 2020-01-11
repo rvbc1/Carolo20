@@ -176,8 +176,8 @@ void StartSteeringTask(void const * argument) {
 
 	MX_TIM2_Init();
 	osDelay(200);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+//	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+//	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
 
 	Servo* servo_back;
 	Servo* servo_front;
