@@ -10,6 +10,7 @@
 #include <AllTasks.h>
 #include <ButtonsManager.h>
 #include <LightsManager.h>
+#include <ModeManager.h>
 #include "cmsis_os.h"
 #include "Futaba.h"
 #include "Gyro.h"
@@ -27,7 +28,6 @@
 #include "ButtonsManager.h"
 #include "Mathematics.h"
 #include "tim.h"
-#include "SteeringManager.h"
 #include "WatchDogs.h"
 
 #include "USBLink.h"
@@ -35,7 +35,7 @@
 osThreadId GyroTaskHandle;
 osThreadId AHRSTaskHandle;
 osThreadId BatteryManagerHandle;
-osThreadId SteeringTaskHandle;
+osThreadId ModeManagerTaskHandle;
 osThreadId BTTaskHandle;
 osThreadId FutabaTaskHandle;
 osThreadId TelemetryTaskHandle;
@@ -52,7 +52,7 @@ void StartGyroTask(void const * argument);
 void StartAHRSTask(void const * argument);
 void StartOdometryTask(void const * argument);
 void StartBatteryManager(void const * argument);
-void StartSteeringTask(void const * argument);
+void StartModeManagerTask(void const * argument);
 void StartBTTask(void const * argument);
 void StartFutabaTask(void const * argument);
 void StartUSBTask(void const * argument);
@@ -77,8 +77,8 @@ void Allshit_begin(void) {
 	MotorControllerHandle = osThreadCreate(osThread(MotorController), NULL);
 
 	/* definition and creation of SteeringTask */
-	osThreadDef(SteeringTask, StartSteeringTask, osPriorityHigh, 0, 512);
-	SteeringTaskHandle = osThreadCreate(osThread(SteeringTask), NULL);
+	osThreadDef(ModeManagerTask, StartModeManagerTask, osPriorityHigh, 0, 512);
+	ModeManagerTaskHandle = osThreadCreate(osThread(ModeManagerTask), NULL);
 
 	/* definition and creation of GyroTask */
 	osThreadDef(GyroTask, StartGyroTask, osPriorityHigh, 0, 1024);
@@ -125,7 +125,7 @@ void Allshit_begin(void) {
 	osThreadDef(ButtonsTask, StartButtonsTask, osPriorityLow, 0, 128);
 	ButtonsTaskHandle = osThreadCreate(osThread(ButtonsTask), NULL);
 
-	/* definition and creation of SteeringTask */
+	/* definition and creation of WatchDogsTask */
 	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
 	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
 }
@@ -146,7 +146,7 @@ void StartMotorController(void const * argument) {
 	}
 }
 
-void StartSteeringTask(void const * argument) {
+void StartModeManagerTask(void const * argument) {
 	steering_manager.init();
 	for (;;) {
 		steering_manager.proccess();
@@ -209,8 +209,7 @@ void StartBTTask(void const * argument) {
 
 void StartBuzzerTask(void const * argument){
 	buzzer.Init();
-	while(true)
-	{
+	while(true){
 		buzzer.Loop();
 	}
 }

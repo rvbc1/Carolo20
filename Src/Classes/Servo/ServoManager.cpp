@@ -6,7 +6,7 @@
  */
 
 #include <ServoManager.h>
-#include "SteeringManager.h"
+#include "ModeManager.h"
 #include "USBLink.h"
 #include "Futaba.h"
 
@@ -37,14 +37,14 @@ void ServoManager::setAngle(uint16_t front, uint16_t back){
 void ServoManager::process(){
 	arm();
 	switch(steering_manager.getRCmode()){
-	case SteeringManager::DISARMED:
+	case ModeManager::DISARMED:
 		disarm();
 		break;
-	case SteeringManager::MODE_ACRO:
+	case ModeManager::MODE_ACRO:
 		setAngle(int16_t(futaba.SmoothDeflection[YAW] * 45.f), -int16_t(futaba.SmoothDeflection[YAW] * 45.f));
 		break;
-	case SteeringManager::MODE_SEMI:
-	case SteeringManager::MODE_AUTONOMOUS:
+	case ModeManager::MODE_SEMI:
+	case ModeManager::MODE_AUTONOMOUS:
 		setAngle(setpoints_from_vision.fi_front, setpoints_from_vision.fi_back);
 		break;
 	}

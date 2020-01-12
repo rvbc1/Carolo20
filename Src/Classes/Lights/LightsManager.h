@@ -13,7 +13,7 @@
 #include "LEDStrip.h"
 #include "Light.h"
 #include "Indicator.h"
-#include "SteeringManager.h"
+#include "ModeManager.h"
 #include "Futaba.h"
 
 extern Light headlights;

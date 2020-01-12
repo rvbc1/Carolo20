@@ -11,7 +11,7 @@
 #include "main.h"
 #include "LightsManager.h"
 
-class SteeringManager {
+class ModeManager {
 public:
 	enum RC_MODE{
 		DISARMED = 0,
@@ -23,14 +23,14 @@ public:
 	void init();
 	void proccess();
 	RC_MODE getRCmode();
-	SteeringManager();
-	virtual ~SteeringManager();
+	ModeManager();
+	virtual ~ModeManager();
 private:
 	const uint32_t task_dt = 1u;
 	RC_MODE rc_mode = DISARMED;
 
 };
 
-extern SteeringManager steering_manager;
+extern ModeManager steering_manager;
 
 #endif /* TASKS_STEERINGMANAGER_H_ */

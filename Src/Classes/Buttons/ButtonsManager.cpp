@@ -17,7 +17,7 @@ void ButtonsManager::Init(){
 	button_two = new Button(START_BUTTON_2_O6_GPIO_Port, START_BUTTON_2_O6_Pin);
 	addButton(button_one);
 	addButton(button_two);
-
+	reset();
 
 }
 void ButtonsManager::addButton(Button *button){

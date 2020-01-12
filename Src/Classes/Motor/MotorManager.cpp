@@ -16,18 +16,18 @@ void MotorManager::init(){
 void MotorManager::process(){
 	motor.Arm();
 	switch(steering_manager.getRCmode()){
-	case SteeringManager::DISARMED:
+	case ModeManager::DISARMED:
 		motor.Disarm();
 		break;
-	case SteeringManager::MODE_ACRO:
+	case ModeManager::MODE_ACRO:
 		motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 		motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 10000.f, 50000.f);
 		break;
-	case SteeringManager::MODE_SEMI:
+	case ModeManager::MODE_SEMI:
 		motor.SetDuty(futaba.SmoothDeflection[PITCH]);
 		motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
 		break;
-	case SteeringManager::MODE_AUTONOMOUS:
+	case ModeManager::MODE_AUTONOMOUS:
 		motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
 		break;
 	}

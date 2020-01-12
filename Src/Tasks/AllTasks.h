@@ -19,7 +19,7 @@ void Allshit_begin(void);
 extern osThreadId GyroTaskHandle;
 extern osThreadId AHRSTaskHandle;
 extern osThreadId BatteryManagerHandle;
-extern osThreadId SteeringTaskHandle;
+extern osThreadId ModeManagerTaskHandle;
 extern osThreadId BTTaskHandle;
 extern osThreadId FutabaTaskHandle;
 extern osThreadId TelemetryTaskHandle;

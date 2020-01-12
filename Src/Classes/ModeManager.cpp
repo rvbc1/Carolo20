@@ -5,8 +5,7 @@
  *      Author: rvbc-
  */
 
-#include <SteeringManager.h>
-
+#include <ModeManager.h>
 #include "cmsis_os.h"
 #include "Futaba.h"
 #include "ServoManager.h"
@@ -19,7 +18,7 @@
 #include "AHRS.h"
 #include "Tools.h"
 
-SteeringManager steering_manager;
+ModeManager steering_manager;
 
 static void StickCommandProccess(void) {
 	if (futaba.Stick_Command[1]) // (   .)    (   .)
@@ -40,7 +39,7 @@ static void StickCommandProccess(void) {
 	}
 }
 
-void SteeringManager::init(){
+void ModeManager::init(){
 
 	futaba.ConfigureSmoothing(50.f, task_dt * 1e-3); /* Nyquist frequency - 1/2 Radio frequency * 0.9; 8CH - 9ms, 16CH - 18ms,*/
 
@@ -49,7 +48,7 @@ void SteeringManager::init(){
 	osDelay(100);
 }
 
-void SteeringManager::proccess(){
+void ModeManager::proccess(){
 	futaba.ProcessSmoothing();
 
 	if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
@@ -76,18 +75,18 @@ void SteeringManager::proccess(){
 	osDelay(task_dt);
 }
 
-SteeringManager::RC_MODE SteeringManager::getRCmode(){
+ModeManager::RC_MODE ModeManager::getRCmode(){
 	return rc_mode;
 }
 
 //UNUSED(rc_mode);
 
-SteeringManager::SteeringManager() {
+ModeManager::ModeManager() {
 	// TODO Auto-generated constructor stub
 
 }
 
-SteeringManager::~SteeringManager() {
+ModeManager::~ModeManager() {
 	// TODO Auto-generated destructor stub
 }
 

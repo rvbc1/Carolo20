@@ -73,10 +73,12 @@ void systemResetToBootloader(void);
 #define AN_IN_GPIO_Port GPIOC
 #define START_BUTTON_1_O7_Pin GPIO_PIN_0
 #define START_BUTTON_1_O7_GPIO_Port GPIOA
+#define SERVO_BACK_O2_Pin GPIO_PIN_1
+#define SERVO_BACK_O2_GPIO_Port GPIOA
 #define START_BUTTON_2_O6_Pin GPIO_PIN_2
 #define START_BUTTON_2_O6_GPIO_Port GPIOA
-#define O1_Pin GPIO_PIN_3
-#define O1_GPIO_Port GPIOA
+#define SERVO_FRONT_O1_Pin GPIO_PIN_3
+#define SERVO_FRONT_O1_GPIO_Port GPIOA
 #define MPU_CS_Pin GPIO_PIN_4
 #define MPU_CS_GPIO_Port GPIOA
 #define MPU_DRDY_Pin GPIO_PIN_4
@@ -110,6 +112,8 @@ void systemResetToBootloader(void);
 #define LED_RED_GPIO_Port GPIOB
 #define LED_BLUE_Pin GPIO_PIN_7
 #define LED_BLUE_GPIO_Port GPIOB
+#define LIGHTS_O10_Pin GPIO_PIN_8
+#define LIGHTS_O10_GPIO_Port GPIOB
 #define START_BUTTON_21_Pin GPIO_PIN_9
 #define START_BUTTON_21_GPIO_Port GPIOB
 
