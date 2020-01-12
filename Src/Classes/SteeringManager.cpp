@@ -14,8 +14,31 @@
 #include "main.h"
 #include "iwdg.h"
 #include "wwdg.h"
+#include "Gyro.h"
+#include "Odometry.h"
+#include "AHRS.h"
+#include "Tools.h"
 
 SteeringManager steering_manager;
+
+static void StickCommandProccess(void) {
+	if (futaba.Stick_Command[1]) // (   .)    (   .)
+		motor.SetPassthroughState(true);
+	else
+		motor.SetPassthroughState(false);
+	if (futaba.Stick_Command[0]) // (.   )    (.   )
+		motor.setMaxVelocity(6000.f);
+	else
+		motor.setMaxVelocity(3500.f);
+
+	static bool last_cmd = false;
+	if (futaba.Stick_Command[4] != last_cmd) { // (.   )    (   .)   < - to nie sa cycki
+		last_cmd = futaba.Stick_Command[4];
+		gyro.StartCalibration();
+		odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
+		odometry.SetCurrentPosition();
+	}
+}
 
 void SteeringManager::init(){
 
@@ -32,8 +55,8 @@ void SteeringManager::proccess(){
 	if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 		rc_mode = DISARMED;
 
-		//if (futaba.Get_RCState() == 0)
-		//	StickCommandProccess();
+		if (futaba.Get_RCState() == 0)
+			StickCommandProccess();
 	} else if (futaba.SwitchA == SWITCH_DOWN) {
 		if (futaba.SwitchB == SWITCH_UP) {
 			rc_mode = MODE_ACRO;
@@ -49,15 +72,6 @@ void SteeringManager::proccess(){
 
 
 	//TODO - Find best suited place for watchdog refreshes
-	static uint8_t watchdog_init_done = 0;
-	if (watchdog_init_done) {
-		HAL_WWDG_Refresh(&hwwdg);
-		HAL_IWDG_Refresh(&hiwdg);
-	} else if(HAL_GetTick() > 500) {
-		MX_IWDG_Init();
-		MX_WWDG_Init();
-		watchdog_init_done = 1;
-	}
 
 	osDelay(task_dt);
 }

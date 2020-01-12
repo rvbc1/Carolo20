@@ -27,6 +27,8 @@
 #include "ButtonsManager.h"
 #include "Mathematics.h"
 #include "tim.h"
+#include "SteeringManager.h"
+#include "WatchDogs.h"
 
 #include "USBLink.h"
 
@@ -44,6 +46,7 @@ osThreadId OdometryTaskHandle;
 osThreadId OLEDTaskHandle;
 osThreadId LightsTaskHandle;
 osThreadId ButtonsTaskHandle;
+osThreadId WatchDogsTaskHandle;
 
 void StartGyroTask(void const * argument);
 void StartAHRSTask(void const * argument);
@@ -59,9 +62,7 @@ void StartBuzzerTask(void const * argument);
 void StartOLEDTask(void const * argument);
 void StartLightsTask(void const * argument);
 void StartButtonsTask(void const * argument);
-
-#include "iwdg.h"
-#include "wwdg.h"
+void StartWatchDogsTask(void const * argument);
 
 
 
@@ -123,6 +124,10 @@ void Allshit_begin(void) {
 
 	osThreadDef(ButtonsTask, StartButtonsTask, osPriorityLow, 0, 128);
 	ButtonsTaskHandle = osThreadCreate(osThread(ButtonsTask), NULL);
+
+	/* definition and creation of SteeringTask */
+	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
+	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
 }
 
 void StartFutabaTask(void const * argument) {
@@ -135,48 +140,29 @@ void StartFutabaTask(void const * argument) {
 
 void StartMotorController(void const * argument) {
 	motor.Init();
-	while(1) {
+	while(true) {
 		motor.Process();
 		osSignalSet(OdometryTaskHandle, odometry.SignalReady);
 	}
 }
 
-static void StickCommandProccess(void) {
-	if (futaba.Stick_Command[1]) // (   .)    (   .)
-		motor.SetPassthroughState(true);
-	else
-		motor.SetPassthroughState(false);
-	if (futaba.Stick_Command[0]) // (.   )    (.   )
-		motor.setMaxVelocity(6000.f);
-	else
-		motor.setMaxVelocity(3500.f);
-
-	static bool last_cmd = false;
-	if (futaba.Stick_Command[4] != last_cmd) { // (.   )    (   .)   < - to nie sa cycki
-		last_cmd = futaba.Stick_Command[4];
-		gyro.StartCalibration();
-		odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
-		odometry.SetCurrentPosition();
-	}
-}
 void StartSteeringTask(void const * argument) {
-
-
-//	for (;;) {
-//	}
-
+	steering_manager.init();
+	for (;;) {
+		steering_manager.proccess();
+	}
 }
 
 void StartGyroTask(void const * argument) {
 	gyro.Init();
-	while(1) {
+	while(true) {
 		gyro.Process();
 	}
 }
 
 void StartAHRSTask(void const * argument) {
 	ahrs.Init();
-	while(1) {
+	while(true) {
 		ahrs.Process();
 		osSignalSet(USBTaskHandle, USB_TX_signal);
 	}
@@ -185,7 +171,7 @@ void StartAHRSTask(void const * argument) {
 
 void StartOdometryTask(void const * argument) {
 	odometry.Init();
-	while (1) {
+	while (true) {
 		osSignalWait(odometry.SignalReady, osWaitForever);
 		odometry.Process(ahrs.attitude.values.yaw, motor.getDistance(), tools.GetMicros());
 	}
@@ -201,7 +187,7 @@ void StartBatteryManager(void const * argument) {
 
 void StartUSBTask(void const * argument) {
 	USBLink::initHardware();
-	while(1){
+	while(true){
 		usb_link.USB_Process();
 	}
 }
@@ -223,7 +209,7 @@ void StartBTTask(void const * argument) {
 
 void StartBuzzerTask(void const * argument){
 	buzzer.Init();
-	while(1)
+	while(true)
 	{
 		buzzer.Loop();
 	}
@@ -231,7 +217,7 @@ void StartBuzzerTask(void const * argument){
 
 void StartOLEDTask(void const * argument){
 	oled.Init();
-	while(1){
+	while(true){
 		oled.process();
 	}
 }
@@ -239,7 +225,7 @@ void StartOLEDTask(void const * argument){
 
 void StartLightsTask(void const * argument){
 	lights_manager.ws2812_init();
-	while(1){
+	while(true){
 		lights_manager.process();
 	}
 }
@@ -247,7 +233,14 @@ void StartLightsTask(void const * argument){
 
 void StartButtonsTask(void const * argument){
 	buttons_manager.Init();
-	while(1){
+	while(true){
 		buttons_manager.process();
+	}
+}
+
+void StartWatchDogsTask(void const * argument){
+	WatchDogs::init();
+	while(true){
+		WatchDogs::process();
 	}
 }
