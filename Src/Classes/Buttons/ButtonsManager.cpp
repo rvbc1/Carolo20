@@ -3,7 +3,7 @@
  * Buttons.cpp
  *
  *  Created on: 29.01.2019
- *      Author: Igor
+ *      Author: rvbc-
  */
 
 #include <ButtonsManager.h>
@@ -55,7 +55,7 @@ void ButtonsManager::reset(){
 
 void ButtonsManager::process(){
 	check();
-	osDelay(5);
+	osDelay(task_dt);
 }
 
 

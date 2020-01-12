@@ -2,7 +2,7 @@
  * Buttons.h
  *
  *  Created on: 29.01.2019
- *      Author: Igor
+ *      Author: rvbc-
  */
 
 #ifndef CLASSES_BUTTONSMANAGER_H_
@@ -22,6 +22,7 @@
 
 class ButtonsManager {
 private:
+	const uint32_t task_dt = 5u;
 	Button *button_one;
 	Button *button_two;
 	//In case of 3 or more buttons, you must change type of flag and arguments in functions:

@@ -29,11 +29,6 @@ extern osThreadId BuzzerTaskHandle;
 extern osThreadId OdometryTaskHandle;
 extern osThreadId OLEDTaskHandle;
 
-extern uint16_t cnt_blueled;
-extern uint8_t vision_reset;
-extern uint8_t vision_reset_sent;
-extern uint8_t vision_reset_ack;
-
 
 
 #ifdef __cplusplus
