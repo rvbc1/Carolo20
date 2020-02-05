@@ -30,6 +30,7 @@
 #include "Mathematics.h"
 #include "tim.h"
 #include "WatchDogs.h"
+#include "LEDUp.h"
 
 #include "USBLink.h"
 
@@ -48,8 +49,12 @@ osThreadId OLEDTaskHandle;
 osThreadId LightsTaskHandle;
 osThreadId ButtonsTaskHandle;
 osThreadId WatchDogsTaskHandle;
+
+osThreadId LEDUpTaskHandle;
+
 osThreadId ServoManagerTaskHandle;
 osThreadId MotorManagerTaskHandle;
+
 
 void StartGyroTask(void const * argument);
 void StartAHRSTask(void const * argument);
@@ -66,8 +71,13 @@ void StartOLEDTask(void const * argument);
 void StartLightsTask(void const * argument);
 void StartButtonsTask(void const * argument);
 void StartWatchDogsTask(void const * argument);
+
+void StartLEDUpTask(void const * argument);
+
+
 void StartServoManagerTask(void const * argument);
 void StartMotorManagerTask(void const * argument);
+
 
 void Allshit_begin(void) {
 
@@ -139,8 +149,16 @@ void Allshit_begin(void) {
 	MotorManagerTaskHandle = osThreadCreate(osThread(MotorManagerTask), NULL);
 
 	/* definition and creation of WatchDogsTask */
+
+
+
 //	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
 //	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
+
+
+	osThreadDef(LEDUpTask, StartLEDUpTask, osPriorityLow, 0, 256);
+	LEDUpTaskHandle = osThreadCreate(osThread(LEDUpTask), NULL);
+
 }
 
 void StartFutabaTask(void const * argument) {
@@ -257,6 +275,12 @@ void StartWatchDogsTask(void const * argument){
 	}
 }
 
+
+void StartLEDUpTask(void const * argument){
+	ledUp.Init();
+	for(;;){
+		ledUp.Process();
+
 void StartServoManagerTask(void const * argument){
 	servo_manager.init();
 	while(true){
@@ -268,5 +292,6 @@ void StartMotorManagerTask(void const * argument){
 	motor_manager.init();
 	while(true){
 		motor_manager.process();
+
 	}
 }

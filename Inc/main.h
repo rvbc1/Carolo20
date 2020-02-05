@@ -102,8 +102,6 @@ void systemResetToBootloader(void);
 #define VBUS_SENS_GPIO_Port GPIOA
 #define SDCARD_DETECT_Pin GPIO_PIN_3
 #define SDCARD_DETECT_GPIO_Port GPIOD
-#define LED_OUT_Pin GPIO_PIN_3
-#define LED_OUT_GPIO_Port GPIOB
 #define LED_OUT__Pin GPIO_PIN_4
 #define LED_OUT__GPIO_Port GPIOB
 #define START_BUTTON_11_Pin GPIO_PIN_5
@@ -114,8 +112,8 @@ void systemResetToBootloader(void);
 #define LED_BLUE_GPIO_Port GPIOB
 #define LIGHTS_O10_Pin GPIO_PIN_8
 #define LIGHTS_O10_GPIO_Port GPIOB
-#define START_BUTTON_21_Pin GPIO_PIN_9
-#define START_BUTTON_21_GPIO_Port GPIOB
+#define LED_OUT_Pin GPIO_PIN_9
+#define LED_OUT_GPIO_Port GPIOB
 
 /* ########################## Assert Selection ############################## */
 /**
