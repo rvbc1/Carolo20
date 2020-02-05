@@ -7,6 +7,8 @@
 
 #include <MotorManager.h>
 
+MotorManager motor_manager;
+
 void MotorManager::init(){
 	motor.SetPassthroughState(false);
 	//motor.setMaxVelocity(3500.f);
@@ -31,6 +33,8 @@ void MotorManager::process(){
 		motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
 		break;
 	}
+
+	osDelay(1);
 }
 
 MotorManager::MotorManager() {

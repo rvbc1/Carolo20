@@ -21,4 +21,6 @@ public:
 	virtual ~MotorManager();
 };
 
+extern MotorManager motor_manager;
+
 #endif /* CLASSES_MOTOR_MOTORMANAGER_H_ */
