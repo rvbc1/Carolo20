@@ -89,6 +89,10 @@ void LightsManager::ws2812_init() {
 	break_lights.add(back_left.getLedAddress(5));
 	break_lights.add(back_left.getLedAddress(6));
 
+	break_lights.add(back_middle.getLedAddress(3));
+	break_lights.add(back_middle.getLedAddress(4));
+
+
 	break_lights.add(back_right.getLedAddress(1));
 	break_lights.add(back_right.getLedAddress(2));
 
@@ -109,6 +113,12 @@ void LightsManager::ws2812_init() {
 	left_indicator_back.add(back_left.getLedAddress(2));
 	left_indicator_back.add(back_left.getLedAddress(1));
 	left_indicator_back.add(back_left.getLedAddress(0));
+
+	right_indicator_back.add(back_left.getLedAddress(3));
+	right_indicator_back.add(back_left.getLedAddress(4));
+	right_indicator_back.add(back_left.getLedAddress(5));
+	right_indicator_back.add(back_left.getLedAddress(6));
+	right_indicator_back.add(back_left.getLedAddress(7));
 
 	headlights.setActivated(true);
 	tail_lights.setActivated(true);
