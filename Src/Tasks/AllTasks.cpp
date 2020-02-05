@@ -150,8 +150,6 @@ void Allshit_begin(void) {
 
 	/* definition and creation of WatchDogsTask */
 
-
-
 //	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
 //	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
 
@@ -280,6 +278,8 @@ void StartLEDUpTask(void const * argument){
 	ledUp.Init();
 	for(;;){
 		ledUp.Process();
+	}
+}
 
 void StartServoManagerTask(void const * argument){
 	servo_manager.init();
