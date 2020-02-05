@@ -21,6 +21,7 @@
 #include "Telemetry.h"
 #include "Buzzer.h"
 #include "ServoManager.h"
+#include "MotorManager.h"
 #include "Bluetooth.h"
 #include "Odometry.h"
 #include "crc.h"
@@ -47,6 +48,8 @@ osThreadId OLEDTaskHandle;
 osThreadId LightsTaskHandle;
 osThreadId ButtonsTaskHandle;
 osThreadId WatchDogsTaskHandle;
+osThreadId ServoManagerTaskHandle;
+osThreadId MotorManagerTaskHandle;
 
 void StartGyroTask(void const * argument);
 void StartAHRSTask(void const * argument);
@@ -63,8 +66,8 @@ void StartOLEDTask(void const * argument);
 void StartLightsTask(void const * argument);
 void StartButtonsTask(void const * argument);
 void StartWatchDogsTask(void const * argument);
-
-
+void StartServoManagerTask(void const * argument);
+void StartMotorManagerTask(void const * argument);
 
 void Allshit_begin(void) {
 
@@ -125,9 +128,19 @@ void Allshit_begin(void) {
 	osThreadDef(ButtonsTask, StartButtonsTask, osPriorityLow, 0, 128);
 	ButtonsTaskHandle = osThreadCreate(osThread(ButtonsTask), NULL);
 
+
+
+	//SERVO
+	osThreadDef(ServoManagerTask, StartServoManagerTask, osPriorityLow, 0, 128);
+	ServoManagerTaskHandle = osThreadCreate(osThread(ServoManagerTask), NULL);
+
+	//MOTOR
+	osThreadDef(MotorManagerTask, StartMotorManagerTask, osPriorityLow, 0, 128);
+	MotorManagerTaskHandle = osThreadCreate(osThread(MotorManagerTask), NULL);
+
 	/* definition and creation of WatchDogsTask */
-	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
-	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
+//	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
+//	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
 }
 
 void StartFutabaTask(void const * argument) {
@@ -241,5 +254,19 @@ void StartWatchDogsTask(void const * argument){
 	WatchDogs::init();
 	while(true){
 		WatchDogs::process();
+	}
+}
+
+void StartServoManagerTask(void const * argument){
+	servo_manager.init();
+	while(true){
+		servo_manager.process();
+	}
+}
+
+void StartMotorManagerTask(void const * argument){
+	motor_manager.init();
+	while(true){
+		motor_manager.process();
 	}
 }

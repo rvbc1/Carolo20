@@ -69,6 +69,8 @@ void ModeManager::proccess(){
 		}
 	}
 
+	servo_manager.process();
+
 
 	//TODO - Find best suited place for watchdog refreshes
 
