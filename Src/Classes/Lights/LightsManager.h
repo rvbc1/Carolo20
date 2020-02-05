@@ -13,6 +13,8 @@
 #include "LEDStrip.h"
 #include "Light.h"
 #include "Indicator.h"
+#include "ModeManager.h"
+#include "Futaba.h"
 
 extern Light headlights;
 extern Light tail_lights;
@@ -34,10 +36,14 @@ class LightsManager {
 private:
 	uint32_t lights_task_counter;
 	uint32_t light_process_counter;
+
+	void checkRCmode();
 public:
 	uint8_t stop_light;
 	uint8_t stop_light_duration;
 	uint8_t high = false;
+
+	void hazard_warning_lights();
 
 	void ws2812_init();
 	void reset_data_buffer();

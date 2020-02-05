@@ -89,6 +89,10 @@ void LightsManager::ws2812_init() {
 	break_lights.add(back_left.getLedAddress(5));
 	break_lights.add(back_left.getLedAddress(6));
 
+	break_lights.add(back_middle.getLedAddress(3));
+	break_lights.add(back_middle.getLedAddress(4));
+
+
 	break_lights.add(back_right.getLedAddress(1));
 	break_lights.add(back_right.getLedAddress(2));
 
@@ -109,6 +113,12 @@ void LightsManager::ws2812_init() {
 	left_indicator_back.add(back_left.getLedAddress(2));
 	left_indicator_back.add(back_left.getLedAddress(1));
 	left_indicator_back.add(back_left.getLedAddress(0));
+
+	right_indicator_back.add(back_right.getLedAddress(3));
+	right_indicator_back.add(back_right.getLedAddress(4));
+	right_indicator_back.add(back_right.getLedAddress(5));
+	right_indicator_back.add(back_right.getLedAddress(6));
+	right_indicator_back.add(back_right.getLedAddress(7));
 
 	headlights.setActivated(true);
 	tail_lights.setActivated(true);
@@ -138,7 +148,41 @@ void LightsManager::reset_data_buffer(){
 	}
 }
 
+void LightsManager::checkRCmode(){
+	if(steering_manager.getRCmode() == ModeManager::DISARMED){
+		left_indicator_front.setActivated(true);
+		right_indicator_front.setActivated(true);
+
+		left_indicator_back.setActivated(true);
+		right_indicator_back.setActivated(true);
+
+	} else if (steering_manager.getRCmode() == ModeManager::MODE_ACRO){
+
+		if (futaba.SwitchC == SWITCH_UP) {
+			left_indicator_front.setActivated(false);
+			right_indicator_front.setActivated(true);
+
+			left_indicator_back.setActivated(false);
+			right_indicator_back.setActivated(true);
+		} else if(futaba.SwitchC == SWITCH_MIDDLE){
+			left_indicator_front.setActivated(false);
+			right_indicator_front.setActivated(false);
+
+			left_indicator_back.setActivated(false);
+			right_indicator_back.setActivated(false);
+		} else{
+			left_indicator_front.setActivated(true);
+			right_indicator_front.setActivated(false);
+
+			left_indicator_back.setActivated(true);
+			right_indicator_back.setActivated(false);
+		}
+	}
+}
+
 void LightsManager::process(){
+	checkRCmode();
+
 	HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
 
 	if(high){

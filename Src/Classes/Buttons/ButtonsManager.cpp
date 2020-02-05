@@ -3,7 +3,7 @@
  * Buttons.cpp
  *
  *  Created on: 29.01.2019
- *      Author: Igor
+ *      Author: rvbc-
  */
 
 #include <ButtonsManager.h>
@@ -17,7 +17,7 @@ void ButtonsManager::Init(){
 	button_two = new Button(START_BUTTON_2_O6_GPIO_Port, START_BUTTON_2_O6_Pin);
 	addButton(button_one);
 	addButton(button_two);
-
+	reset();
 
 }
 void ButtonsManager::addButton(Button *button){
@@ -55,7 +55,7 @@ void ButtonsManager::reset(){
 
 void ButtonsManager::process(){
 	check();
-	osDelay(5);
+	osDelay(task_dt);
 }
 
 

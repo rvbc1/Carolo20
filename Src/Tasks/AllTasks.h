@@ -19,7 +19,7 @@ void Allshit_begin(void);
 extern osThreadId GyroTaskHandle;
 extern osThreadId AHRSTaskHandle;
 extern osThreadId BatteryManagerHandle;
-extern osThreadId SteeringTaskHandle;
+extern osThreadId ModeManagerTaskHandle;
 extern osThreadId BTTaskHandle;
 extern osThreadId FutabaTaskHandle;
 extern osThreadId TelemetryTaskHandle;
@@ -28,11 +28,6 @@ extern osThreadId MotorControllerHandle;
 extern osThreadId BuzzerTaskHandle;
 extern osThreadId OdometryTaskHandle;
 extern osThreadId OLEDTaskHandle;
-
-extern uint16_t cnt_blueled;
-extern uint8_t vision_reset;
-extern uint8_t vision_reset_sent;
-extern uint8_t vision_reset_ack;
 
 
 

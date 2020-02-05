@@ -186,7 +186,7 @@ void Motor::Controller(void){
 	float error = setpoint - measurement;
 
 	if(setpoint > 1000){
-		Proportional = Kp * error * 2;
+		Proportional = Kp * error * 1.2;
 	} else {
 		Proportional = Kp * error;
 	}
