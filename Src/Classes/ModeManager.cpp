@@ -54,16 +54,21 @@ void ModeManager::proccess(){
 	if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 		rc_mode = DISARMED;
 
-		if (futaba.Get_RCState() == 0)
+		if (futaba.Get_RCState() == DISARMED)
 			StickCommandProccess();
 	} else if (futaba.SwitchA == SWITCH_DOWN) {
 		if (futaba.SwitchB == SWITCH_UP) {
-			rc_mode = MODE_ACRO;
+			if(rc_mode == MODE_AUTONOMOUS){
+				if ( !isModeDelayTimON ) idleStart();
+			}
+			else rc_mode = MODE_ACRO;
 
 		} else if (futaba.SwitchB == SWITCH_MIDDLE) {
+			if(isModeDelayTimON) idleReset();
 			rc_mode = MODE_SEMI;
 
 		} else if (futaba.SwitchB == SWITCH_DOWN) {
+			if(isModeDelayTimON) idleReset();
 			rc_mode = MODE_AUTONOMOUS;
 
 		}
@@ -75,6 +80,22 @@ void ModeManager::proccess(){
 	//TODO - Find best suited place for watchdog refreshes
 
 	osDelay(task_dt);
+}
+
+void ModeManager::modeDelayTimIT(){
+	idleReset();
+	rc_mode = MODE_ACRO;
+}
+
+void ModeManager::idleStart(){
+	isModeDelayTimON = true;
+	HAL_TIM_Base_Start_IT(&TIM_IDLE);
+}
+
+void ModeManager::idleReset(){
+	isModeDelayTimON = false;
+	HAL_TIM_Base_Stop_IT(&TIM_IDLE);
+	__HAL_TIM_SET_COUNTER(&TIM_IDLE, 0);
 }
 
 ModeManager::RC_MODE ModeManager::getRCmode(){

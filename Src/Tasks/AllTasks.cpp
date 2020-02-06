@@ -49,7 +49,6 @@ osThreadId OLEDTaskHandle;
 osThreadId LightsTaskHandle;
 osThreadId ButtonsTaskHandle;
 osThreadId WatchDogsTaskHandle;
-
 osThreadId LEDUpTaskHandle;
 
 osThreadId ServoManagerTaskHandle;

@@ -265,23 +265,7 @@ void checkForBootLoaderRequest(void)
   * @param  htim : TIM handle
   * @retval None
   */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* USER CODE BEGIN Callback 0 */
 
-  /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM14) {
-    HAL_IncTick();
-  }
-  /* USER CODE BEGIN Callback 1 */
-  if (htim->Instance == TIM7) {
-	Stats_IncTick();
-  }
-  if (htim->Instance == TIM11){
-	  NVIC_SystemReset();
-  }
-  /* USER CODE END Callback 1 */
-}
 /**
   * @brief  This function is executed in case of error occurrence.
   * @param  file: The file name as string.

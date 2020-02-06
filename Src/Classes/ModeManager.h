@@ -11,6 +11,8 @@
 #include "main.h"
 #include "LightsManager.h"
 
+#define TIM_IDLE htim13
+
 class ModeManager {
 public:
 	enum RC_MODE{
@@ -23,11 +25,17 @@ public:
 	void init();
 	void proccess();
 	RC_MODE getRCmode();
+
+	void modeDelayTimIT();
 	ModeManager();
 	virtual ~ModeManager();
 private:
 	const uint32_t task_dt = 1u;
 	RC_MODE rc_mode = DISARMED;
+
+	void idleStart();
+	void idleReset();
+	bool isModeDelayTimON = false;
 
 };
 
