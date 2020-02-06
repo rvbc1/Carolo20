@@ -210,32 +210,34 @@ void LightsManager::process(){
 	}
 
 
+	Indicator::nextCycle();
+
 	if(left_indicator_front.getActivated()){
-		left_indicator_front.nextCycle();
-		left_indicator_front.on();
+		left_indicator_front.update();
 	} else {
 		left_indicator_front.off();
 	}
 
 	if(right_indicator_front.getActivated()){
-		right_indicator_front.nextCycle();
-		right_indicator_front.on();
+		right_indicator_front.update();
 	} else {
 		right_indicator_front.off();
 	}
 
 	if(left_indicator_back.getActivated()){
-		left_indicator_back.nextCycle();
-		left_indicator_back.on();
+		left_indicator_back.update();
 	} else {
 		left_indicator_back.off();
 	}
 
 	if(right_indicator_back.getActivated()){
-		right_indicator_back.nextCycle();
-		right_indicator_back.on();
+		right_indicator_back.update();
 	} else {
 		right_indicator_back.off();
+	}
+
+	if(Indicator::proccess_counter > left_indicator_back.getAddedCount()){
+		Indicator::proccess_counter = 0;
 	}
 
 

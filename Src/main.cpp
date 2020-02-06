@@ -74,7 +74,6 @@ extern "C" void MX_FREERTOS_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-extern "C" void Stats_IncTick(void);
 void checkForBootLoaderRequest(void);
 /* USER CODE END PFP */
 

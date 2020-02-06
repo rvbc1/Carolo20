@@ -19,6 +19,10 @@
 #include "PowerManager.h"
 #include "MotorManager.h"
 
+
+extern "C" void Stats_IncTick(void);
+
+
 /* INTERTUPT CALLBACKS */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -74,7 +78,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   if (htim->Instance == TIM7) {
-//	Stats_IncTick();					///	PROBLEM Z DODANIEM
+	Stats_IncTick();					///	PROBLEM Z DODANIEM
   }
   if (htim->Instance == TIM11){
 	  NVIC_SystemReset();

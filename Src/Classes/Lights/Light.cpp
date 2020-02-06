@@ -54,6 +54,11 @@ void Light::off(){
 	}
 }
 
+uint8_t Light::getAddedCount(){
+	return added;
+}
+
+
 Light::Light() {
 	// TODO Auto-generated constructor stub
 	added = 0;

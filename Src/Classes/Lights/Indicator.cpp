@@ -7,10 +7,17 @@
 
 #include <Indicator.h>
 
+uint16_t Indicator::proccess_counter = 0;
+
 void Indicator::nextCycle(){
 	proccess_counter++;
+}
+
+void Indicator::update(){
 	if(proccess_counter > added){
 		off();
+	} else {
+		on();
 	}
 }
 
