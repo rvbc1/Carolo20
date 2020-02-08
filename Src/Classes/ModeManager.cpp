@@ -45,6 +45,12 @@ void ModeManager::init(){
 
 	servo_manager.init();
 
+	MX_TIM13_Init();
+
+	isModeDelayTimON = false;
+
+	TIM13->CNT = 1;
+
 	osDelay(100);
 }
 
@@ -53,38 +59,48 @@ void ModeManager::proccess(){
 
 	if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 		rc_mode = DISARMED;
-
-		if (futaba.Get_RCState() == DISARMED)
+		drive_mode = DISABLE;
+		if (futaba.Get_RCState() == 0)
 			StickCommandProccess();
 	} else if (futaba.SwitchA == SWITCH_DOWN) {
+		//drive_mode = ENABLE;
+
 		if (futaba.SwitchB == SWITCH_UP) {
-			if(rc_mode == MODE_AUTONOMOUS){
-				if ( !isModeDelayTimON ) idleStart();
+			rc_mode = MODE_ACRO;
+			if(!isModeDelayTimON){
+				drive_mode = DISABLE;
+				idleStart();
 			}
-			else rc_mode = MODE_ACRO;
 
 		} else if (futaba.SwitchB == SWITCH_MIDDLE) {
-			if(isModeDelayTimON) idleReset();
 			rc_mode = MODE_SEMI;
+			drive_mode = ENABLE;
+			if(isModeDelayTimON){
+				idleReset();
+			}
 
 		} else if (futaba.SwitchB == SWITCH_DOWN) {
-			if(isModeDelayTimON) idleReset();
 			rc_mode = MODE_AUTONOMOUS;
+			drive_mode = ENABLE;
+			if(isModeDelayTimON){
+				idleReset();
+			}
 
 		}
 	}
 
-	servo_manager.process();
-
-
-	//TODO - Find best suited place for watchdog refreshes
+	//	servo_manager.process();
 
 	osDelay(task_dt);
 }
 
 void ModeManager::modeDelayTimIT(){
-	idleReset();
-	rc_mode = MODE_ACRO;
+	//isModeDelayTimON = false;
+	if(first_IT){
+		first_IT = false;
+	} else {
+		drive_mode = ENABLE;
+	}
 }
 
 void ModeManager::idleStart(){
@@ -100,6 +116,10 @@ void ModeManager::idleReset(){
 
 ModeManager::RC_MODE ModeManager::getRCmode(){
 	return rc_mode;
+}
+
+ModeManager::DRIVE_MODE ModeManager::getDriveMode(){
+	return drive_mode;
 }
 
 //UNUSED(rc_mode);

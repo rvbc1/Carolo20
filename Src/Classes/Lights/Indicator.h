@@ -14,14 +14,11 @@ class Indicator : public Light {
 public:
 	void on();
 	void off();
-	void update();
-	static void nextCycle();
+	void nextCycle();
 	Indicator();
 	virtual ~Indicator();
-
-	static uint16_t proccess_counter;
 private:
-	//static uint16_t proccess_counter;
+	uint16_t proccess_counter;
 };
 
 #endif /* CLASSES_LIGHTS_INDICATOR_H_ */

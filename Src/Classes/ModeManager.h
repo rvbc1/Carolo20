@@ -22,9 +22,15 @@ public:
 		MODE_ACRO
 	};
 
+	enum DRIVE_MODE{
+		DISABLE = 0,
+		ENABLE
+	};
+
 	void init();
 	void proccess();
 	RC_MODE getRCmode();
+	DRIVE_MODE getDriveMode();
 
 	void modeDelayTimIT();
 	ModeManager();
@@ -32,10 +38,11 @@ public:
 private:
 	const uint32_t task_dt = 1u;
 	RC_MODE rc_mode = DISARMED;
-
+	DRIVE_MODE drive_mode = DISABLE;
 	void idleStart();
 	void idleReset();
-	bool isModeDelayTimON = false;
+	uint8_t isModeDelayTimON = false;
+	uint8_t first_IT = true;
 
 };
 

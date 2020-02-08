@@ -16,10 +16,18 @@ void MotorManager::init(){
 }
 
 void MotorManager::process(){
-	motor.Arm();
+	switch(steering_manager.getDriveMode()){
+	case ModeManager::DISABLE:
+		motor.Disarm();
+		break;
+	case ModeManager::ENABLE:
+		motor.Arm();
+		break;
+	}
+
 	switch(steering_manager.getRCmode()){
 	case ModeManager::DISARMED:
-		motor.Disarm();
+		//motor.Disarm();
 		break;
 	case ModeManager::MODE_ACRO:
 		motor.SetDuty(futaba.SmoothDeflection[PITCH]);

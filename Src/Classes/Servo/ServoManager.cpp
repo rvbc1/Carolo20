@@ -35,10 +35,19 @@ void ServoManager::setAngle(uint16_t front, uint16_t back){
 }
 
 void ServoManager::process(){
-	arm();
+
+	switch(steering_manager.getDriveMode()){
+	case ModeManager::DISABLE:
+		disarm();
+		break;
+	case ModeManager::ENABLE:
+		arm();
+		break;
+	}
+
 	switch(steering_manager.getRCmode()){
 	case ModeManager::DISARMED:
-		disarm();
+		//disarm();
 		break;
 	case ModeManager::MODE_ACRO:
 		setAngle(int16_t(futaba.SmoothDeflection[YAW] * 45.f), -int16_t(futaba.SmoothDeflection[YAW] * 45.f));

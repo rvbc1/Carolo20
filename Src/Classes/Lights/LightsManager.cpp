@@ -89,10 +89,6 @@ void LightsManager::ws2812_init() {
 	break_lights.add(back_left.getLedAddress(5));
 	break_lights.add(back_left.getLedAddress(6));
 
-	break_lights.add(back_middle.getLedAddress(3));
-	break_lights.add(back_middle.getLedAddress(4));
-
-
 	break_lights.add(back_right.getLedAddress(1));
 	break_lights.add(back_right.getLedAddress(2));
 
@@ -210,34 +206,32 @@ void LightsManager::process(){
 	}
 
 
-	Indicator::nextCycle();
-
 	if(left_indicator_front.getActivated()){
-		left_indicator_front.update();
+		left_indicator_front.nextCycle();
+		left_indicator_front.on();
 	} else {
 		left_indicator_front.off();
 	}
 
 	if(right_indicator_front.getActivated()){
-		right_indicator_front.update();
+		right_indicator_front.nextCycle();
+		right_indicator_front.on();
 	} else {
 		right_indicator_front.off();
 	}
 
 	if(left_indicator_back.getActivated()){
-		left_indicator_back.update();
+		left_indicator_back.nextCycle();
+		left_indicator_back.on();
 	} else {
 		left_indicator_back.off();
 	}
 
 	if(right_indicator_back.getActivated()){
-		right_indicator_back.update();
+		right_indicator_back.nextCycle();
+		right_indicator_back.on();
 	} else {
 		right_indicator_back.off();
-	}
-
-	if(Indicator::proccess_counter > left_indicator_back.getAddedCount()){
-		Indicator::proccess_counter = 0;
 	}
 
 
@@ -256,4 +250,3 @@ LightsManager::LightsManager() {
 LightsManager::~LightsManager() {
 	// TODO Auto-generated destructor stub
 }
-
