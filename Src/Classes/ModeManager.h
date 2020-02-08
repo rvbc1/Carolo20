@@ -27,6 +27,11 @@ public:
 		ENABLE
 	};
 
+	enum SERVICE_MODE{
+		TESTING = 0,
+		CUP
+	};
+
 	void init();
 	void proccess();
 	RC_MODE getRCmode();
@@ -39,6 +44,7 @@ private:
 	const uint32_t task_dt = 1u;
 	RC_MODE rc_mode = DISARMED;
 	DRIVE_MODE drive_mode = DISABLE;
+	SERVICE_MODE service_mode = CUP;
 	void idleStart();
 	void idleReset();
 	uint8_t isModeDelayTimON = false;
