@@ -91,6 +91,9 @@ void LightsManager::ws2812_init() {
 	break_lights.add(back_left.getLedAddress(5));
 	break_lights.add(back_left.getLedAddress(6));
 
+	break_lights.add(back_middle.getLedAddress(3));
+	break_lights.add(back_middle.getLedAddress(4));
+
 	break_lights.add(back_right.getLedAddress(1));
 	break_lights.add(back_right.getLedAddress(2));
 
