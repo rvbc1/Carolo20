@@ -252,6 +252,9 @@ uint8_t USBLink::checkFrameCorrectness(CommandRX* frame){
 
 void USBLink::recieveTerminal(){
 	switch(dataBuffer.rx.bytes[0]){
+	case 'a':
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Acceleration: %f\n", motor.getAcceleration());
+		break;
 	case 's':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Task:\t\tTick:\t\tRun Time %%\n");
 		vTaskGetRunTimeStats((char*) dataBuffer.tx.bytes + dataBuffer.txSize);
