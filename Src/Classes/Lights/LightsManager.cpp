@@ -49,8 +49,10 @@ Indicator right_indicator_back;
 WS2812::Color high_beam_color {255, 255, 255};
 WS2812::Color low_beam_color {64, 64, 64};
 WS2812::Color tail_light_color {20, 0 ,0};
-WS2812::Color indicator_color {255, 100, 0};
-WS2812::Color break_light_color {255, 0, 0};
+//WS2812::Color indicator_color {255, 100, 0};
+WS2812::Color indicator_color {255/5, 100/5, 0};
+//WS2812::Color break_light_color {255, 0, 0};
+WS2812::Color break_light_color {255/5, 0, 0};
 
 
 uint16_t ws2812BitsBuffer[WS2812_BYTES_BUFFER_SIZE];
@@ -66,7 +68,7 @@ void LightsManager::ws2812_init() {
 
 
 
-	headlights.setColor(high_beam_color);
+	headlights.setColor(low_beam_color);
 	tail_lights.setColor(tail_light_color);
 	break_lights.setColor(break_light_color);
 	left_indicator_front.setColor(indicator_color);

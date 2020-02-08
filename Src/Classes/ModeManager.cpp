@@ -60,6 +60,11 @@ void ModeManager::proccess(){
 	if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 		rc_mode = DISARMED;
 		drive_mode = DISABLE;
+
+		if(isModeDelayTimON){
+			idleReset();
+		}
+
 		if (futaba.Get_RCState() == 0)
 			StickCommandProccess();
 	} else if (futaba.SwitchA == SWITCH_DOWN) {
@@ -88,8 +93,6 @@ void ModeManager::proccess(){
 
 		}
 	}
-
-	//	servo_manager.process();
 
 	osDelay(task_dt);
 }
