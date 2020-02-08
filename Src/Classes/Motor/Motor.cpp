@@ -249,6 +249,10 @@ int32_t Motor::getImpulses(void){
 float Motor::getMaxVelocity(void){
 	return max_velocity;
 }
+float Motor::getAcceleration(void){
+	return current_acceleration;
+}
+
 void Motor::setMaxVelocity(float velocity){
 	max_velocity = velocity;
 }

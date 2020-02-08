@@ -15,6 +15,7 @@
 #include "Indicator.h"
 #include "ModeManager.h"
 #include "Futaba.h"
+#include "Motor.h"
 
 extern Light headlights;
 extern Light tail_lights;
@@ -38,6 +39,7 @@ private:
 	uint32_t light_process_counter;
 
 	void checkRCmode();
+	void breakLightProcess();
 public:
 	uint8_t stop_light;
 	uint8_t stop_light_duration;
