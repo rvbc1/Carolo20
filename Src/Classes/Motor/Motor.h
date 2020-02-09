@@ -54,7 +54,7 @@ class Motor {
 	float Ki = 25.0e-5f;
 	float Kd = 2.0e-8f;
 
-	float windup_limit = 0.001f;
+	float windup_limit = 0.005f;
 
 	float Proportional, Integral = 0.f, Derivative;
 	float pid_value;

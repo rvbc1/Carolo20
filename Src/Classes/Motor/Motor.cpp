@@ -185,10 +185,10 @@ void Motor::Controller(void){
 
 	float error = setpoint - measurement;
 
-	if(setpoint > 2000){
-		Proportional = Kp * error * 1.5;
-	} else if(setpoint >1000){
-		Proportional = Kp * error * 1.3;
+	if(measurement > 1000){
+		Proportional = Kp * error * 1.2;
+//	} else if(setpoint >1000){
+//		Proportional = Kp * error * 1.3;
 	} else {
 		Proportional = Kp * error;
 	}
@@ -215,6 +215,7 @@ void Motor::Controller(void){
 
 	if (setpoint < 150 && setpoint > -150) {
 		pid_value = 0.f;
+		Integral = 0.f;
 	}
 }
 void Motor::Output(void) {
