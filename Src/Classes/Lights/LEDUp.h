@@ -21,6 +21,7 @@ public:
 	void Process();
 	virtual ~LEDUp();
 private:
+	uint16_t process_counter;
 	void OFF();
 	void Toggle();
 };

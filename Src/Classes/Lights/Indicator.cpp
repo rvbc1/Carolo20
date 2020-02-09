@@ -34,4 +34,3 @@ Indicator::Indicator(){
 Indicator::~Indicator() {
 	// TODO Auto-generated destructor stub
 }
-

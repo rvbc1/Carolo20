@@ -249,6 +249,10 @@ int32_t Motor::getImpulses(void){
 float Motor::getMaxVelocity(void){
 	return max_velocity;
 }
+float Motor::getAcceleration(void){
+	return current_acceleration;
+}
+
 void Motor::setMaxVelocity(float velocity){
 	max_velocity = velocity;
 }
@@ -259,12 +263,13 @@ void Motor::SpeedTracking(void) {
 	if (set_acceleration) {
 		float dt = (now - before) * 1e-6F;
 
-		if (set_jerk) {
-			current_acceleration += SIGNF(set_acceleration - current_acceleration) * set_jerk * dt;
-			constrainf(current_acceleration, -max_acceleration, max_acceleration);
-		} else {
-			current_acceleration = set_acceleration;
-		}
+//		if (set_jerk) {
+//			current_acceleration += SIGNF(set_acceleration - current_acceleration) * set_jerk * dt;
+//			constrainf(current_acceleration, -max_acceleration, max_acceleration);
+//		} else {
+//			current_acceleration = set_acceleration;
+//		}
+		current_acceleration = (current_velocity - previous_velocity) / dt;
 
 		current_set_velocity += SIGNF(set_velocity - current_set_velocity) * set_acceleration * dt;
 		constrainf(current_set_velocity, -max_velocity, max_velocity);

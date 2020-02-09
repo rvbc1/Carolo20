@@ -49,8 +49,10 @@ Indicator right_indicator_back;
 WS2812::Color high_beam_color {255, 255, 255};
 WS2812::Color low_beam_color {64, 64, 64};
 WS2812::Color tail_light_color {20, 0 ,0};
-WS2812::Color indicator_color {255, 100, 0};
-WS2812::Color break_light_color {255, 0, 0};
+//WS2812::Color indicator_color {255, 100, 0};
+WS2812::Color indicator_color {255/5, 100/5, 0};
+//WS2812::Color break_light_color {255, 0, 0};
+WS2812::Color break_light_color {255/5, 0, 0};
 
 
 uint16_t ws2812BitsBuffer[WS2812_BYTES_BUFFER_SIZE];
@@ -66,7 +68,7 @@ void LightsManager::ws2812_init() {
 
 
 
-	headlights.setColor(high_beam_color);
+	headlights.setColor(low_beam_color);
 	tail_lights.setColor(tail_light_color);
 	break_lights.setColor(break_light_color);
 	left_indicator_front.setColor(indicator_color);
@@ -91,7 +93,6 @@ void LightsManager::ws2812_init() {
 
 	break_lights.add(back_middle.getLedAddress(3));
 	break_lights.add(back_middle.getLedAddress(4));
-
 
 	break_lights.add(back_right.getLedAddress(1));
 	break_lights.add(back_right.getLedAddress(2));
@@ -147,6 +148,14 @@ void LightsManager::reset_data_buffer(){
 		ws2812BitsBuffer[i]=LOW_PWM_BIT_VALUE;
 	}
 }
+void LightsManager::breakLightProcess(void){
+	if(motor.getAcceleration() < 0.f && motor.getVelocity() > 0){
+		break_lights.setActivated(true); 			// Break lights ON
+	}
+	else{
+		break_lights.setActivated(false); 		    // Break lights OFF
+	}
+}
 
 void LightsManager::checkRCmode(){
 	if(steering_manager.getRCmode() == ModeManager::DISARMED){
@@ -182,6 +191,7 @@ void LightsManager::checkRCmode(){
 
 void LightsManager::process(){
 	checkRCmode();
+	breakLightProcess();
 
 	HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
 
@@ -254,4 +264,3 @@ LightsManager::LightsManager() {
 LightsManager::~LightsManager() {
 	// TODO Auto-generated destructor stub
 }
-

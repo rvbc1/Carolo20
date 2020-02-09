@@ -12,16 +12,26 @@ LEDUp ledUp;
 
 void LEDUp::Init(){
 	OFF();
+	process_counter = 0;
 }
 
 void LEDUp::Process(){
-	if(steering_manager.getRCmode() == ModeManager::MODE_ACRO) Toggle();
-	else OFF();
-	osDelay(1000);
+	if(steering_manager.getRCmode() == ModeManager::MODE_ACRO){
+		process_counter++;
+		if(process_counter >= 10){
+			process_counter = 0;
+			Toggle();
+		}
+	}
+	else {
+		process_counter = 10;
+		OFF();
+	}
+	osDelay(100);
 }
 
 void LEDUp::OFF(){
-	HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_OUT_GPIO_Port, LED_OUT_Pin, GPIO_PIN_SET);
 }
 
 void LEDUp::Toggle(){

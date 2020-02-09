@@ -49,7 +49,6 @@ osThreadId OLEDTaskHandle;
 osThreadId LightsTaskHandle;
 osThreadId ButtonsTaskHandle;
 osThreadId WatchDogsTaskHandle;
-
 osThreadId LEDUpTaskHandle;
 
 osThreadId ServoManagerTaskHandle;
@@ -128,8 +127,8 @@ void Allshit_begin(void) {
 	BuzzerTaskHandle = osThreadCreate(osThread(BuzzerTask), NULL);
 
 	/* OLED - LOW PRIORITY */
-	osThreadDef(OLEDTask, StartOLEDTask, osPriorityLow, 0, 256);
-	OLEDTaskHandle = osThreadCreate(osThread(OLEDTask), NULL);
+//	osThreadDef(OLEDTask, StartOLEDTask, osPriorityLow, 0, 256);
+//	OLEDTaskHandle = osThreadCreate(osThread(OLEDTask), NULL);
 
 	/* Lights - ws2812 - MEDIUM PRIORITY */
 	osThreadDef(LightsTask, StartLightsTask, osPriorityNormal, 0, 1024);
@@ -150,8 +149,8 @@ void Allshit_begin(void) {
 
 	/* definition and creation of WatchDogsTask */
 
-//	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
-//	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
+	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
+	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
 
 
 	osThreadDef(LEDUpTask, StartLEDUpTask, osPriorityLow, 0, 256);
@@ -267,7 +266,7 @@ void StartButtonsTask(void const * argument){
 }
 
 void StartWatchDogsTask(void const * argument){
-	WatchDogs::init();
+	//WatchDogs::init();
 	while(true){
 		WatchDogs::process();
 	}

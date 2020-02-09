@@ -17,6 +17,11 @@
 #include "Telemetry.h"
 #include "Gyro.h"
 #include "PowerManager.h"
+#include "MotorManager.h"
+
+
+extern "C" void Stats_IncTick(void);
+
 
 /* INTERTUPT CALLBACKS */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -64,5 +69,22 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 	if (hadc->Instance == hadc1.Instance) {
 		powermanager.TaskNotify();
 	}
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+
+  if (htim->Instance == TIM14) {
+    HAL_IncTick();
+  }
+  if (htim->Instance == TIM7) {
+	Stats_IncTick();
+  }
+  if (htim->Instance == TIM11){
+	  NVIC_SystemReset();
+  }
+  if (htim->Instance == TIM13){
+	  steering_manager.modeDelayTimIT();
+  }
 }
 

@@ -24,6 +24,7 @@ public:
 
 	void setActivated(uint8_t activated);
 	uint8_t getActivated();
+	uint8_t getAddedCount();
 
 	Light();
 	virtual ~Light();
