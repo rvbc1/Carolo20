@@ -64,7 +64,7 @@ void ModeManager::proccess(){
 		rc_mode = DISARMED;
 		drive_mode = DISABLE;
 
-		if(isModeDelayTimON){
+		if(isModeDelayTimON && (service_mode == CUP)){
 			idleReset();
 		}
 
@@ -126,6 +126,9 @@ ModeManager::RC_MODE ModeManager::getRCmode(){
 
 ModeManager::DRIVE_MODE ModeManager::getDriveMode(){
 	return drive_mode;
+}
+ModeManager::SERVICE_MODE ModeManager::getServiceMode(){
+	return service_mode;
 }
 
 //UNUSED(rc_mode);
