@@ -213,7 +213,7 @@ void Motor::Controller(void){
 		pid_value = 0.f;
 	}
 
-	if (setpoint < 150 && setpoint > -150) {
+	if (setpoint < 100 && setpoint > -100) {
 		pid_value = 0.f;
 		Integral = 0.f;
 	}

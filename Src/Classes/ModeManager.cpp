@@ -18,7 +18,7 @@
 #include "AHRS.h"
 #include "Tools.h"
 
-ModeManager steering_manager;
+ModeManager mode_manager;
 
 static void StickCommandProccess(void) {
 	if (futaba.Stick_Command[1]) // (   .)    (   .)

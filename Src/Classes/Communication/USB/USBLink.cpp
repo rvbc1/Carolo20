@@ -257,7 +257,7 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "PID value: %f\n", motor.getPIDvalue());
 		break;
 	case 'c':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", steering_manager.getServiceMode());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getServiceMode());
 		break;
 	case 'a':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Acceleration: %f\n", motor.getAcceleration());
