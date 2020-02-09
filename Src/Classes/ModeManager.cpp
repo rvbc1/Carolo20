@@ -17,6 +17,7 @@
 #include "Odometry.h"
 #include "AHRS.h"
 #include "Tools.h"
+#include "ButtonsManager.h"
 
 ModeManager mode_manager;
 
@@ -57,8 +58,8 @@ void ModeManager::init(){
 void ModeManager::proccess(){
 	futaba.ProcessSmoothing();
 
-	if(futaba.SwitchD == SWITCH_DOWN) service_mode = TESTING;
-	else 							  service_mode = CUP;
+//	if(futaba.SwitchD == SWITCH_DOWN) service_mode = TESTING;
+//	else 							  service_mode = CUP;
 
 	if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 		rc_mode = DISARMED;
@@ -98,6 +99,11 @@ void ModeManager::proccess(){
 	}
 
 	osDelay(task_dt);
+}
+
+void ModeManager::ToggleServiceMode(){
+	if(service_mode == TESTING) service_mode = TESTING;
+	else service_mode = CUP;
 }
 
 void ModeManager::modeDelayTimIT(){

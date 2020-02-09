@@ -52,8 +52,10 @@ void MotorManager::RCModeCheck(){
 		}
 }
 void MotorManager::setMaxVelocity(){
-	switch(mode_manager.getRCmode()){
+	if(mode_manager.getServiceMode() == ModeManager::CUP){
+		switch(mode_manager.getRCmode()){
 		case ModeManager::DISARMED:
+			//motor.Disarm();
 			break;
 		case ModeManager::MODE_ACRO:
 			motor.setMaxVelocity(ACRO_MAX_VELOCITY);
@@ -65,6 +67,9 @@ void MotorManager::setMaxVelocity(){
 			motor.setMaxVelocity(AUTONOMOUS_MAX_VELOCITY);
 			break;
 		}
+	}else{
+		motor.setMaxVelocity(SERVICE_MAX_VELOCITY);
+	}
 }
 
 MotorManager::MotorManager() {
