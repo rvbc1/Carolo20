@@ -16,7 +16,6 @@ void MotorManager::init(){
 }
 
 void MotorManager::process(){
-
 	setMaxVelocity();
 	DriveModeCheck();
 	RCModeCheck();
@@ -24,7 +23,7 @@ void MotorManager::process(){
 }
 
 void MotorManager::DriveModeCheck(){
-	switch(steering_manager.getDriveMode()){
+	switch(mode_manager.getDriveMode()){
 	case ModeManager::DISABLE:
 		motor.Disarm();
 		break;
@@ -34,7 +33,7 @@ void MotorManager::DriveModeCheck(){
 	}
 }
 void MotorManager::RCModeCheck(){
-	switch(steering_manager.getRCmode()){
+	switch(mode_manager.getRCmode()){
 		case ModeManager::DISARMED:
 			//motor.Disarm();
 			break;
@@ -47,13 +46,14 @@ void MotorManager::RCModeCheck(){
 			motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
 			break;
 		case ModeManager::MODE_AUTONOMOUS:
-			motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
+			motor.SetVelocity(setpoints_from_vision.velocity, 6000.f, setpoints_from_vision.jerk);
+		//	motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
 			break;
 		}
 }
 void MotorManager::setMaxVelocity(){
-	if(steering_manager.getServiceMode() == ModeManager::CUP){
-		switch(steering_manager.getRCmode()){
+	if(mode_manager.getServiceMode() == ModeManager::CUP){
+		switch(mode_manager.getRCmode()){
 		case ModeManager::DISARMED:
 			//motor.Disarm();
 			break;

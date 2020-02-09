@@ -16,7 +16,7 @@ void LEDUp::Init(){
 }
 
 void LEDUp::Process(){
-	if(steering_manager.getRCmode() == ModeManager::MODE_ACRO){
+	if(mode_manager.getRCmode() == ModeManager::MODE_ACRO){
 		process_counter++;
 		if(process_counter >= 10){
 			process_counter = 0;

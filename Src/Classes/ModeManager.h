@@ -56,6 +56,6 @@ private:
 
 };
 
-extern ModeManager steering_manager;
+extern ModeManager mode_manager;
 
 #endif /* TASKS_STEERINGMANAGER_H_ */

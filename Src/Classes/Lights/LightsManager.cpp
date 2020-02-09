@@ -159,14 +159,14 @@ void LightsManager::breakLightProcess(void){
 }
 
 void LightsManager::checkRCmode(){
-	if(steering_manager.getRCmode() == ModeManager::DISARMED){
+	if(mode_manager.getRCmode() == ModeManager::DISARMED){
 		left_indicator_front.setActivated(true);
 		right_indicator_front.setActivated(true);
 
 		left_indicator_back.setActivated(true);
 		right_indicator_back.setActivated(true);
 
-	} else if (steering_manager.getRCmode() == ModeManager::MODE_ACRO){
+	} else if (mode_manager.getRCmode() == ModeManager::MODE_ACRO){
 
 		if (futaba.SwitchC == SWITCH_UP) {
 			left_indicator_front.setActivated(false);

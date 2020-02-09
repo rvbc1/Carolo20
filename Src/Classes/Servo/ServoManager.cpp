@@ -38,7 +38,7 @@ void ServoManager::setAngle(int16_t front, int16_t back){
 
 void ServoManager::process(){
 
-	switch(steering_manager.getDriveMode()){
+	switch(mode_manager.getDriveMode()){
 	case ModeManager::DISABLE:
 		disarm();
 		break;
@@ -47,7 +47,7 @@ void ServoManager::process(){
 		break;
 	}
 
-	switch(steering_manager.getRCmode()){
+	switch(mode_manager.getRCmode()){
 	case ModeManager::DISARMED:
 		//disarm();
 		break;
