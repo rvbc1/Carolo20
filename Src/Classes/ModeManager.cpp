@@ -18,7 +18,7 @@
 #include "AHRS.h"
 #include "Tools.h"
 
-ModeManager steering_manager;
+ModeManager mode_manager;
 
 static void StickCommandProccess(void) {
 	if (futaba.Stick_Command[1]) // (   .)    (   .)
@@ -57,22 +57,25 @@ void ModeManager::init(){
 void ModeManager::proccess(){
 	futaba.ProcessSmoothing();
 
+	if(futaba.SwitchD == SWITCH_DOWN) service_mode = TESTING;
+	else 							  service_mode = CUP;
+
 	if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 		rc_mode = DISARMED;
 		drive_mode = DISABLE;
 
-		if(isModeDelayTimON){
+		if(isModeDelayTimON && (service_mode == CUP)){
 			idleReset();
 		}
 
 		if (futaba.Get_RCState() == 0)
 			StickCommandProccess();
 	} else if (futaba.SwitchA == SWITCH_DOWN) {
-		//drive_mode = ENABLE;
+		if (service_mode == TESTING) drive_mode = ENABLE;
 
 		if (futaba.SwitchB == SWITCH_UP) {
 			rc_mode = MODE_ACRO;
-			if(!isModeDelayTimON){
+			if(!isModeDelayTimON && (service_mode == CUP)){
 				drive_mode = DISABLE;
 				idleStart();
 			}
@@ -80,14 +83,14 @@ void ModeManager::proccess(){
 		} else if (futaba.SwitchB == SWITCH_MIDDLE) {
 			rc_mode = MODE_SEMI;
 			drive_mode = ENABLE;
-			if(isModeDelayTimON){
+			if(isModeDelayTimON && (service_mode == CUP)){
 				idleReset();
 			}
 
 		} else if (futaba.SwitchB == SWITCH_DOWN) {
 			rc_mode = MODE_AUTONOMOUS;
 			drive_mode = ENABLE;
-			if(isModeDelayTimON){
+			if(isModeDelayTimON && (service_mode == CUP)){
 				idleReset();
 			}
 
@@ -123,6 +126,9 @@ ModeManager::RC_MODE ModeManager::getRCmode(){
 
 ModeManager::DRIVE_MODE ModeManager::getDriveMode(){
 	return drive_mode;
+}
+ModeManager::SERVICE_MODE ModeManager::getServiceMode(){
+	return service_mode;
 }
 
 //UNUSED(rc_mode);

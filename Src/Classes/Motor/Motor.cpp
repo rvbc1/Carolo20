@@ -103,7 +103,7 @@ void Motor::Process(void) {
 	Conversions();
 	SpeedTracking();
 	Controller();
-	if (tim_running)
+//	if (tim_running)
 		Output();
 
 	osDelay(3);
@@ -185,8 +185,10 @@ void Motor::Controller(void){
 
 	float error = setpoint - measurement;
 
-	if(setpoint > 1000){
+	if(measurement > 1000){
 		Proportional = Kp * error * 1.2;
+//	} else if(setpoint >1000){
+//		Proportional = Kp * error * 1.3;
 	} else {
 		Proportional = Kp * error;
 	}
@@ -211,8 +213,9 @@ void Motor::Controller(void){
 		pid_value = 0.f;
 	}
 
-	if (setpoint < 50 && setpoint > -50) {
+	if (setpoint < 150 && setpoint > -150) {
 		pid_value = 0.f;
+		Integral = 0.f;
 	}
 }
 void Motor::Output(void) {
@@ -252,9 +255,12 @@ float Motor::getMaxVelocity(void){
 float Motor::getAcceleration(void){
 	return current_acceleration;
 }
+float Motor::getPIDvalue(void){
+	return pid_value;
+}
 
 void Motor::setMaxVelocity(float velocity){
-	max_velocity = velocity;
+		max_velocity = velocity;
 }
 void Motor::SpeedTracking(void) {
 	Arm();

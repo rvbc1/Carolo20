@@ -175,9 +175,9 @@ void StartMotorController(void const * argument) {
 }
 
 void StartModeManagerTask(void const * argument) {
-	steering_manager.init();
+	mode_manager.init();
 	for (;;) {
-		steering_manager.proccess();
+		mode_manager.proccess();
 	}
 }
 
@@ -266,7 +266,10 @@ void StartButtonsTask(void const * argument){
 }
 
 void StartWatchDogsTask(void const * argument){
-	//WatchDogs::init();
+//	while(HAL_GetTick() < 500){
+//		osDelay(1);
+//	}
+//	WatchDogs::init();
 	while(true){
 		WatchDogs::process();
 	}

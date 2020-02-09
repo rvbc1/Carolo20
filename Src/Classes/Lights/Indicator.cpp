@@ -27,8 +27,19 @@ void Indicator::off(){
 	}
 }
 
-Indicator::Indicator(){
+void Indicator::setActivated(uint8_t activated){
+	if(getActivated() != activated){
+		resetCounter();
+		this->activated = activated;
+	}
+}
+
+void Indicator::resetCounter(){
 	proccess_counter = 0;
+}
+
+Indicator::Indicator(){
+	resetCounter();
 }
 
 Indicator::~Indicator() {

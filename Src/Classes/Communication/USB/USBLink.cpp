@@ -19,6 +19,7 @@
 #include <ButtonsManager.h>
 #include <LightsManager.h>
 #include "Lights/Light.h"
+#include "ModeManager.h"
 
 USBLink::DataBuffer USBLink::dataBuffer;
 
@@ -252,6 +253,12 @@ uint8_t USBLink::checkFrameCorrectness(CommandRX* frame){
 
 void USBLink::recieveTerminal(){
 	switch(dataBuffer.rx.bytes[0]){
+	case 'p':
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "PID value: %f\n", motor.getPIDvalue());
+		break;
+	case 'c':
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getServiceMode());
+		break;
 	case 'a':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Acceleration: %f\n", motor.getAcceleration());
 		break;

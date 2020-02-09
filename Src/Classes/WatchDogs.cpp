@@ -9,8 +9,8 @@
 
 
 void WatchDogs::init(){
-//	MX_IWDG_Init();
-//	MX_WWDG_Init();
+	MX_IWDG_Init();
+	MX_WWDG_Init();
 }
 void WatchDogs::process(){
 //	HAL_WWDG_Refresh(&hwwdg);

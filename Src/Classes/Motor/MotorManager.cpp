@@ -16,7 +16,14 @@ void MotorManager::init(){
 }
 
 void MotorManager::process(){
-	switch(steering_manager.getDriveMode()){
+	setMaxVelocity();
+	DriveModeCheck();
+	RCModeCheck();
+	osDelay(1);
+}
+
+void MotorManager::DriveModeCheck(){
+	switch(mode_manager.getDriveMode()){
 	case ModeManager::DISABLE:
 		motor.Disarm();
 		break;
@@ -24,25 +31,40 @@ void MotorManager::process(){
 		motor.Arm();
 		break;
 	}
-
-	switch(steering_manager.getRCmode()){
-	case ModeManager::DISARMED:
-		//motor.Disarm();
-		break;
-	case ModeManager::MODE_ACRO:
-		motor.SetDuty(futaba.SmoothDeflection[PITCH]);
-		motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 10000.f, 50000.f);
-		break;
-	case ModeManager::MODE_SEMI:
-		motor.SetDuty(futaba.SmoothDeflection[PITCH]);
-		motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
-		break;
-	case ModeManager::MODE_AUTONOMOUS:
-		motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
-		break;
-	}
-
-	osDelay(1);
+}
+void MotorManager::RCModeCheck(){
+	switch(mode_manager.getRCmode()){
+		case ModeManager::DISARMED:
+			//motor.Disarm();
+			break;
+		case ModeManager::MODE_ACRO:
+			motor.SetDuty(futaba.SmoothDeflection[PITCH]);
+			motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 10000.f, 50000.f);
+			break;
+		case ModeManager::MODE_SEMI:
+			motor.SetDuty(futaba.SmoothDeflection[PITCH]);
+			motor.SetVelocity(motor.getMaxVelocity() * futaba.SmoothDeflection[PITCH], 3000.f, 50000.f);
+			break;
+		case ModeManager::MODE_AUTONOMOUS:
+			motor.SetVelocity(setpoints_from_vision.velocity, 6000.f, setpoints_from_vision.jerk);
+		//	motor.SetVelocity(setpoints_from_vision.velocity, setpoints_from_vision.acceleration, setpoints_from_vision.jerk);
+			break;
+		}
+}
+void MotorManager::setMaxVelocity(){
+	switch(mode_manager.getRCmode()){
+		case ModeManager::DISARMED:
+			break;
+		case ModeManager::MODE_ACRO:
+			motor.setMaxVelocity(ACRO_MAX_VELOCITY);
+			break;
+		case ModeManager::MODE_SEMI:
+			motor.setMaxVelocity(SEMI_MAX_VELOCITY);
+			break;
+		case ModeManager::MODE_AUTONOMOUS:
+			motor.setMaxVelocity(AUTONOMOUS_MAX_VELOCITY);
+			break;
+		}
 }
 
 MotorManager::MotorManager() {
