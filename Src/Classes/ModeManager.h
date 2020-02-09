@@ -28,8 +28,9 @@ public:
 	};
 
 	enum SERVICE_MODE{
-		TESTING = 0,
-		CUP
+		CUP = 0,
+		TESTING
+
 	};
 
 	void init();
@@ -37,6 +38,8 @@ public:
 	RC_MODE getRCmode();
 	DRIVE_MODE getDriveMode();
 	SERVICE_MODE getServiceMode();
+
+	void ToggleServiceMode();
 
 	void modeDelayTimIT();
 	ModeManager();
