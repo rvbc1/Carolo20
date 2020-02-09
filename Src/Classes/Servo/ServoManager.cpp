@@ -16,7 +16,9 @@ void ServoManager::init(){
 	MX_TIM2_Init();
 
 	servo_back = new Servo(&htim2, TIM_CHANNEL_2);
+	servo_back->setCorrectionAngle(-10);
 	servo_front = new Servo(&htim2, TIM_CHANNEL_4);
+	//servo_front->setCorrectionAngle(-36);
 }
 
 void ServoManager::arm(){
@@ -29,7 +31,7 @@ void ServoManager::disarm(){
 	servo_back->Disarm();
 }
 
-void ServoManager::setAngle(uint16_t front, uint16_t back){
+void ServoManager::setAngle(int16_t front, int16_t back){
 	servo_front->setAngle(-front);	//check why signal is inverted
 	servo_back->setAngle(-back);	//check why signal is inverted
 }

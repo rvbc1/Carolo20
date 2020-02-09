@@ -78,6 +78,10 @@ void Servo::setMaxAngle(int16_t max_angle){
 	this->max_angle = max_angle;
 }
 
+void Servo::setPWMwidth(uint16_t min, uint16_t max){
+
+}
+
 void Servo::setCorrectionAngle(int16_t correction_angle){
 	this->correction_angle = correction_angle;
 }

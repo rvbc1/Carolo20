@@ -8,8 +8,8 @@
 #ifndef SERVO_H_
 #define SERVO_H_
 
-#define DEFAULT_MIN_PWM_WIDTH 		1000
-#define DEFAULT_MAX_PWM_WIDTH 		1900
+#define DEFAULT_MIN_PWM_WIDTH 		600
+#define DEFAULT_MAX_PWM_WIDTH 		2500
 #define DEFAULT_MIN_ANGLE 			-45
 #define DEFAULT_MAX_ANGLE 			45
 #define DEFAULT_MIN_USER_ANGLE 		DEFAULT_MIN_ANGLE
@@ -38,6 +38,7 @@ public:
 	void Arm();
 	void Disarm();
 	void setPWM(uint16_t pwm);
+	void setPWMwidth(uint16_t min, uint16_t max);
 	void setAngle(int16_t angle);
 	void setMinAngle(int16_t min_angle);
 	void setMaxAngle(int16_t max_angle);

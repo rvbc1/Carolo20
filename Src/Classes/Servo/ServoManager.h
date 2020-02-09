@@ -23,7 +23,7 @@ public:
 
 	void process();
 
-	void setAngle(uint16_t front, uint16_t back);
+	void setAngle(int16_t front, int16_t back);
 
 	ServoManager();
 	virtual ~ServoManager();
