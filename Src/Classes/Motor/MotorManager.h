@@ -13,7 +13,7 @@
 #include "ModeManager.h"
 #include "cmsis_os.h"
 
-#define ACRO_MAX_VELOCITY 1000.f
+#define ACRO_MAX_VELOCITY 400.f
 #define SEMI_MAX_VELOCITY 6000.f
 #define AUTONOMOUS_MAX_VELOCITY 6000.f
 

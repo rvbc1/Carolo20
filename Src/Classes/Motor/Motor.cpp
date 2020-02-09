@@ -202,10 +202,10 @@ void Motor::Controller(void){
 
 	if (controller_en) {
 		float vBatScaling = 1.f;
-//		if (powermanager.voltage > 6.f)
-//			vBatScaling = 8.4f / powermanager.voltage;
+		if (powermanager.voltage > 6.f)
+			vBatScaling = 8.4f / powermanager.voltage;
 		pid_value = vBatScaling * (Proportional + Integral + Derivative);
-//		pid_value += SIGNF(pid_value) * duty_deadband;
+		pid_value += SIGNF(pid_value) * duty_deadband;
 		pid_value = constrainf(pid_value, -1.f, 1.f);
 	} else {
 		previous_error = 0.f;
@@ -213,7 +213,7 @@ void Motor::Controller(void){
 		pid_value = 0.f;
 	}
 
-	if (setpoint < 100 && setpoint > -100) {
+	if (setpoint < 150 && setpoint > -150) {
 		pid_value = 0.f;
 		Integral = 0.f;
 	}
