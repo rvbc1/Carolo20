@@ -42,6 +42,7 @@ public:
 	void setAngle(int16_t angle);
 	void setMinAngle(int16_t min_angle);
 	void setMaxAngle(int16_t max_angle);
+	void setMinUserAngle(int16_t min_user_angle);
 	void setCorrectionAngle(int16_t correction_angle);
 	Servo(TIM_HandleTypeDef* htim, uint32_t channel);
 	virtual ~Servo();
