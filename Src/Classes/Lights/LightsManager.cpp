@@ -189,69 +189,70 @@ void LightsManager::checkRCmode(){
 	}
 }
 
+void LightsManager::AllLightsUpdate(){
+	HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
+
+		if(high){
+			headlights.setColor(high_beam_color);
+		} else {
+			headlights.setColor(low_beam_color);
+		}
+
+		if(headlights.getActivated()){
+			headlights.on();
+		} else {
+			headlights.off();
+		}
+
+		if(tail_lights.getActivated()){
+			tail_lights.on();
+		} else {
+			tail_lights.off();
+		}
+
+		if(break_lights.getActivated()){
+			break_lights.on();
+		} else {
+			break_lights.off();
+		}
+
+
+		if(left_indicator_front.getActivated()){
+			left_indicator_front.nextCycle();
+			left_indicator_front.on();
+		} else {
+			left_indicator_front.off();
+		}
+
+		if(right_indicator_front.getActivated()){
+			right_indicator_front.nextCycle();
+			right_indicator_front.on();
+		} else {
+			right_indicator_front.off();
+		}
+
+		if(left_indicator_back.getActivated()){
+			left_indicator_back.nextCycle();
+			left_indicator_back.on();
+		} else {
+			left_indicator_back.off();
+		}
+
+		if(right_indicator_back.getActivated()){
+			right_indicator_back.nextCycle();
+			right_indicator_back.on();
+		} else {
+			right_indicator_back.off();
+		}
+
+		HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
+}
+
 void LightsManager::process(){
 	checkRCmode();
 	breakLightProcess();
 
-	HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
-
-	if(high){
-		headlights.setColor(high_beam_color);
-	} else {
-		headlights.setColor(low_beam_color);
-	}
-
-	if(headlights.getActivated()){
-		headlights.on();
-	} else {
-		headlights.off();
-	}
-
-	if(tail_lights.getActivated()){
-		tail_lights.on();
-	} else {
-		tail_lights.off();
-	}
-
-	if(break_lights.getActivated()){
-		break_lights.on();
-	} else {
-		break_lights.off();
-	}
-
-
-	if(left_indicator_front.getActivated()){
-		left_indicator_front.nextCycle();
-		left_indicator_front.on();
-	} else {
-		left_indicator_front.off();
-	}
-
-	if(right_indicator_front.getActivated()){
-		right_indicator_front.nextCycle();
-		right_indicator_front.on();
-	} else {
-		right_indicator_front.off();
-	}
-
-	if(left_indicator_back.getActivated()){
-		left_indicator_back.nextCycle();
-		left_indicator_back.on();
-	} else {
-		left_indicator_back.off();
-	}
-
-	if(right_indicator_back.getActivated()){
-		right_indicator_back.nextCycle();
-		right_indicator_back.on();
-	} else {
-		right_indicator_back.off();
-	}
-
-
-
-
-	HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
+	AllLightsUpdate();
 
 	osDelay(100);
 }
