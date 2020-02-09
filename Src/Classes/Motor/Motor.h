@@ -114,6 +114,7 @@ public:
 	float getDistance(void);
 	float getMaxVelocity(void);
 	float getAcceleration(void);
+	float getPIDvalue(void);
 
 	Motor(uint16_t middle, uint16_t band);
 	virtual ~Motor();

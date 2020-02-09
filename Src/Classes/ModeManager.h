@@ -36,6 +36,7 @@ public:
 	void proccess();
 	RC_MODE getRCmode();
 	DRIVE_MODE getDriveMode();
+	SERVICE_MODE getServiceMode();
 
 	void modeDelayTimIT();
 	ModeManager();

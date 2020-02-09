@@ -185,8 +185,10 @@ void Motor::Controller(void){
 
 	float error = setpoint - measurement;
 
-	if(setpoint > 1000){
-		Proportional = Kp * error * 1.2;
+	if(setpoint > 2000){
+		Proportional = Kp * error * 1.5;
+	} else if(setpoint >1000){
+		Proportional = Kp * error * 1.3;
 	} else {
 		Proportional = Kp * error;
 	}
@@ -211,7 +213,7 @@ void Motor::Controller(void){
 		pid_value = 0.f;
 	}
 
-	if (setpoint < 50 && setpoint > -50) {
+	if (setpoint < 150 && setpoint > -150) {
 		pid_value = 0.f;
 	}
 }
@@ -251,6 +253,9 @@ float Motor::getMaxVelocity(void){
 }
 float Motor::getAcceleration(void){
 	return current_acceleration;
+}
+float Motor::getPIDvalue(void){
+	return pid_value;
 }
 
 void Motor::setMaxVelocity(float velocity){

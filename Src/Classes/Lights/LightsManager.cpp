@@ -149,7 +149,8 @@ void LightsManager::reset_data_buffer(){
 	}
 }
 void LightsManager::breakLightProcess(void){
-	if(motor.getAcceleration() < 0.f && motor.getVelocity() > 0){
+	if((motor.getAcceleration() < -1000.f && motor.getVelocity() > 0) ||
+	   (motor.getAcceleration() >  1000.f && motor.getVelocity() < 0)	){
 		break_lights.setActivated(true); 			// Break lights ON
 	}
 	else{

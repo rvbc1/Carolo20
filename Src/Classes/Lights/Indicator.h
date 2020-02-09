@@ -15,9 +15,11 @@ public:
 	void on();
 	void off();
 	void nextCycle();
+	void setActivated(uint8_t activated);
 	Indicator();
 	virtual ~Indicator();
 private:
+	void resetCounter();
 	uint16_t proccess_counter;
 };
 
