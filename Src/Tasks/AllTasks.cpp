@@ -134,25 +134,23 @@ void Allshit_begin(void) {
 	osThreadDef(LightsTask, StartLightsTask, osPriorityNormal, 0, 1024);
 	LightsTaskHandle = osThreadCreate(osThread(LightsTask), NULL);
 
+	/* Buttons - LOW PRIORITY */
 	osThreadDef(ButtonsTask, StartButtonsTask, osPriorityLow, 0, 128);
 	ButtonsTaskHandle = osThreadCreate(osThread(ButtonsTask), NULL);
 
-
-
-	//SERVO
-	osThreadDef(ServoManagerTask, StartServoManagerTask, osPriorityLow, 0, 128);
+	/* Servo - MEDIUM PRIORITY */
+	osThreadDef(ServoManagerTask, StartServoManagerTask, osPriorityNormal, 0, 128);
 	ServoManagerTaskHandle = osThreadCreate(osThread(ServoManagerTask), NULL);
 
-	//MOTOR
+	/* MotorManager - LOW PRIORITY */
 	osThreadDef(MotorManagerTask, StartMotorManagerTask, osPriorityLow, 0, 128);
 	MotorManagerTaskHandle = osThreadCreate(osThread(MotorManagerTask), NULL);
 
 	/* definition and creation of WatchDogsTask */
-
 	osThreadDef(WatchDogsTask, StartWatchDogsTask, osPriorityHigh, 0, 512);
 	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
 
-
+	/* LEDup - LOW PRIORITY */
 	osThreadDef(LEDUpTask, StartLEDUpTask, osPriorityLow, 0, 256);
 	LEDUpTaskHandle = osThreadCreate(osThread(LEDUpTask), NULL);
 
@@ -160,7 +158,7 @@ void Allshit_begin(void) {
 
 void StartFutabaTask(void const * argument) {
 	futaba.Init();
-	for (;;) {
+	while(true){
 		futaba.Process();
 	}
 
@@ -176,7 +174,7 @@ void StartMotorController(void const * argument) {
 
 void StartModeManagerTask(void const * argument) {
 	mode_manager.init();
-	for (;;) {
+	while(true){
 		mode_manager.proccess();
 	}
 }
@@ -199,7 +197,7 @@ void StartAHRSTask(void const * argument) {
 
 void StartOdometryTask(void const * argument) {
 	odometry.Init();
-	while (true) {
+	while(true) {
 		osSignalWait(odometry.SignalReady, osWaitForever);
 		odometry.Process(ahrs.attitude.values.yaw, motor.getDistance(), tools.GetMicros());
 	}
@@ -207,7 +205,7 @@ void StartOdometryTask(void const * argument) {
 
 void StartBatteryManager(void const * argument) {
 	powermanager.Init();
-	for (;;) {
+	while(true){
 		powermanager.Handler();
 	}
 
@@ -222,7 +220,7 @@ void StartUSBTask(void const * argument) {
 
 void StartTelemetryTask(void const * argument) {
 	telemetry.Init();
-	for (;;) {
+	while(true){
 		telemetry.Process();
 	}
 
@@ -230,7 +228,7 @@ void StartTelemetryTask(void const * argument) {
 
 void StartBTTask(void const * argument) {
 	Bluetooth_Init();
-	for (;;) {
+	while(true){
 		Bluetooth_Process();
 	}
 }
@@ -278,7 +276,7 @@ void StartWatchDogsTask(void const * argument){
 
 void StartLEDUpTask(void const * argument){
 	ledUp.Init();
-	for(;;){
+	while(true){
 		ledUp.Process();
 	}
 }

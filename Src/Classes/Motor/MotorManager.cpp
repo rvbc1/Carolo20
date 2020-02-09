@@ -35,7 +35,6 @@ void MotorManager::DriveModeCheck(){
 void MotorManager::RCModeCheck(){
 	switch(mode_manager.getRCmode()){
 		case ModeManager::DISARMED:
-			//motor.Disarm();
 			break;
 		case ModeManager::MODE_ACRO:
 			motor.SetDuty(futaba.SmoothDeflection[PITCH]);
@@ -55,7 +54,6 @@ void MotorManager::setMaxVelocity(){
 	if(mode_manager.getServiceMode() == ModeManager::CUP){
 		switch(mode_manager.getRCmode()){
 		case ModeManager::DISARMED:
-			//motor.Disarm();
 			break;
 		case ModeManager::MODE_ACRO:
 			motor.setMaxVelocity(ACRO_MAX_VELOCITY);
