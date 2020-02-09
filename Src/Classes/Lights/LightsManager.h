@@ -40,6 +40,7 @@ private:
 
 	void checkRCmode();
 	void breakLightProcess();
+	void AllLightsUpdate();
 public:
 	uint8_t stop_light;
 	uint8_t stop_light_duration;
