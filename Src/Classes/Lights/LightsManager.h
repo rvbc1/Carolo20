@@ -17,6 +17,8 @@
 #include "Futaba.h"
 #include "Motor.h"
 
+#define ACC_AVERAGE_NUM 5
+
 extern Light headlights;
 extern Light tail_lights;
 extern Light break_lights;
@@ -38,6 +40,8 @@ private:
 	uint32_t lights_task_counter;
 	uint32_t light_process_counter;
 
+	float acceleration[ACC_AVERAGE_NUM];
+	uint8_t acc_counter = 0;
 	void checkRCmode();
 	void breakLightProcess();
 	void AllLightsUpdate();

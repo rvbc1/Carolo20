@@ -140,6 +140,8 @@ void LightsManager::ws2812_init() {
 	light_process_counter = 0;
 	stop_light = false;
 	stop_light_duration = 0;
+
+	for(uint16_t i=0; i < ACC_AVERAGE_NUM; i++) acceleration[i] = 0;
 }
 
 
@@ -149,8 +151,18 @@ void LightsManager::reset_data_buffer(){
 	}
 }
 void LightsManager::breakLightProcess(void){
-	if((motor.getAcceleration() < -1000.f && motor.getVelocity() > 0) ||
-	   (motor.getAcceleration() >  1000.f && motor.getVelocity() < 0)	){
+	acceleration[acc_counter] = motor.getAcceleration();
+
+	if(++acc_counter >= ACC_AVERAGE_NUM ) acc_counter = 0;
+
+	float avr_acceleration = 0, sum = 0;
+	for(uint16_t i = 0; i < ACC_AVERAGE_NUM; i++) sum +=acceleration[i];
+	avr_acceleration = sum / ACC_AVERAGE_NUM;
+
+//	if((motor.getAcceleration() < -1000.f && motor.getVelocity() > 0) ||
+//	   (motor.getAcceleration() >  1000.f && motor.getVelocity() < 0)	){
+	if((avr_acceleration < 0.f && motor.getVelocity() > 0) ||
+	   (avr_acceleration > 0.f && motor.getVelocity() < 0)	){
 		break_lights.setActivated(true); 			// Break lights ON
 	}
 	else{
