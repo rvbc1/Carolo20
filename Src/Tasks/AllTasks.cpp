@@ -8,6 +8,7 @@
 
 
 #include <AllTasks.h>
+#include <ArcoNotifierLED.h>
 #include <ButtonsManager.h>
 #include <LightsManager.h>
 #include <ModeManager.h>
@@ -30,8 +31,6 @@
 #include "Mathematics.h"
 #include "tim.h"
 #include "WatchDogs.h"
-#include "LEDUp.h"
-
 #include "USBLink.h"
 
 osThreadId GyroTaskHandle;
@@ -49,7 +48,7 @@ osThreadId OLEDTaskHandle;
 osThreadId LightsTaskHandle;
 osThreadId ButtonsTaskHandle;
 osThreadId WatchDogsTaskHandle;
-osThreadId LEDUpTaskHandle;
+osThreadId AcroNotifierLEDTaskHandle;
 
 osThreadId ServoManagerTaskHandle;
 osThreadId MotorManagerTaskHandle;
@@ -71,7 +70,7 @@ void StartLightsTask(void const * argument);
 void StartButtonsTask(void const * argument);
 void StartWatchDogsTask(void const * argument);
 
-void StartLEDUpTask(void const * argument);
+void StartAcroNotifierLEDTask(void const * argument);
 
 
 void StartServoManagerTask(void const * argument);
@@ -151,8 +150,8 @@ void Allshit_begin(void) {
 	WatchDogsTaskHandle = osThreadCreate(osThread(WatchDogsTask), NULL);
 
 	/* LEDup - LOW PRIORITY */
-	osThreadDef(LEDUpTask, StartLEDUpTask, osPriorityLow, 0, 256);
-	LEDUpTaskHandle = osThreadCreate(osThread(LEDUpTask), NULL);
+	osThreadDef(AcroNotifierLEDTask, StartAcroNotifierLEDTask, osPriorityLow, 0, 256);
+	AcroNotifierLEDTaskHandle = osThreadCreate(osThread(AcroNotifierLEDTask), NULL);
 
 }
 
@@ -274,10 +273,10 @@ void StartWatchDogsTask(void const * argument){
 }
 
 
-void StartLEDUpTask(void const * argument){
-	ledUp.Init();
+void StartAcroNotifierLEDTask(void const * argument){
+	acro_notifier_led.Init();
 	while(true){
-		ledUp.Process();
+		acro_notifier_led.Process();
 	}
 }
 

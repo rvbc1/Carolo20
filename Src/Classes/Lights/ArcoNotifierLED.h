@@ -5,8 +5,8 @@
  *      Author: Igor
  */
 
-#ifndef CLASSES_LIGHTS_LEDUP_H_
-#define CLASSES_LIGHTS_LEDUP_H_
+#ifndef CLASSES_LIGHTS_ARCONOTIFIERLED_H_
+#define CLASSES_LIGHTS_ARCONOTIFIERLED_H_
 
 #include "main.h"
 #include "ModeManager.h"
@@ -14,19 +14,19 @@
 #include "AllTasks.h"
 
 
-class LEDUp {
+class ArcoNotifierLED {
 public:
-	LEDUp();
+	ArcoNotifierLED();
 	void Init();
 	void Process();
-	virtual ~LEDUp();
+	virtual ~ArcoNotifierLED();
 private:
 	uint16_t process_counter;
 	void OFF();
 	void Toggle();
 };
 
-extern LEDUp ledUp;
+extern ArcoNotifierLED acro_notifier_led;
 
-#endif /* CLASSES_LIGHTS_LEDUP_H_ */
+#endif /* CLASSES_LIGHTS_ARCONOTIFIERLED_H_ */
 
