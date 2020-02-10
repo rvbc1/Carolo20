@@ -42,7 +42,6 @@ class Motor {
 	float max_acceleration = 40000.f;
 
 	/* Controller Parameters */
-//	PT1Filter lpf = PT1Filter(50, _dt);
 	PT1Filter dterm_lpf = PT1Filter(40, _dt);
 
 	float Kp = 60.0e-5f;
@@ -56,25 +55,13 @@ class Motor {
 
 	float prev_pid_value = 0;
 
-
-	/* Measurements & Setpoints*/
-//	int32_t totalImpulses = 0;
-//	int16_t impulses = 0;
-//
-//	float distance = 0.f;
-//	float rotations = 0.f;
-
 	float set_duty = 0.f;
 	float prev_set_duty = 0.f;
 	bool passthrough = false;
 
 	bool controller_en = false;
 
-//	float current_rpm = 0.f;
-//	float current_velocity = 0.f;
-//	float previous_velocity = 0.f;
 	float current_set_velocity = 0.f;
-//	float current_acceleration = 0.f;
 
 	float set_velocity = 0.f;
 	float set_acceleration = 0.f;

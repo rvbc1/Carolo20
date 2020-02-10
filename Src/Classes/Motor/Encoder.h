@@ -65,11 +65,11 @@ private:
 	float current_rpm = 0.f;
 	float current_velocity = 0.f;
 	float previous_velocity = 0.f;
-//	float current_set_velocity = 0.f;
 	float current_acceleration = 0.f;
 
 	PT1Filter lpf = PT1Filter(50, _dt);
 
+	/* Average variables */
 	float last_accelerations[ACCELERATION_AVERAGE_NUM]= {0};
 	float last_velocities[VELOCITY_AVERAGE_NUM] = {0};
 	uint32_t avrgVelocity_counter = 0;

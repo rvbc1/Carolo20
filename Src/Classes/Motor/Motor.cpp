@@ -61,16 +61,6 @@ void set_duty_cycle(float dutyCycle){  //Sending duty cycle to VESC without libr
 }
 #endif
 
-//void averaging(){
-//	avrg_current_speed = 0.f;
-//	averaging_element * avrg_pointer = start_pointer;
-//	for(int i = 0; i < ELM; i++){
-//		avrg_current_speed += avrg_pointer->current_speed;
-//		avrg_pointer = avrg_pointer->next;
-//	}
-//	avrg_current_speed /= (ELM * 1.0);
-//}
-
 
 void Motor::Init(){
 
