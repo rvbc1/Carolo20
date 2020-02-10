@@ -22,6 +22,7 @@ public:
 	void Init();
 	void Read();
 	void Conversions();
+	void Process();
 
 	float getRPMs();
 	float getVelocity();

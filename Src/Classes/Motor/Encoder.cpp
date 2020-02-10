@@ -18,6 +18,11 @@ void Encoder::Init(){
 	avrgVelocity = 0.f;
 }
 
+void Encoder::Process(){
+	Read();
+	Conversions();
+}
+
 void Encoder::Read(){
 	static int16_t oldCount = 0;
 	int16_t count = TIM3->CNT;

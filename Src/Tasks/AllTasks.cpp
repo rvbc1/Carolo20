@@ -50,6 +50,7 @@ osThreadId LightsTaskHandle;
 osThreadId ButtonsTaskHandle;
 osThreadId WatchDogsTaskHandle;
 osThreadId AcroNotifierLEDTaskHandle;
+osThreadId EncoderTaskHandle;
 
 osThreadId ServoManagerTaskHandle;
 osThreadId MotorManagerTaskHandle;
@@ -70,9 +71,8 @@ void StartOLEDTask(void const * argument);
 void StartLightsTask(void const * argument);
 void StartButtonsTask(void const * argument);
 void StartWatchDogsTask(void const * argument);
-
 void StartAcroNotifierLEDTask(void const * argument);
-
+void StartEncoderTask(void const * argument);
 
 void StartServoManagerTask(void const * argument);
 void StartMotorManagerTask(void const * argument);
@@ -151,7 +151,17 @@ void Allshit_begin(void) {
 	/* LEDup - LOW PRIORITY */
 	osThreadDef(AcroNotifierLEDTask, StartAcroNotifierLEDTask, osPriorityLow, 0, 256);
 	AcroNotifierLEDTaskHandle = osThreadCreate(osThread(AcroNotifierLEDTask), NULL);
+	/* Encoder - HIGH PRIORITY */
+	osThreadDef(EncoderTask, StartEncoderTask, osPriorityHigh, 0, 256);
+	EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
 
+}
+
+void StartEncoderTask(void const * argument){
+	encoder.Init();
+	for(;;){
+		encoder.Process();
+	}
 }
 
 void StartFutabaTask(void const * argument) {
