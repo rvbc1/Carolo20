@@ -10,6 +10,8 @@
 #include "tim.h"
 #include "Tools.h"
 
+Encoder encoder;
+
 void Encoder::Init(){
 	MX_TIM3_Init();
 	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
@@ -80,6 +82,16 @@ int32_t Encoder::getImpulses(void){
 
 float Encoder::getAcceleration(void){
 	return current_acceleration;
+}
+
+float Encoder::getAverageAcceleration(){
+	return avrgAcceleration;
+}
+float Encoder::getAverageVelocity(){
+	return avrgVelocity;
+}
+float Encoder::getRPM_To_mms_Rate(){
+	return rpm_to_mms;
 }
 
 Encoder::Encoder() {

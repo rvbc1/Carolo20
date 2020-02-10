@@ -32,6 +32,7 @@
 #include "tim.h"
 #include "WatchDogs.h"
 #include "USBLink.h"
+#include "Encoder.h"
 
 osThreadId GyroTaskHandle;
 osThreadId AHRSTaskHandle;
@@ -195,7 +196,7 @@ void StartOdometryTask(void const * argument) {
 	odometry.Init();
 	while(true) {
 		osSignalWait(odometry.SignalReady, osWaitForever);
-		odometry.Process(ahrs.attitude.values.yaw, motor.getDistance(), tools.GetMicros());
+		odometry.Process(ahrs.attitude.values.yaw, encoder.getDistance(), tools.GetMicros());
 	}
 }
 

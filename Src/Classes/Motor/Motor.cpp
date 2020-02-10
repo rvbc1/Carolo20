@@ -12,6 +12,7 @@
 #include "Tools.h"
 #include "usart.h"
 #include "tim.h"
+#include "Encoder.h"
 
 #define ELM 100
 
@@ -72,22 +73,6 @@ void set_duty_cycle(float dutyCycle){  //Sending duty cycle to VESC without libr
 
 
 void Motor::Init(){
-	MX_TIM3_Init();
-	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
-
-	//	start_pointer = new averaging_element;
-	//	current_pointer = start_pointer;
-	//	for(int i = 0; i < ELM - 1; i++){
-	//		current_pointer->current_speed = 0.f;
-	//		current_pointer->next = new averaging_element;
-	//		current_pointer->next->previous = current_pointer;
-	//		current_pointer = current_pointer->next;
-	//	}
-	//	current_pointer->next = start_pointer;
-	//	start_pointer->previous = current_pointer;
-	//	current_pointer = start_pointer;
-	avrg_counter = 0;
-	avrg_current_speed = 0.f;
 
 #ifdef PWM_ESC
 	MX_TIM4_Init();
@@ -106,8 +91,6 @@ void Motor::Init(){
 	SetPassthroughState(true);
 }
 void Motor::Process(void) {
-	Read();
-	Conversions();
 	SpeedTracking();
 	Controller();
 #ifdef PWM_ESC
@@ -118,64 +101,8 @@ void Motor::Process(void) {
 	osDelay(3);
 	//osDelay(_dt * 1000.f);
 }
-void Motor::Read(void){
-	static int16_t oldCount = 0;
-	int16_t count = TIM3->CNT;
-	impulses = - (count - oldCount);
-	oldCount = count;
-	totalImpulses += impulses;
-}
-void Motor::Conversions(void) {
-	float filtered_impulses = lpf.apply(impulses);
-
-	current_rpm = filtered_impulses * enc_to_rpm;
-	rotations = totalImpulses * enc_to_rotations;
-
-	current_velocity = filtered_impulses * enc_to_mms;
-
-	avrg_current_speed += current_velocity;
-	if(avrg_counter == 30){
-		avrg_counter = 0;
-		avrg_current_speed /= 30.f;
-		if( avrg_current_speed > -10){
-			if((previous_velocity > (avrg_current_speed + 30))  ){
-				lights_manager.stop_light = true;
-				lights_manager.stop_light_duration = 0;
-			} else {
-				lights_manager.stop_light = false;
-			}
-		} else {
-			if((previous_velocity < (avrg_current_speed + 30))  ){
-				lights_manager.stop_light = true;
-				lights_manager.stop_light_duration = 0;
-			} else {
-				lights_manager.stop_light = false;
-			}
-		}
-		previous_velocity = avrg_current_speed;
-		avrg_current_speed = 0.f;
-	}
-
-	avrg_counter++;
-
-	//	current_pointer->current_speed = current_velocity;
-	//	current_pointer = current_pointer->next;
-	//
-	//
-	//	averaging();
-	//
-	//	if(previous_velocity > (avrg_current_speed + 50)){
-	//		lights.stop_light = true;
-	//		lights.stop_light_duration = 0;
-	//	}
-	//
-	//	previous_velocity = avrg_current_speed;
 
 
-	distance = totalImpulses * enc_to_mm;
-
-
-}
 void Motor::Controller(void){
 
 	static float previous_error = 0;
@@ -186,10 +113,10 @@ void Motor::Controller(void){
 
 	before = now;
 
-	set_rpm = current_set_velocity / rpm_to_mms;
+	set_rpm = current_set_velocity / encoder.getRPM_To_mms_Rate();
 
 	float setpoint = current_set_velocity;
-	float measurement = current_velocity;
+	float measurement = encoder.getVelocity();
 
 
 	float error = setpoint - measurement;
@@ -242,29 +169,17 @@ void Motor::Disarm(void) {
 	bldc_interface_set_duty_cycle(0.f);
 #endif
 }
-float Motor::getRPMs(void){
-	return current_rpm;
-}
-float Motor::getVelocity(void){
-	return current_velocity;
-}
-float Motor::getSetVelocity(void){
-	return current_set_velocity;
-}
-float Motor::getDistance(void){
-	return distance;
-}
-int32_t Motor::getImpulses(void){
-	return totalImpulses;
-}
+
 float Motor::getMaxVelocity(void){
 	return max_velocity;
 }
-float Motor::getAcceleration(void){
-	return current_acceleration;
-}
+
 float Motor::getPIDvalue(void){
 	return pid_value;
+}
+
+float Motor::getSetVelocity(void){
+	return current_set_velocity;
 }
 
 void Motor::setMaxVelocity(float velocity){
@@ -283,7 +198,6 @@ void Motor::SpeedTracking(void) {
 		//		} else {
 		//			current_acceleration = set_acceleration;
 		//		}
-		current_acceleration = (current_velocity - previous_velocity) / dt;
 
 		current_set_velocity += SIGNF(set_velocity - current_set_velocity) * set_acceleration * dt;
 		constrainf(current_set_velocity, -max_velocity, max_velocity);

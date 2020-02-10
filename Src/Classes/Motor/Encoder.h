@@ -15,6 +15,8 @@
 #define ACCELERATION_AVERAGE_NUM 30
 #define VELOCITY_AVERAGE_NUM 30
 
+
+
 class Encoder {
 public:
 	void Init();
@@ -26,6 +28,11 @@ public:
 	float getDistance();
 	int32_t getImpulses();
 	float getAcceleration();
+
+	float getAverageAcceleration();
+	float getAverageVelocity();
+	float getRPM_To_mms_Rate();
+
 
 	Encoder();
 	virtual ~Encoder();
@@ -73,5 +80,6 @@ private:
 	void AccelerationCalculate();
 };
 
+extern Encoder encoder;
 
 #endif /* CLASSES_MOTOR_ENCODER_H_ */
