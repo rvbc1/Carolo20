@@ -12,6 +12,7 @@ void Indicator::nextCycle(){
 	if(proccess_counter > added){
 		proccess_counter = 0;
 	}
+	need_update = true;
 }
 
 void Indicator::on(){

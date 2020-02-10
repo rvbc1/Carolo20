@@ -60,11 +60,11 @@ uint16_t ws2812BitsBuffer[WS2812_BYTES_BUFFER_SIZE];
 void LightsManager::ws2812_init() {
 	added_lights_count= 0;
 
-	front_right.setBuffer(&ws2812BitsBuffer[0]);
-	front_left.setBuffer(&ws2812BitsBuffer[1*8*3*8]);
-	back_left.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
-	back_middle.setBuffer(&ws2812BitsBuffer[3*8*3*8]);
-	back_right.setBuffer(&ws2812BitsBuffer[4*8*3*8]);
+	front_right.setBuffer(&ws2812BitsBuffer[0*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
+	front_left.setBuffer(&ws2812BitsBuffer[1*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
+	back_left.setBuffer(&ws2812BitsBuffer[2*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
+	back_middle.setBuffer(&ws2812BitsBuffer[3*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
+	back_right.setBuffer(&ws2812BitsBuffer[4*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
 
 
 
@@ -241,8 +241,10 @@ void LightsManager::addLight(Light* light){
 uint8_t LightsManager::needAnyLightUpdate(){
 	uint8_t update = false;
 	for(uint16_t i = 0; i < added_lights_count; i++){
-		if(all_lights[i]->needUpdate())
+		if(all_lights[i]->needUpdate()){
 			update = true;
+			break;
+		}
 	}
 	return update;
 }
@@ -250,23 +252,12 @@ uint8_t LightsManager::needAnyLightUpdate(){
 void LightsManager::lightsUpdate(){
 	HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
 
-//		if(high){
-//			headlights.setColor(high_beam_color);
-//		} else {
-//			headlights.setColor(low_beam_color);
-//		}
 	if(needAnyLightUpdate()){
 		for(uint16_t i = 0 ; i < added_lights_count; i++)
 			all_lights[i]->update();
 	}
-//		headlights.update();
-//
-//		tail_lights.update();
-//
-//		break_lights.update();
 
-
-		HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
+	HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
 }
 
 void LightsManager::indicatorsUpdate(){

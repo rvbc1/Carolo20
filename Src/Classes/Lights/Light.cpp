@@ -7,15 +7,6 @@
 
 #include <Light.h>
 
-#define HIGH_PWM_BIT_VALUE 			91
-#define LOW_PWM_BIT_VALUE 			47
-#define NUMBER_OF_LED_PCB			4
-#define NUMBER_OF_LEDS_PER_PCB		8
-#define NUMBER_OF_LEDS 				NUMBER_OF_LED_PCB * NUMBER_OF_LEDS_PER_PCB
-#define BYTES_PER_LED 				3
-#define BITS_PER_BYTE 				8
-#define BITS_PER_LED 				BYTES_PER_LED * BITS_PER_BYTE
-
 WS2812::Color off_light_color {0, 0, 0};
 
 void Light::setColor(WS2812::Color color){
