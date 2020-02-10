@@ -178,6 +178,7 @@ void LightsManager::breakLightProcess(void){
 //	   (motor.getAcceleration() >  1000.f && motor.getVelocity() < 0)	){
 	if((avr_acceleration < -2000.f && motor.getVelocity() > 0) ||
 	   (avr_acceleration > 2000.f && motor.getVelocity() < 0)	){
+
 		break_lights.setActivated(true); 			// Break lights ON
 	}
 	else{
