@@ -57,6 +57,14 @@ void ModeManager::proccess(){
 //	if(futaba.SwitchD == SWITCH_DOWN) service_mode = TESTING;
 //	else 							  service_mode = CUP;
 
+	setModes();
+
+	checkRideMode();
+
+	osDelay(task_dt);
+}
+
+void ModeManager::setModes(){
 	if (futaba.Get_RCState() || futaba.SwitchA < SWITCH_DOWN) {
 		rc_mode = DISARMED;
 		drive_mode = DISABLE;
@@ -64,7 +72,6 @@ void ModeManager::proccess(){
 		if (futaba.Get_RCState() == 0)
 			StickCommandProccess();
 	} else if (futaba.SwitchA == SWITCH_DOWN) {
-		if (ride_mode == FREERUN) drive_mode = ENABLE;
 
 		if (futaba.SwitchB == SWITCH_UP) {
 			rc_mode = MODE_ACRO;
@@ -79,11 +86,17 @@ void ModeManager::proccess(){
 
 		}
 	}
+}
 
-	if(ride_mode == COMPETITION)
+void ModeManager::checkRideMode(){
+	switch(ride_mode){
+	case FREERUN:
+		if (rc_mode != DISARMED) drive_mode = ENABLE;
+		break;
+	case COMPETITION:
 		updateUnlockDriveTimer();
-
-	osDelay(task_dt);
+		break;
+	}
 }
 
 void ModeManager::updateUnlockDriveTimer(){
