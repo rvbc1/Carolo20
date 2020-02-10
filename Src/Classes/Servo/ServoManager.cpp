@@ -37,7 +37,13 @@ void ServoManager::setAngle(int16_t front, int16_t back){
 }
 
 void ServoManager::process(){
+	checkDriveMode();
+	checkRCmode();
 
+	osDelay(task_dt);
+}
+
+void ServoManager::checkDriveMode(){
 	switch(mode_manager.getDriveMode()){
 	case ModeManager::DISABLE:
 		disarm();
@@ -46,10 +52,11 @@ void ServoManager::process(){
 		arm();
 		break;
 	}
+}
 
+void ServoManager::checkRCmode(){
 	switch(mode_manager.getRCmode()){
 	case ModeManager::DISARMED:
-		//disarm();
 		break;
 	case ModeManager::MODE_ACRO:
 		setAngle(int16_t(futaba.SmoothDeflection[YAW] * 45.f), -int16_t(futaba.SmoothDeflection[YAW] * 45.f));
@@ -59,7 +66,6 @@ void ServoManager::process(){
 		setAngle(setpoints_from_vision.fi_front, setpoints_from_vision.fi_back);
 		break;
 	}
-	osDelay(1);
 }
 
 ServoManager::ServoManager() {

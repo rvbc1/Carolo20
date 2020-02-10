@@ -257,6 +257,8 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "PID value: %f\n", motor.getPIDvalue());
 		break;
 	case 'c':
+		// toggle mode service / cup
+		mode_manager.ToggleServiceMode();
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getServiceMode());
 		break;
 	case 'a':
@@ -397,7 +399,7 @@ void USBLink::initHardware(){
 int8_t USBLink::MAIN_USB_Receive(uint8_t* Buf, uint32_t *Len) {
 	dataBuffer.rx.bytes = Buf;
 	dataBuffer.rxSize = *Len;
-	osSignalSet(USBTaskHandle, USB_RX_signal);
+	osSignalSet(USBLinkTaskHandle, USB_RX_signal);
 	return 0;
 }
 

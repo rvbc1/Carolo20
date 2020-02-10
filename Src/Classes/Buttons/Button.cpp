@@ -13,10 +13,6 @@ Button::Button(GPIO_TypeDef* gpio_port, uint16_t gpio_pin) {
 	reset();
 }
 
-Button::~Button() {
-	// TODO Auto-generated destructor stub
-}
-
 uint8_t Button::check(){
 	uint8_t status = !HAL_GPIO_ReadPin(gpio_port, gpio_pin);
 	changeBit(flags, STATUS_BIT, status);
@@ -42,6 +38,10 @@ uint8_t Button::isEverActivated(){
 
 void Button::reset(){
 	flags = 0;
+}
+
+Button::~Button() {
+	// TODO Auto-generated destructor stub
 }
 
 

@@ -12,9 +12,6 @@
 #include "Servo.h"
 
 class ServoManager {
-private:
-	Servo* servo_back;
-	Servo* servo_front;
 public:
 	void init();
 
@@ -27,6 +24,15 @@ public:
 
 	ServoManager();
 	virtual ~ServoManager();
+
+private:
+	Servo* servo_back;
+	Servo* servo_front;
+
+	void checkDriveMode();
+	void checkRCmode();
+
+	static const uint32_t task_dt = 1u;
 };
 
 extern ServoManager servo_manager;

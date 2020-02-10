@@ -19,7 +19,7 @@ void MotorManager::process(){
 	setMaxVelocity();
 	DriveModeCheck();
 	RCModeCheck();
-	osDelay(1);
+	osDelay(task_dt);
 }
 
 void MotorManager::DriveModeCheck(){
@@ -35,7 +35,6 @@ void MotorManager::DriveModeCheck(){
 void MotorManager::RCModeCheck(){
 	switch(mode_manager.getRCmode()){
 		case ModeManager::DISARMED:
-			//motor.Disarm();
 			break;
 		case ModeManager::MODE_ACRO:
 			motor.SetDuty(futaba.SmoothDeflection[PITCH]);
@@ -52,7 +51,8 @@ void MotorManager::RCModeCheck(){
 		}
 }
 void MotorManager::setMaxVelocity(){
-	switch(mode_manager.getRCmode()){
+	if(mode_manager.getServiceMode() == ModeManager::CUP){
+		switch(mode_manager.getRCmode()){
 		case ModeManager::DISARMED:
 			break;
 		case ModeManager::MODE_ACRO:
@@ -65,6 +65,9 @@ void MotorManager::setMaxVelocity(){
 			motor.setMaxVelocity(AUTONOMOUS_MAX_VELOCITY);
 			break;
 		}
+	}else{
+		motor.setMaxVelocity(SERVICE_MAX_VELOCITY);
+	}
 }
 
 MotorManager::MotorManager() {

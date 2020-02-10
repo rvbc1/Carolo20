@@ -13,21 +13,28 @@
 #include "ModeManager.h"
 #include "cmsis_os.h"
 
+
+#define SERVICE_MAX_VELOCITY 6000.f
+
 #define ACRO_MAX_VELOCITY 400.f
 #define SEMI_MAX_VELOCITY 6000.f
 #define AUTONOMOUS_MAX_VELOCITY 6000.f
 
 
+
 class MotorManager {
-private:
-	void DriveModeCheck();
-	void RCModeCheck();
-	void setMaxVelocity();
 public:
 	void init();
 	void process();
 	MotorManager();
 	virtual ~MotorManager();
+
+private:
+	void DriveModeCheck();
+	void RCModeCheck();
+	void setMaxVelocity();
+
+	static const uint32_t task_dt = 1u;
 };
 
 extern MotorManager motor_manager;

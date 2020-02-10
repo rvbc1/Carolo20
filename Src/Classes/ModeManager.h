@@ -11,7 +11,7 @@
 #include "main.h"
 #include "LightsManager.h"
 
-#define TIM_IDLE htim13
+#define UNLOCK_DRIVE_TIM htim13
 
 class ModeManager {
 public:
@@ -28,29 +28,37 @@ public:
 	};
 
 	enum SERVICE_MODE{
-		TESTING = 0,
-		CUP
+		CUP = 0,
+		TESTING
+
 	};
 
 	void init();
 	void proccess();
+
+	void ToggleServiceMode();
+	void unlockDriveTimmerIT();
+
 	RC_MODE getRCmode();
 	DRIVE_MODE getDriveMode();
 	SERVICE_MODE getServiceMode();
 
-	void modeDelayTimIT();
 	ModeManager();
 	virtual ~ModeManager();
+
 private:
-	const uint32_t task_dt = 1u;
 	RC_MODE rc_mode = DISARMED;
 	DRIVE_MODE drive_mode = DISABLE;
 	SERVICE_MODE service_mode = CUP;
-	void idleStart();
-	void idleReset();
-	uint8_t isModeDelayTimON = false;
-	uint8_t first_IT = true;
 
+	void startUnlockDriveTimer();
+	void breakUnlockDriveTimer();
+
+	uint8_t isUnlockDriveTimerRunning = false;
+	uint8_t firstUnlockDriveTimerIT_flag = true;
+
+	const uint32_t task_dt = 1u;
+	const uint32_t init_task_dt = 100;
 };
 
 extern ModeManager mode_manager;
