@@ -9,6 +9,10 @@
 
 
 void WatchDogs::init(){
+	while(HAL_GetTick() < WatchDogs::start_wdg_after){
+		osDelay(1);
+	}
+
 	MX_IWDG_Init();
 	MX_WWDG_Init();
 	osDelay(task_dt);
