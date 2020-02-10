@@ -8,7 +8,6 @@
 #ifndef USB_USBLINK_H_
 #define USB_USBLINK_H_
 
-#include <AllTasks.h>
 #include "main.h"
 #include "usbd_cdc_if.h"
 #include "usb_device.h"
@@ -18,6 +17,7 @@
 
 //#include "USBTask.h" ///
 #include "tim.h"
+#include "../../../Tasks&Callbacks/AllTasks.h"
 
 
 
@@ -42,6 +42,8 @@ typedef struct setpoints_from_vision_s{
 	float velocity;
 	float acceleration;
 	float jerk;
+	uint8_t left_inidcator;
+	uint8_t right_inidcator;
 } setpoints_from_vision_t;
 
 extern setpoints_from_vision_t setpoints_from_vision;

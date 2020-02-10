@@ -4,7 +4,6 @@
  *  Created on: 02.01.2018
  *      Author: mice
  */
-#include <AllTasks.h>
 #include "Gyro.h"
 
 #include "AHRS.h"
@@ -14,6 +13,7 @@
 #include "spi.h"
 
 #include "Buzzer.h"
+#include "../Tasks&Callbacks/AllTasks.h"
 
 Gyro gyro;
 

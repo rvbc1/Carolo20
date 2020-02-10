@@ -11,7 +11,7 @@
 #define OLED_BUFFER_SIZE 8192
 
 
-#include <AllTasks.h>
+#include "../../Tasks&Callbacks/AllTasks.h"
 #include "alphabet.h"
 
 class OLED {

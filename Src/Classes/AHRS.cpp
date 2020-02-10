@@ -11,8 +11,6 @@
  */
 
 #include <AHRS.h>
-#include <AllTasks.h>
-
 #include "Gyro.h"
 #include "Futaba.h"
 #include "Tools.h"
@@ -22,6 +20,7 @@
 #include <math.h>
 #include "Mathematics.h"
 #include "axis.h"
+#include "../Tasks&Callbacks/AllTasks.h"
 
 AHRS ahrs;
 

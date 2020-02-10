@@ -5,28 +5,19 @@
  *      Author: mice
  */
 
-#include <AllTasks.h>
 #include <LightsManager.h>
 #include <Motor.h>
 #include "PowerManager.h"
 #include "Tools.h"
 #include "usart.h"
 #include "tim.h"
+#include "../../Tasks&Callbacks/AllTasks.h"
 
 #define ELM 100
 
 
 Motor motor(1500, 500);
 
-//struct averaging_element{
-//	averaging_element *previous;
-//	float current_speed;
-//	averaging_element *next;
-//
-//};
-//
-//averaging_element *start_pointer;
-//averaging_element *current_pointer;
 float avrg_current_speed;
 uint32_t avrg_counter;
 
@@ -60,34 +51,10 @@ void set_duty_cycle(float dutyCycle){  //Sending duty cycle to VESC without libr
 }
 #endif
 
-//void averaging(){
-//	avrg_current_speed = 0.f;
-//	averaging_element * avrg_pointer = start_pointer;
-//	for(int i = 0; i < ELM; i++){
-//		avrg_current_speed += avrg_pointer->current_speed;
-//		avrg_pointer = avrg_pointer->next;
-//	}
-//	avrg_current_speed /= (ELM * 1.0);
-//}
-
 
 void Motor::Init(){
 	MX_TIM3_Init();
 	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
-
-	//	start_pointer = new averaging_element;
-	//	current_pointer = start_pointer;
-	//	for(int i = 0; i < ELM - 1; i++){
-	//		current_pointer->current_speed = 0.f;
-	//		current_pointer->next = new averaging_element;
-	//		current_pointer->next->previous = current_pointer;
-	//		current_pointer = current_pointer->next;
-	//	}
-	//	current_pointer->next = start_pointer;
-	//	start_pointer->previous = current_pointer;
-	//	current_pointer = start_pointer;
-	avrg_counter = 0;
-	avrg_current_speed = 0.f;
 
 #ifdef PWM_ESC
 	MX_TIM4_Init();
@@ -132,45 +99,6 @@ void Motor::Conversions(void) {
 	rotations = totalImpulses * enc_to_rotations;
 
 	current_velocity = filtered_impulses * enc_to_mms;
-
-	avrg_current_speed += current_velocity;
-	if(avrg_counter == 30){
-		avrg_counter = 0;
-		avrg_current_speed /= 30.f;
-		if( avrg_current_speed > -10){
-			if((previous_velocity > (avrg_current_speed + 30))  ){
-				lights_manager.stop_light = true;
-				lights_manager.stop_light_duration = 0;
-			} else {
-				lights_manager.stop_light = false;
-			}
-		} else {
-			if((previous_velocity < (avrg_current_speed + 30))  ){
-				lights_manager.stop_light = true;
-				lights_manager.stop_light_duration = 0;
-			} else {
-				lights_manager.stop_light = false;
-			}
-		}
-		previous_velocity = avrg_current_speed;
-		avrg_current_speed = 0.f;
-	}
-
-	avrg_counter++;
-
-	//	current_pointer->current_speed = current_velocity;
-	//	current_pointer = current_pointer->next;
-	//
-	//
-	//	averaging();
-	//
-	//	if(previous_velocity > (avrg_current_speed + 50)){
-	//		lights.stop_light = true;
-	//		lights.stop_light_duration = 0;
-	//	}
-	//
-	//	previous_velocity = avrg_current_speed;
-
 
 	distance = totalImpulses * enc_to_mm;
 

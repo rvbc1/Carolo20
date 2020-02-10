@@ -47,13 +47,14 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include <AllTasks.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
 #include "tim.h"
+
+#include "Tasks&Callbacks/AllTasks.h"
 #ifdef __cplusplus
  extern "C" {
 #endif

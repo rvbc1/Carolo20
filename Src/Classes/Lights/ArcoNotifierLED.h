@@ -11,7 +11,8 @@
 #include "main.h"
 #include "ModeManager.h"
 #include "cmsis_os.h"
-#include "AllTasks.h"
+
+#include "../../Tasks&Callbacks/AllTasks.h"
 
 
 class ArcoNotifierLED {
