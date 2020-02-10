@@ -60,11 +60,11 @@ uint16_t ws2812BitsBuffer[WS2812_BYTES_BUFFER_SIZE];
 void LightsManager::ws2812_init() {
 	added_lights_count= 0;
 
-	front_right.setBuffer(&ws2812BitsBuffer[0*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
-	front_left.setBuffer(&ws2812BitsBuffer[1*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
-	back_left.setBuffer(&ws2812BitsBuffer[2*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
-	back_middle.setBuffer(&ws2812BitsBuffer[3*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
-	back_right.setBuffer(&ws2812BitsBuffer[4*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB]);
+	front_right.setBuffer(&ws2812BitsBuffer[0*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
+	front_left.setBuffer(&ws2812BitsBuffer[1*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
+	back_left.setBuffer(&ws2812BitsBuffer[2*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
+	back_middle.setBuffer(&ws2812BitsBuffer[3*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
+	back_right.setBuffer(&ws2812BitsBuffer[4*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
 
 
 
@@ -191,8 +191,8 @@ void LightsManager::breakLightProcess(void){
 
 //	if((motor.getAcceleration() < -1000.f && motor.getVelocity() > 0) ||
 //	   (motor.getAcceleration() >  1000.f && motor.getVelocity() < 0)	){
-	if((avr_acceleration < -3000.f && motor.getVelocity() > 0) ||
-	   (avr_acceleration > 3000.f && motor.getVelocity() < 0)	){
+	if((avr_acceleration < -2000.f && motor.getVelocity() > 0) ||
+	   (avr_acceleration > 2000.f && motor.getVelocity() < 0)	){
 		break_lights.setActivated(true); 			// Break lights ON
 	}
 	else{
@@ -229,6 +229,12 @@ void LightsManager::checkRCmode(){
 //			left_indicator_back.setActivated(true);
 //			right_indicator_back.setActivated(false);
 //		}
+	} else {
+		left_indicator_front.setActivated(setpoints_from_vision.left_inidcator);
+		left_indicator_back.setActivated(setpoints_from_vision.left_inidcator);
+
+		right_indicator_front.setActivated(setpoints_from_vision.right_inidcator);
+		right_indicator_back.setActivated(setpoints_from_vision.right_inidcator);
 	}
 }
 

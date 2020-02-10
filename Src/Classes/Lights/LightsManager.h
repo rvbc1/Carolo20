@@ -17,7 +17,7 @@
 #include "Motor.h"
 #include "../../Tasks&Callbacks/AllTasks.h"
 
-#define ACC_AVERAGE_NUM 100
+#define ACC_AVERAGE_NUM 30
 
 #define MAX_LIGHTS_AMOUNT 10
 
@@ -64,7 +64,7 @@ private:
 	void indicatorsUpdate();
 
 	uint16_t added_lights_count = 0;
-	Light* all_lights [];
+	Light* all_lights [MAX_LIGHTS_AMOUNT];
 	void addLight(Light* light);
 };
 
