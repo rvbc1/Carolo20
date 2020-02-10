@@ -49,10 +49,10 @@ private:
 	RC_MODE rc_mode = DISARMED;
 	DRIVE_MODE drive_mode = DISABLE;
 	SERVICE_MODE service_mode = CUP;
-	void idleStart();
-	void idleReset();
-	uint8_t isModeDelayTimON = false;
-	uint8_t first_IT = true;
+	void startUnlockDriveTimer();
+	void breakUnlockDriveTimer();
+	uint8_t isUnlockDriveTimerRunning = false;
+	uint8_t firstUnlockDriveTimerIT_flag = true;
 
 };
 

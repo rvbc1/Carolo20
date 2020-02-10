@@ -44,11 +44,9 @@ void ModeManager::init(){
 
 	futaba.ConfigureSmoothing(50.f, task_dt * 1e-3); /* Nyquist frequency - 1/2 Radio frequency * 0.9; 8CH - 9ms, 16CH - 18ms,*/
 
-	servo_manager.init();
-
 	MX_TIM13_Init();
 
-	isModeDelayTimON = false;
+	isUnlockDriveTimerRunning = false;
 
 	TIM13->CNT = 1;
 
@@ -65,8 +63,8 @@ void ModeManager::proccess(){
 		rc_mode = DISARMED;
 		drive_mode = DISABLE;
 
-		if(isModeDelayTimON && (service_mode == CUP)){
-			idleReset();
+		if(isUnlockDriveTimerRunning && (service_mode == CUP)){
+			breakUnlockDriveTimer();
 		}
 
 		if (futaba.Get_RCState() == 0)
@@ -76,23 +74,23 @@ void ModeManager::proccess(){
 
 		if (futaba.SwitchB == SWITCH_UP) {
 			rc_mode = MODE_ACRO;
-			if(!isModeDelayTimON && (service_mode == CUP)){
+			if(!isUnlockDriveTimerRunning && (service_mode == CUP)){
 				drive_mode = DISABLE;
-				idleStart();
+				startUnlockDriveTimer();
 			}
 
 		} else if (futaba.SwitchB == SWITCH_MIDDLE) {
 			rc_mode = MODE_SEMI;
 			drive_mode = ENABLE;
-			if(isModeDelayTimON && (service_mode == CUP)){
-				idleReset();
+			if(isUnlockDriveTimerRunning && (service_mode == CUP)){
+				breakUnlockDriveTimer();
 			}
 
 		} else if (futaba.SwitchB == SWITCH_DOWN) {
 			rc_mode = MODE_AUTONOMOUS;
 			drive_mode = ENABLE;
-			if(isModeDelayTimON && (service_mode == CUP)){
-				idleReset();
+			if(isUnlockDriveTimerRunning && (service_mode == CUP)){
+				breakUnlockDriveTimer();
 			}
 
 		}
@@ -108,20 +106,20 @@ void ModeManager::ToggleServiceMode(){
 
 void ModeManager::modeDelayTimIT(){
 	//isModeDelayTimON = false;
-	if(first_IT){
-		first_IT = false;
+	if(firstUnlockDriveTimerIT_flag){
+		firstUnlockDriveTimerIT_flag = false;
 	} else {
 		drive_mode = ENABLE;
 	}
 }
 
-void ModeManager::idleStart(){
-	isModeDelayTimON = true;
+void ModeManager::startUnlockDriveTimer(){
+	isUnlockDriveTimerRunning = true;
 	HAL_TIM_Base_Start_IT(&TIM_IDLE);
 }
 
-void ModeManager::idleReset(){
-	isModeDelayTimON = false;
+void ModeManager::breakUnlockDriveTimer(){
+	isUnlockDriveTimerRunning = false;
 	HAL_TIM_Base_Stop_IT(&TIM_IDLE);
 	__HAL_TIM_SET_COUNTER(&TIM_IDLE, 0);
 }
