@@ -10,8 +10,6 @@
 
 #include "stdint.h"
 
-//template< uint32_t ARRAY_LEN >
-#define ARRAY_LEN 5
 
 class Average {
 private:
@@ -21,9 +19,10 @@ private:
 	float average = 0.f;
 
 	void Calculate();
+	void Init();
 
 public:
-	void Init();
+
 	void AddSample(float val);
 	float getAverage();
 	Average(uint32_t arraySize);

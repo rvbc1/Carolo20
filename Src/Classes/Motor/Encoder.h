@@ -11,6 +11,7 @@
 #include "stdint.h"
 #include "Filters.h"
 #include "Mathematics.h"
+#include "Average.h"
 
 #define ACCELERATION_AVERAGE_NUM 30
 #define VELOCITY_AVERAGE_NUM 30
@@ -75,6 +76,9 @@ private:
 	float last_velocities[VELOCITY_AVERAGE_NUM] = {0};
 	uint32_t avrgVelocity_counter = 0;
 	uint32_t avrgAcceleration_counter = 0;
+
+//	Average avrgVel(VELOCITY_AVERAGE_NUM);
+
 
 	void avrgVelocityProcess();
 	void avrgAccelerationProcess();

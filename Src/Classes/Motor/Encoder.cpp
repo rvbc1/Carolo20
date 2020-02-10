@@ -10,6 +10,7 @@
 #include "tim.h"
 #include "Tools.h"
 
+
 Encoder encoder;
 
 void Encoder::Init(){
@@ -21,6 +22,8 @@ void Encoder::Init(){
 void Encoder::Process(){
 	Read();
 	Conversions();
+
+	osDelay(3);
 }
 
 void Encoder::Read(){
