@@ -259,7 +259,7 @@ void USBLink::recieveTerminal(){
 	case 'c':
 		// toggle mode service / cup
 		mode_manager.ToggleServiceMode();
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getServiceMode());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getRideMode());
 		break;
 	case 'a':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Acceleration: %f\n", motor.getAcceleration());
@@ -283,8 +283,8 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Current spd: %.1f\tSetspeed: %.1f\nTotalCount: %ld\tTotalRoad: %.1f\n\n", motor.getVelocity(), motor.getSetVelocity(), motor.getImpulses(), motor.getDistance());
 		break;
 	case 'f':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %d\tE: %d\tT: %d\tR: %d\nSwitchA: %d\tSwitchB: %d\n", futaba.sbusChannelData[0], futaba.sbusChannelData[1],
-				futaba.sbusChannelData[2], futaba.sbusChannelData[3], futaba.SwitchA, futaba.SwitchB);
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %d\tE: %d\tT: %d\tR: %d\nSwA: %d\tSwB: %d\tSwC: %d\tSwD: %d\tSwE: %d\tSwF: %d\n", futaba.sbusChannelData[0], futaba.sbusChannelData[1],
+				futaba.sbusChannelData[2], futaba.sbusChannelData[3], futaba.SwitchA, futaba.SwitchB, futaba.SwitchC, futaba.SwitchD, futaba.SwitchE, futaba.SwitchF);
 		break;
 	case 'F':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %f\tE: %f\tT: %f\tR: %f\n", futaba.StickDeflection[ROLL], futaba.StickDeflection[PITCH],

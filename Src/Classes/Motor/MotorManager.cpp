@@ -51,7 +51,7 @@ void MotorManager::RCModeCheck(){
 		}
 }
 void MotorManager::setMaxVelocity(){
-	if(mode_manager.getServiceMode() == ModeManager::CUP){
+	if(mode_manager.getRideMode() == ModeManager::COMPETITION){
 		switch(mode_manager.getRCmode()){
 		case ModeManager::DISARMED:
 			break;

@@ -15,6 +15,8 @@
 
 class WatchDogs {
 public:
+	static const uint32_t start_wdg_after = 500;
+
 	static void init();
 	static void process();
 	WatchDogs();

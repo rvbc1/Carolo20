@@ -61,18 +61,18 @@ void ModeManager::proccess(){
 		rc_mode = DISARMED;
 		drive_mode = DISABLE;
 
-		if(isUnlockDriveTimerRunning && (service_mode == CUP)){
+		if(isUnlockDriveTimerRunning && (ride_mode == COMPETITION)){
 			breakUnlockDriveTimer();
 		}
 
 		if (futaba.Get_RCState() == 0)
 			StickCommandProccess();
 	} else if (futaba.SwitchA == SWITCH_DOWN) {
-		if (service_mode == TESTING) drive_mode = ENABLE;
+		if (ride_mode == FREERUN) drive_mode = ENABLE;
 
 		if (futaba.SwitchB == SWITCH_UP) {
 			rc_mode = MODE_ACRO;
-			if(!isUnlockDriveTimerRunning && (service_mode == CUP)){
+			if(!isUnlockDriveTimerRunning && (ride_mode == COMPETITION)){
 				drive_mode = DISABLE;
 				startUnlockDriveTimer();
 			}
@@ -80,14 +80,14 @@ void ModeManager::proccess(){
 		} else if (futaba.SwitchB == SWITCH_MIDDLE) {
 			rc_mode = MODE_SEMI;
 			drive_mode = ENABLE;
-			if(isUnlockDriveTimerRunning && (service_mode == CUP)){
+			if(isUnlockDriveTimerRunning && (ride_mode == COMPETITION)){
 				breakUnlockDriveTimer();
 			}
 
 		} else if (futaba.SwitchB == SWITCH_DOWN) {
 			rc_mode = MODE_AUTONOMOUS;
 			drive_mode = ENABLE;
-			if(isUnlockDriveTimerRunning && (service_mode == CUP)){
+			if(isUnlockDriveTimerRunning && (ride_mode == COMPETITION)){
 				breakUnlockDriveTimer();
 			}
 
@@ -98,8 +98,8 @@ void ModeManager::proccess(){
 }
 
 void ModeManager::ToggleServiceMode(){
-	if(service_mode == TESTING) service_mode = TESTING;
-	else service_mode = CUP;
+	if(ride_mode == FREERUN) ride_mode = FREERUN;
+	else ride_mode = COMPETITION;
 }
 
 void ModeManager::unlockDriveTimmerIT(){
@@ -129,8 +129,8 @@ ModeManager::DRIVE_MODE ModeManager::getDriveMode(){
 	return drive_mode;
 }
 
-ModeManager::SERVICE_MODE ModeManager::getServiceMode(){
-	return service_mode;
+ModeManager::RIDE_MODE ModeManager::getRideMode(){
+	return ride_mode;
 }
 
 //UNUSED(rc_mode); //should be checked

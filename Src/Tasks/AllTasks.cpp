@@ -260,10 +260,11 @@ void StartButtonsTask(void const * argument){
 }
 
 void StartWatchDogsTask(void const * argument){
-//	while(HAL_GetTick() < 500){
-//		osDelay(1);
-//	}
-//	WatchDogs::init();
+	while(HAL_GetTick() < WatchDogs::start_wdg_after){
+		osDelay(1);
+	}
+
+	WatchDogs::init();
 	while(true){
 		WatchDogs::process();
 	}

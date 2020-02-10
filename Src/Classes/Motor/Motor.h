@@ -8,14 +8,21 @@
 #ifndef CLASSES_MOTOR_H_
 #define CLASSES_MOTOR_H_
 
+#define VESC
+//#define PWM_ESC
+
 #include "stdint.h"
 #include "Filters.h"
 #include "Mathematics.h"
+
+#ifdef VESC
 #include "crc.h"
 #include "bldc_interface.h"
 #include "bldc_interface_uart.h"
+#endif
 
 class Motor {
+#ifdef PWM_ESC
 	/* Timer Parameters */
 	uint16_t pwm_middle;
 	uint16_t pwm_band;
@@ -24,7 +31,7 @@ class Motor {
 	uint8_t tim_running = 0;
 	void SetPWM(uint16_t value);
 	uint16_t GetPWM(void);
-
+#endif
 	/* Encoders Parameters */
 	const float impulses_per_revolution = 1024*10.f;
 
