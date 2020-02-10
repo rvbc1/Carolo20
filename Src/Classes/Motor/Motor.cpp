@@ -30,6 +30,8 @@ Motor motor(1500, 500);
 float avrg_current_speed;
 uint32_t avrg_counter;
 
+#ifdef VESC
+
 static void send_packet(unsigned char *data, unsigned int len) {
 	HAL_UART_Transmit_IT(&huart7, data,len);
 }
@@ -56,6 +58,7 @@ void set_duty_cycle(float dutyCycle){  //Sending duty cycle to VESC without libr
 	UART_data_buffer[8] = crc;
 	HAL_UART_Transmit_IT(&huart7, UART_data_buffer, 10);
 }
+#endif
 
 //void averaging(){
 //	avrg_current_speed = 0.f;
@@ -86,11 +89,15 @@ void Motor::Init(){
 	avrg_counter = 0;
 	avrg_current_speed = 0.f;
 
-	//MX_TIM4_Init();
-	//SetPWM(pwm_middle);
-	MX_UART7_Init();
+#ifdef PWM_ESC
+	MX_TIM4_Init();
+	SetPWM(pwm_middle);
+#endif
 
+#ifdef VESC
+	MX_UART7_Init();
 	UART_Communication_Init();
+#endif
 	SetPassthroughState(true);
 	SetDuty(0.f);
 	Arm();
@@ -103,7 +110,9 @@ void Motor::Process(void) {
 	Conversions();
 	SpeedTracking();
 	Controller();
-//	if (tim_running)
+#ifdef PWM_ESC
+	if (tim_running)
+#endif
 		Output();
 
 	osDelay(3);
@@ -187,8 +196,8 @@ void Motor::Controller(void){
 
 	if(measurement > 1000){
 		Proportional = Kp * error * 1.2;
-//	} else if(setpoint >1000){
-//		Proportional = Kp * error * 1.3;
+		//	} else if(setpoint >1000){
+		//		Proportional = Kp * error * 1.3;
 	} else {
 		Proportional = Kp * error;
 	}
@@ -218,21 +227,20 @@ void Motor::Controller(void){
 		Integral = 0.f;
 	}
 }
-void Motor::Output(void) {
-	if (passthrough) {
-		bldc_interface_set_duty_cycle(set_duty);
-	} else{
-		bldc_interface_set_duty_cycle(pid_value);
-	}
-}
 void Motor::Arm(void) {
 	controller_en = true;
+#ifdef PWM_ESC
 	tim_running = true;
+#endif
 }
 void Motor::Disarm(void) {
 	controller_en = false;
+#ifdef PWM_ESC
 	tim_running = false;
+#endif
+#ifdef VESC
 	bldc_interface_set_duty_cycle(0.f);
+#endif
 }
 float Motor::getRPMs(void){
 	return current_rpm;
@@ -260,7 +268,7 @@ float Motor::getPIDvalue(void){
 }
 
 void Motor::setMaxVelocity(float velocity){
-		max_velocity = velocity;
+	max_velocity = velocity;
 }
 void Motor::SpeedTracking(void) {
 	Arm();
@@ -269,12 +277,12 @@ void Motor::SpeedTracking(void) {
 	if (set_acceleration) {
 		float dt = (now - before) * 1e-6F;
 
-//		if (set_jerk) {
-//			current_acceleration += SIGNF(set_acceleration - current_acceleration) * set_jerk * dt;
-//			constrainf(current_acceleration, -max_acceleration, max_acceleration);
-//		} else {
-//			current_acceleration = set_acceleration;
-//		}
+		//		if (set_jerk) {
+		//			current_acceleration += SIGNF(set_acceleration - current_acceleration) * set_jerk * dt;
+		//			constrainf(current_acceleration, -max_acceleration, max_acceleration);
+		//		} else {
+		//			current_acceleration = set_acceleration;
+		//		}
 		current_acceleration = (current_velocity - previous_velocity) / dt;
 
 		current_set_velocity += SIGNF(set_velocity - current_set_velocity) * set_acceleration * dt;
@@ -293,21 +301,42 @@ void Motor::SetVelocity(float velocity, float acceleration, float jerk) {
 void Motor::SetDuty(float duty) {
 	set_duty = constrainf(duty, -1.f, 1.f);
 }
-void Motor::SetPWM(uint16_t value){
-	TIM4->CCR4 = value;
-}
-uint16_t Motor::GetPWM(void){
-	return TIM4->CCR4;
-}
+
 void Motor::SetControllerState(bool is_enabled){
 	controller_en = is_enabled;
 }
 void Motor::SetPassthroughState(bool is_passthrough){
 	passthrough = is_passthrough;
 }
+#ifdef VESC
+void Motor::Output(void) {
+	if (passthrough) {
+		bldc_interface_set_duty_cycle(set_duty);
+	} else{
+		bldc_interface_set_duty_cycle(pid_value);
+	}
+}
+Motor::Motor(uint16_t middle, uint16_t band){
+}
+#endif
+
+#ifdef PWM_ESC
+void Motor::Output(void) {
+	if (passthrough) {
+		SetPWM(set_duty * pwm_band + pwm_middle);
+	} else
+		SetPWM(pid_value * pwm_band + pwm_middle);
+}
+void Motor::SetPWM(uint16_t value){
+	TIM4->CCR4 = value;
+}
+uint16_t Motor::GetPWM(void){
+	return TIM4->CCR4;
+}
 Motor::Motor(uint16_t middle, uint16_t band): pwm_middle(middle), pwm_band(band) {
 	pwm_last = pwm_middle;
 }
+#endif
 Motor::~Motor() {
 	// TODO Auto-generated destructor stub
 }
