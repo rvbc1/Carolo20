@@ -29,6 +29,9 @@ private:
 	Servo* servo_back;
 	Servo* servo_front;
 
+	void checkDriveMode();
+	void checkRCmode();
+
 	static const uint32_t task_dt = 1u;
 };
 

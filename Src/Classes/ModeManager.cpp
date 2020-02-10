@@ -48,8 +48,6 @@ void ModeManager::init(){
 
 	isUnlockDriveTimerRunning = false;
 
-	TIM13->CNT = 1;
-
 	osDelay(100);
 }
 
