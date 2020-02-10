@@ -39,8 +39,6 @@ extern WS2812::Color break_light_color;
 
 class LightsManager {
 public:
-	uint8_t stop_light;
-	uint8_t stop_light_duration;
 	uint8_t high = false;
 
 	uint16_t process_counter = 0;

@@ -150,8 +150,7 @@ void LightsManager::ws2812_init() {
 	reset_data_buffer();
 	HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
 	light_process_counter = 0;
-	stop_light = false;
-	stop_light_duration = 0;
+
 
 	for(uint16_t i=0; i < ACC_AVERAGE_NUM; i++) acceleration[i] = 0;
 }
