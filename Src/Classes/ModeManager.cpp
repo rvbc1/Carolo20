@@ -112,13 +112,13 @@ void ModeManager::unlockDriveTimmerIT(){
 
 void ModeManager::startUnlockDriveTimer(){
 	isUnlockDriveTimerRunning = true;
-	HAL_TIM_Base_Start_IT(&TIM_IDLE);
+	HAL_TIM_Base_Start_IT(&UNLOCK_DRIVE_TIM);
 }
 
 void ModeManager::breakUnlockDriveTimer(){
 	isUnlockDriveTimerRunning = false;
-	HAL_TIM_Base_Stop_IT(&TIM_IDLE);
-	__HAL_TIM_SET_COUNTER(&TIM_IDLE, 0);
+	HAL_TIM_Base_Stop_IT(&UNLOCK_DRIVE_TIM);
+	__HAL_TIM_SET_COUNTER(&UNLOCK_DRIVE_TIM, 0);
 }
 
 ModeManager::RC_MODE ModeManager::getRCmode(){

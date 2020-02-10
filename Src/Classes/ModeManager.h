@@ -11,7 +11,7 @@
 #include "main.h"
 #include "LightsManager.h"
 
-#define TIM_IDLE htim13
+#define UNLOCK_DRIVE_TIM htim13
 
 class ModeManager {
 public:

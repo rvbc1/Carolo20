@@ -158,7 +158,6 @@ void StartFutabaTask(void const * argument) {
 	while(true){
 		futaba.Process();
 	}
-
 }
 
 void StartMotorController(void const * argument) {
