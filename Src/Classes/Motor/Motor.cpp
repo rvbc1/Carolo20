@@ -18,15 +18,6 @@
 
 Motor motor(1500, 500);
 
-//struct averaging_element{
-//	averaging_element *previous;
-//	float current_speed;
-//	averaging_element *next;
-//
-//};
-//
-//averaging_element *start_pointer;
-//averaging_element *current_pointer;
 float avrg_current_speed;
 uint32_t avrg_counter;
 
