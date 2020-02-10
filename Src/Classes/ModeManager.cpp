@@ -54,7 +54,6 @@ void ModeManager::init(){
 void ModeManager::proccess(){
 	futaba.ProcessSmoothing();
 
-
 	if(futaba.SwitchC == SWITCH_DOWN) ride_mode = COMPETITION;
 	else 							  ride_mode = FREERUN;
 

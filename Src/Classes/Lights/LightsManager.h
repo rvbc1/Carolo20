@@ -19,6 +19,8 @@
 
 #define ACC_AVERAGE_NUM 100
 
+#define MAX_LIGHTS_AMOUNT 10
+
 extern Light headlights;
 extern Light tail_lights;
 extern Light break_lights;
@@ -36,15 +38,6 @@ extern WS2812::Color break_light_color;
 
 
 class LightsManager {
-private:
-	uint32_t lights_task_counter;
-	uint32_t light_process_counter;
-
-	float acceleration[ACC_AVERAGE_NUM];
-	uint8_t acc_counter = 0;
-	void checkRCmode();
-	void breakLightProcess();
-	void AllLightsUpdate();
 public:
 	uint8_t stop_light;
 	uint8_t stop_light_duration;
@@ -59,6 +52,22 @@ public:
 	void process();
 	LightsManager();
 	virtual ~LightsManager();
+private:
+	uint32_t lights_task_counter;
+	uint32_t light_process_counter;
+
+	float acceleration[ACC_AVERAGE_NUM];
+	uint8_t acc_counter = 0;
+	void checkRCmode();
+	void breakLightProcess();
+
+	uint8_t needAnyLightUpdate();
+	void lightsUpdate();
+	void indicatorsUpdate();
+
+	uint16_t added_lights_count = 0;
+	Light* all_lights [];
+	void addLight(Light* light);
 };
 
 extern LightsManager lights_manager;

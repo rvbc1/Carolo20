@@ -36,10 +36,24 @@ void Light::add(uint16_t* adress){
 
 void Light::setActivated(uint8_t activated){
 	this->activated = activated;
+	need_update = true;
 }
 
 uint8_t Light::getActivated(){
 	return activated;
+}
+
+void Light::update(){
+	if(getActivated()){
+		on();
+	} else {
+		off();
+	}
+	need_update = false;
+}
+
+uint8_t Light::needUpdate(){
+	return need_update;
 }
 
 void Light::on(){
@@ -62,6 +76,7 @@ uint8_t Light::getAddedCount(){
 Light::Light() {
 	// TODO Auto-generated constructor stub
 	added = 0;
+	need_update = false;
 }
 
 Light::~Light() {
