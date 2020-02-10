@@ -145,6 +145,21 @@ void LightsManager::ws2812_init() {
 }
 
 
+void LightsManager::process(){
+	checkRCmode();
+	breakLightProcess();
+
+	if(process_counter > 100){
+		AllLightsUpdate();
+		process_counter = 0;
+	}
+
+
+	process_counter++;
+	osDelay(1);
+}
+
+
 void LightsManager::reset_data_buffer(){
 	for(uint16_t i = 0; i < NUMBER_OF_LEDS * BITS_PER_LED; i++){
 		ws2812BitsBuffer[i]=LOW_PWM_BIT_VALUE;
@@ -155,14 +170,14 @@ void LightsManager::breakLightProcess(void){
 
 	if(++acc_counter >= ACC_AVERAGE_NUM ) acc_counter = 0;
 
-	float avr_acceleration = 0, sum = 0;
+	float avr_acceleration = 0.0f, sum = 0.0f;
 	for(uint16_t i = 0; i < ACC_AVERAGE_NUM; i++) sum +=acceleration[i];
 	avr_acceleration = sum / ACC_AVERAGE_NUM;
 
 //	if((motor.getAcceleration() < -1000.f && motor.getVelocity() > 0) ||
 //	   (motor.getAcceleration() >  1000.f && motor.getVelocity() < 0)	){
-	if((avr_acceleration < 0.f && motor.getVelocity() > 0) ||
-	   (avr_acceleration > 0.f && motor.getVelocity() < 0)	){
+	if((avr_acceleration < -2000.f && motor.getVelocity() > 0) ||
+	   (avr_acceleration > 2000.f && motor.getVelocity() < 0)	){
 		break_lights.setActivated(true); 			// Break lights ON
 	}
 	else{
@@ -259,15 +274,6 @@ void LightsManager::AllLightsUpdate(){
 		}
 
 		HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
-}
-
-void LightsManager::process(){
-	checkRCmode();
-	breakLightProcess();
-
-	AllLightsUpdate();
-
-	osDelay(100);
 }
 
 LightsManager::LightsManager() {

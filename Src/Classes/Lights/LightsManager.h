@@ -17,7 +17,7 @@
 #include "Futaba.h"
 #include "Motor.h"
 
-#define ACC_AVERAGE_NUM 5
+#define ACC_AVERAGE_NUM 100
 
 extern Light headlights;
 extern Light tail_lights;
@@ -49,6 +49,8 @@ public:
 	uint8_t stop_light;
 	uint8_t stop_light_duration;
 	uint8_t high = false;
+
+	uint16_t process_counter = 0;
 
 	void hazard_warning_lights();
 
