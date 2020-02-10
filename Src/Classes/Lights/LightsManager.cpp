@@ -168,25 +168,25 @@ void LightsManager::checkRCmode(){
 
 	} else if (mode_manager.getRCmode() == ModeManager::MODE_ACRO){
 
-		if (futaba.SwitchC == SWITCH_UP) {
-			left_indicator_front.setActivated(false);
-			right_indicator_front.setActivated(true);
-
-			left_indicator_back.setActivated(false);
-			right_indicator_back.setActivated(true);
-		} else if(futaba.SwitchC == SWITCH_MIDDLE){
-			left_indicator_front.setActivated(false);
-			right_indicator_front.setActivated(false);
-
-			left_indicator_back.setActivated(false);
-			right_indicator_back.setActivated(false);
-		} else{
-			left_indicator_front.setActivated(true);
-			right_indicator_front.setActivated(false);
-
-			left_indicator_back.setActivated(true);
-			right_indicator_back.setActivated(false);
-		}
+//		if (futaba.SwitchC == SWITCH_UP) {
+//			left_indicator_front.setActivated(false);
+//			right_indicator_front.setActivated(true);
+//
+//			left_indicator_back.setActivated(false);
+//			right_indicator_back.setActivated(true);
+//		} else if(futaba.SwitchC == SWITCH_MIDDLE){
+//			left_indicator_front.setActivated(false);
+//			right_indicator_front.setActivated(false);
+//
+//			left_indicator_back.setActivated(false);
+//			right_indicator_back.setActivated(false);
+//		} else{
+//			left_indicator_front.setActivated(true);
+//			right_indicator_front.setActivated(false);
+//
+//			left_indicator_back.setActivated(true);
+//			right_indicator_back.setActivated(false);
+//		}
 	}
 }
 

@@ -51,8 +51,12 @@ private:
 	DRIVE_MODE drive_mode = DISABLE;
 	RIDE_MODE ride_mode = COMPETITION;
 
+	void setModes();
+	void checkRideMode();
+
 	void startUnlockDriveTimer();
 	void breakUnlockDriveTimer();
+	void checkUnlockDriveTimer();
 
 	uint8_t isUnlockDriveTimerRunning = false;
 	uint8_t firstUnlockDriveTimerIT_flag = true;
