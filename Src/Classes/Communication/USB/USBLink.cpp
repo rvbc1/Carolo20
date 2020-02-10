@@ -259,7 +259,7 @@ void USBLink::recieveTerminal(){
 	case 'c':
 		// toggle mode service / cup
 		mode_manager.ToggleServiceMode();
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getServiceMode());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getRideMode());
 		break;
 	case 'a':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Acceleration: %f\n", motor.getAcceleration());

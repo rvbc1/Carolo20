@@ -27,9 +27,9 @@ public:
 		ENABLE
 	};
 
-	enum SERVICE_MODE{
-		CUP = 0,
-		TESTING
+	enum RIDE_MODE{
+		COMPETITION = 0,
+		FREERUN
 
 	};
 
@@ -41,7 +41,7 @@ public:
 
 	RC_MODE getRCmode();
 	DRIVE_MODE getDriveMode();
-	SERVICE_MODE getServiceMode();
+	RIDE_MODE getRideMode();
 
 	ModeManager();
 	virtual ~ModeManager();
@@ -49,7 +49,7 @@ public:
 private:
 	RC_MODE rc_mode = DISARMED;
 	DRIVE_MODE drive_mode = DISABLE;
-	SERVICE_MODE service_mode = CUP;
+	RIDE_MODE ride_mode = COMPETITION;
 
 	void startUnlockDriveTimer();
 	void breakUnlockDriveTimer();
