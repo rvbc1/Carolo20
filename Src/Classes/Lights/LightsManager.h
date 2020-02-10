@@ -8,7 +8,6 @@
 #ifndef CLASSES_LIGHTSMANAGER_H_
 #define CLASSES_LIGHTSMANAGER_H_
 
-#include <AllTasks.h>
 #include "USBLink.h"
 #include "LEDStrip.h"
 #include "Light.h"
@@ -16,6 +15,7 @@
 #include "ModeManager.h"
 #include "Futaba.h"
 #include "Motor.h"
+#include "../../Tasks&Callbacks/AllTasks.h"
 
 #define ACC_AVERAGE_NUM 100
 

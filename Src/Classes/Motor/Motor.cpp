@@ -5,13 +5,13 @@
  *      Author: mice
  */
 
-#include <AllTasks.h>
 #include <LightsManager.h>
 #include <Motor.h>
 #include "PowerManager.h"
 #include "Tools.h"
 #include "usart.h"
 #include "tim.h"
+#include "../../Tasks&Callbacks/AllTasks.h"
 
 #define ELM 100
 

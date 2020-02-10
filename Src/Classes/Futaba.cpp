@@ -10,7 +10,6 @@
  *
  */
 
-#include <AllTasks.h>
 #include "Futaba.h"
 
 #include "cmsis_os.h"
@@ -19,6 +18,7 @@
 
 #include "Tools.h"
 #include "Buzzer.h"
+#include "../Tasks&Callbacks/AllTasks.h"
 
 #define SBUS_TIME_NEEDED_PER_FRAME 3000
 

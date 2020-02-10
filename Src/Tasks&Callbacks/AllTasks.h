@@ -5,8 +5,8 @@
  *      Author: mice
  */
 
-#ifndef TASKS_ALLTASKS_H_
-#define TASKS_ALLTASKS_H_
+#ifndef TASKS_CALLBACKS_ALLTASKS_H_
+#define TASKS_CALLBACKS_ALLTASKS_H_
 
 #ifdef __cplusplus
  extern "C" {
@@ -35,4 +35,4 @@ extern osThreadId OLEDTaskHandle;
  }
 #endif
 
-#endif /* TASKS_ALLTASKS_H_ */
+#endif /* TASKS_CALLBACKS_ALLTASKS_H_ */

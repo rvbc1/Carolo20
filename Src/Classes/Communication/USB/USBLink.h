@@ -8,7 +8,6 @@
 #ifndef USB_USBLINK_H_
 #define USB_USBLINK_H_
 
-#include <AllTasks.h>
 #include "main.h"
 #include "usbd_cdc_if.h"
 #include "usb_device.h"
@@ -18,6 +17,7 @@
 
 //#include "USBTask.h" ///
 #include "tim.h"
+#include "../../../Tasks&Callbacks/AllTasks.h"
 
 
 

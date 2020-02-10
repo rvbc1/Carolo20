@@ -7,7 +7,8 @@
 
 
 
-#include <AllTasks.h>
+#include "../Tasks&Callbacks/AllTasks.h"
+
 #include <ArcoNotifierLED.h>
 #include <ButtonsManager.h>
 #include <LightsManager.h>
