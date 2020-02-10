@@ -54,8 +54,9 @@ void ModeManager::init(){
 void ModeManager::proccess(){
 	futaba.ProcessSmoothing();
 
-//	if(futaba.SwitchD == SWITCH_DOWN) service_mode = TESTING;
-//	else 							  service_mode = CUP;
+
+	if(futaba.SwitchC == SWITCH_DOWN) ride_mode = COMPETITION;
+	else 							  ride_mode = FREERUN;
 
 	setModes();
 
@@ -94,12 +95,12 @@ void ModeManager::checkRideMode(){
 		if (rc_mode != DISARMED) drive_mode = ENABLE;
 		break;
 	case COMPETITION:
-		updateUnlockDriveTimer();
+		checkUnlockDriveTimer();
 		break;
 	}
 }
 
-void ModeManager::updateUnlockDriveTimer(){
+void ModeManager::checkUnlockDriveTimer(){
 	switch(rc_mode){
 	case MODE_ACRO:
 		if(!isUnlockDriveTimerRunning){

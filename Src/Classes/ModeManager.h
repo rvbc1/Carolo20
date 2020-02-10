@@ -56,7 +56,7 @@ private:
 
 	void startUnlockDriveTimer();
 	void breakUnlockDriveTimer();
-	void updateUnlockDriveTimer();
+	void checkUnlockDriveTimer();
 
 	uint8_t isUnlockDriveTimerRunning = false;
 	uint8_t firstUnlockDriveTimerIT_flag = true;
