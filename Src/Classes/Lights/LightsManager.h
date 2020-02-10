@@ -17,7 +17,7 @@
 #include "Motor.h"
 #include "../../Tasks&Callbacks/AllTasks.h"
 
-#define ACC_AVERAGE_NUM 30
+#define ACC_AVERAGE_NUM 300
 
 #define MAX_LIGHTS_AMOUNT 10
 
