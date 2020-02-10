@@ -211,23 +211,27 @@ void USBLink::recieveCommand(){
 			break;
 
 		case 0x58:
-			left_indicator_front.setActivated(true);
-			left_indicator_back.setActivated(true);
+//			left_indicator_front.setActivated(true);
+//			left_indicator_back.setActivated(true);
+			setpoints_from_vision.left_inidcator = true;
 			break;
 
 		case 0x59:
-			left_indicator_front.setActivated(false);
-			left_indicator_back.setActivated(false);
+//			left_indicator_front.setActivated(false);
+//			left_indicator_back.setActivated(false);
+			setpoints_from_vision.left_inidcator = false;
 			break;
 
 		case 0x5A:
-			right_indicator_front.setActivated(true);
-			right_indicator_back.setActivated(true);
+//			right_indicator_front.setActivated(true);
+//			right_indicator_back.setActivated(true);
+			setpoints_from_vision.right_inidcator = true;
 			break;
 
 		case 0x5B:
-			right_indicator_front.setActivated(false);
-			right_indicator_back.setActivated(false);
+//			right_indicator_front.setActivated(false);
+//			right_indicator_back.setActivated(false);
+			setpoints_from_vision.right_inidcator = false;
 			break;
 
 		case 0x60:
@@ -385,6 +389,11 @@ USBLink::USBLink() {
 	//	dataBuffer.rx.bytes = new uint8_t [frame_RX_SIZE];
 
 	initFrameTX();
+
+	//************
+	setpoints_from_vision.left_inidcator = false;
+	setpoints_from_vision.right_inidcator = false;
+	//*******
 }
 
 void USBLink::initFrameTX(){

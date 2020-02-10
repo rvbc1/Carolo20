@@ -17,8 +17,11 @@ void ServoManager::init(){
 
 	servo_back = new Servo(&htim2, TIM_CHANNEL_2);
 	servo_back->setCorrectionAngle(-10);
+	servo_back->setUserAngleRange(-40, 35);
+
 	servo_front = new Servo(&htim2, TIM_CHANNEL_4);
 	//servo_front->setCorrectionAngle(-36);
+	servo_front->setUserAngleRange(-40, 35);
 }
 
 void ServoManager::arm(){

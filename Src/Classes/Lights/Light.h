@@ -16,7 +16,7 @@ extern WS2812::Color off_light_color;
 class Light {
 public:
 	void add(uint16_t* adress);
-	void on();
+	virtual void on();
 	void off();
 
 	void setColor(WS2812::Color color);
@@ -26,6 +26,9 @@ public:
 	uint8_t getActivated();
 	uint8_t getAddedCount();
 
+	uint8_t needUpdate();
+	void update();
+
 	Light();
 	virtual ~Light();
 protected:
@@ -34,6 +37,7 @@ protected:
 	uint16_t* adressTab[24];
 	uint8_t added;
 
+	uint8_t need_update;
 	uint8_t activated = false;
 	void ws2812_set_color(uint16_t* address, uint8_t r, uint8_t g, uint8_t b);
 };

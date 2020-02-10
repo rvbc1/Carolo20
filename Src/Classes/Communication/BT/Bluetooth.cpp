@@ -5,7 +5,6 @@
  *      Author: mice
  */
 
-#include <AllTasks.h>
 #include <ButtonsManager.h>
 #include "stdint.h"
 
@@ -21,6 +20,7 @@
 #include "Encoder.h"
 
 #include "string.h"
+#include "../../../Tasks&Callbacks/AllTasks.h"
 
 uint8_t terminal_tx[512];
 uint8_t terminal_rx[8];

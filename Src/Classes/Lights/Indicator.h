@@ -13,7 +13,7 @@
 class Indicator : public Light {
 public:
 	void on();
-	void off();
+	//void off();
 	void nextCycle();
 	void setActivated(uint8_t activated);
 	Indicator();

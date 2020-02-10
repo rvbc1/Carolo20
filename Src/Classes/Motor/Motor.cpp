@@ -5,7 +5,6 @@
  *      Author: mice
  */
 
-#include <AllTasks.h>
 #include <LightsManager.h>
 #include <Motor.h>
 #include "PowerManager.h"
@@ -13,21 +12,15 @@
 #include "usart.h"
 #include "tim.h"
 #include "Encoder.h"
+#include "../../Tasks&Callbacks/AllTasks.h"
+
+
 
 #define ELM 100
 
 
 Motor motor(1500, 500);
 
-//struct averaging_element{
-//	averaging_element *previous;
-//	float current_speed;
-//	averaging_element *next;
-//
-//};
-//
-//averaging_element *start_pointer;
-//averaging_element *current_pointer;
 float avrg_current_speed;
 uint32_t avrg_counter;
 
@@ -91,6 +84,7 @@ void Motor::Process(void) {
 	osDelay(3);
 	//osDelay(_dt * 1000.f);
 }
+
 
 
 void Motor::Controller(void){

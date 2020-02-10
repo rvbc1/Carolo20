@@ -59,12 +59,13 @@ WS2812::Color break_light_color {255/5, 0, 0};
 uint16_t ws2812BitsBuffer[WS2812_BYTES_BUFFER_SIZE];
 
 void LightsManager::ws2812_init() {
+	added_lights_count= 0;
 
-	front_right.setBuffer(&ws2812BitsBuffer[0]);
-	front_left.setBuffer(&ws2812BitsBuffer[1*8*3*8]);
-	back_left.setBuffer(&ws2812BitsBuffer[2*8*3*8]);
-	back_middle.setBuffer(&ws2812BitsBuffer[3*8*3*8]);
-	back_right.setBuffer(&ws2812BitsBuffer[4*8*3*8]);
+	front_right.setBuffer(&ws2812BitsBuffer[0*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
+	front_left.setBuffer(&ws2812BitsBuffer[1*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
+	back_left.setBuffer(&ws2812BitsBuffer[2*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
+	back_middle.setBuffer(&ws2812BitsBuffer[3*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
+	back_right.setBuffer(&ws2812BitsBuffer[4*NUMBER_OF_LEDS_PER_PCB*NUMBER_OF_LEDS_PER_PCB*3]);
 
 
 
@@ -122,6 +123,7 @@ void LightsManager::ws2812_init() {
 	right_indicator_back.add(back_right.getLedAddress(6));
 	right_indicator_back.add(back_right.getLedAddress(7));
 
+
 	headlights.setActivated(true);
 	tail_lights.setActivated(true);
 	break_lights.setActivated(true);
@@ -130,6 +132,16 @@ void LightsManager::ws2812_init() {
 	left_indicator_front.setActivated(false);
 	right_indicator_front.setActivated(false);
 
+	left_indicator_back.setActivated(false);
+	right_indicator_back.setActivated(false);
+
+	addLight(&headlights);
+	addLight(&tail_lights);
+	addLight(&break_lights);
+	addLight(&left_indicator_front);
+	addLight(&right_indicator_front);
+	addLight(&left_indicator_back);
+	addLight(&right_indicator_back);
 
 
 	MX_TIM4_Init();
@@ -139,8 +151,7 @@ void LightsManager::ws2812_init() {
 	reset_data_buffer();
 	HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
 	light_process_counter = 0;
-	stop_light = false;
-	stop_light_duration = 0;
+
 
 	for(uint16_t i=0; i < ACC_AVERAGE_NUM; i++) acceleration[i] = 0;
 }
@@ -150,8 +161,12 @@ void LightsManager::process(){
 	checkRCmode();
 	breakLightProcess();
 
+	if(process_counter % 10 == 0){
+		lightsUpdate();
+	}
+
 	if(process_counter > 100){
-		AllLightsUpdate();
+		indicatorsUpdate();
 		process_counter = 0;
 	}
 
@@ -207,66 +222,57 @@ void LightsManager::checkRCmode(){
 //			left_indicator_back.setActivated(true);
 //			right_indicator_back.setActivated(false);
 //		}
+	} else {
+		left_indicator_front.setActivated(setpoints_from_vision.left_inidcator);
+		left_indicator_back.setActivated(setpoints_from_vision.left_inidcator);
+
+		right_indicator_front.setActivated(setpoints_from_vision.right_inidcator);
+		right_indicator_back.setActivated(setpoints_from_vision.right_inidcator);
 	}
 }
 
-void LightsManager::AllLightsUpdate(){
+void LightsManager::addLight(Light* light){
+	all_lights[added_lights_count] = light;
+	added_lights_count++;
+}
+
+uint8_t LightsManager::needAnyLightUpdate(){
+	uint8_t update = false;
+	for(uint16_t i = 0; i < added_lights_count; i++){
+		if(all_lights[i]->needUpdate()){
+			update = true;
+			break;
+		}
+	}
+	return update;
+}
+
+void LightsManager::lightsUpdate(){
 	HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_3);
 
-		if(high){
-			headlights.setColor(high_beam_color);
-		} else {
-			headlights.setColor(low_beam_color);
-		}
+	if(needAnyLightUpdate()){
+		for(uint16_t i = 0 ; i < added_lights_count; i++)
+			all_lights[i]->update();
+	}
 
-		if(headlights.getActivated()){
-			headlights.on();
-		} else {
-			headlights.off();
-		}
+	HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
+}
 
-		if(tail_lights.getActivated()){
-			tail_lights.on();
-		} else {
-			tail_lights.off();
-		}
-
-		if(break_lights.getActivated()){
-			break_lights.on();
-		} else {
-			break_lights.off();
-		}
+void LightsManager::indicatorsUpdate(){
+	if(left_indicator_front.getActivated())
+		left_indicator_front.nextCycle();
 
 
-		if(left_indicator_front.getActivated()){
-			left_indicator_front.nextCycle();
-			left_indicator_front.on();
-		} else {
-			left_indicator_front.off();
-		}
+	if(right_indicator_front.getActivated())
+		right_indicator_front.nextCycle();
 
-		if(right_indicator_front.getActivated()){
-			right_indicator_front.nextCycle();
-			right_indicator_front.on();
-		} else {
-			right_indicator_front.off();
-		}
 
-		if(left_indicator_back.getActivated()){
-			left_indicator_back.nextCycle();
-			left_indicator_back.on();
-		} else {
-			left_indicator_back.off();
-		}
+	if(left_indicator_back.getActivated())
+		left_indicator_back.nextCycle();
 
-		if(right_indicator_back.getActivated()){
-			right_indicator_back.nextCycle();
-			right_indicator_back.on();
-		} else {
-			right_indicator_back.off();
-		}
 
-		HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t *) ws2812BitsBuffer, WS2812_BYTES_BUFFER_SIZE);
+	if(right_indicator_back.getActivated())
+		right_indicator_back.nextCycle();
 }
 
 LightsManager::LightsManager() {

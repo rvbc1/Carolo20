@@ -5,13 +5,13 @@
  *      Author: mice
  */
 
-#include <AllTasks.h>
 #include <PowerManager.h>
 #include "stm32f7xx_hal.h"
 #include "adc.h"
 #include "tim.h"
 
 #include "Buzzer.h"
+#include "../Tasks&Callbacks/AllTasks.h"
 
 PowerManager powermanager(4, 3000);
 PowerManager::PowerManager(uint8_t cells, uint16_t mAhs) :

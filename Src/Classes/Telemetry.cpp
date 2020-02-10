@@ -10,7 +10,6 @@
  *
  */
 
-#include <AllTasks.h>
 #include <Telemetry.h>
 #include "smartport.h"
 
@@ -24,6 +23,7 @@
 #include "Encoder.h"
 
 #include "usart.h"
+#include "../Tasks&Callbacks/AllTasks.h"
 
 #define ADD_SENSOR(dataId) frSkyDataIdTableInfo.table[frSkyDataIdTableInfo.index++] = dataId
 #define SMARTPORT_MSP_PAYLOAD_SIZE (sizeof(smartPortPayload_t) - sizeof(uint8_t))
