@@ -11,20 +11,11 @@
 void WatchDogs::init(){
 	MX_IWDG_Init();
 	MX_WWDG_Init();
+	osDelay(task_dt);
 }
 void WatchDogs::process(){
-//	HAL_WWDG_Refresh(&hwwdg);
-//	HAL_IWDG_Refresh(&hiwdg);
-
-	static uint8_t watchdog_init_done = 0;
-	if (watchdog_init_done) {
-		HAL_WWDG_Refresh(&hwwdg);
-		HAL_IWDG_Refresh(&hiwdg);
-	} else if(HAL_GetTick() > 500) {
-		MX_IWDG_Init();
-		MX_WWDG_Init();
-		watchdog_init_done = 1;
-	}
+	HAL_WWDG_Refresh(&hwwdg);
+	HAL_IWDG_Refresh(&hiwdg);
 
 	osDelay(task_dt);
 }
