@@ -71,7 +71,7 @@ void ModeManager::setModes(){
 		drive_mode = DISABLE;
 
 		if (futaba.Get_RCState() == 0)
-			StickCommandProccess();
+			StickCommandProccess(); //NEED REWRITE
 	} else if (futaba.SwitchA == SWITCH_DOWN) {
 
 		if (futaba.SwitchB == SWITCH_UP) {

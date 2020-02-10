@@ -187,11 +187,11 @@ void LightsManager::checkRCmode(){
 //			left_indicator_back.setActivated(false);
 //			right_indicator_back.setActivated(true);
 //		} else if(futaba.SwitchC == SWITCH_MIDDLE){
-//			left_indicator_front.setActivated(false);
-//			right_indicator_front.setActivated(false);
-//
-//			left_indicator_back.setActivated(false);
-//			right_indicator_back.setActivated(false);
+			left_indicator_front.setActivated(false);
+			right_indicator_front.setActivated(false);
+
+			left_indicator_back.setActivated(false);
+			right_indicator_back.setActivated(false);
 //		} else{
 //			left_indicator_front.setActivated(true);
 //			right_indicator_front.setActivated(false);
