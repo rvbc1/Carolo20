@@ -35,25 +35,30 @@ public:
 
 	void init();
 	void proccess();
+
+	void ToggleServiceMode();
+	void unlockDriveTimmerIT();
+
 	RC_MODE getRCmode();
 	DRIVE_MODE getDriveMode();
 	SERVICE_MODE getServiceMode();
 
-	void ToggleServiceMode();
-
-	void modeDelayTimIT();
 	ModeManager();
 	virtual ~ModeManager();
+
 private:
-	const uint32_t task_dt = 1u;
 	RC_MODE rc_mode = DISARMED;
 	DRIVE_MODE drive_mode = DISABLE;
 	SERVICE_MODE service_mode = CUP;
+
 	void startUnlockDriveTimer();
 	void breakUnlockDriveTimer();
+
 	uint8_t isUnlockDriveTimerRunning = false;
 	uint8_t firstUnlockDriveTimerIT_flag = true;
 
+	const uint32_t task_dt = 1u;
+	const uint32_t init_task_dt = 100;
 };
 
 extern ModeManager mode_manager;

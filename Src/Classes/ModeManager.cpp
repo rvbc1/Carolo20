@@ -48,7 +48,7 @@ void ModeManager::init(){
 
 	isUnlockDriveTimerRunning = false;
 
-	osDelay(100);
+	osDelay(init_task_dt);
 }
 
 void ModeManager::proccess(){
@@ -102,8 +102,7 @@ void ModeManager::ToggleServiceMode(){
 	else service_mode = CUP;
 }
 
-void ModeManager::modeDelayTimIT(){
-	//isModeDelayTimON = false;
+void ModeManager::unlockDriveTimmerIT(){
 	if(firstUnlockDriveTimerIT_flag){
 		firstUnlockDriveTimerIT_flag = false;
 	} else {
@@ -134,7 +133,7 @@ ModeManager::SERVICE_MODE ModeManager::getServiceMode(){
 	return service_mode;
 }
 
-//UNUSED(rc_mode);
+//UNUSED(rc_mode); //should be checked
 
 ModeManager::ModeManager() {
 	// TODO Auto-generated constructor stub
