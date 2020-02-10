@@ -59,7 +59,8 @@ void ServoManager::process(){
 		setAngle(setpoints_from_vision.fi_front, setpoints_from_vision.fi_back);
 		break;
 	}
-	osDelay(1);
+
+	osDelay(task_dt);
 }
 
 ServoManager::ServoManager() {

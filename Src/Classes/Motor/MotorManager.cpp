@@ -19,7 +19,7 @@ void MotorManager::process(){
 	setMaxVelocity();
 	DriveModeCheck();
 	RCModeCheck();
-	osDelay(1);
+	osDelay(task_dt);
 }
 
 void MotorManager::DriveModeCheck(){

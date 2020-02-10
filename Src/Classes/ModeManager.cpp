@@ -133,6 +133,7 @@ ModeManager::RC_MODE ModeManager::getRCmode(){
 ModeManager::DRIVE_MODE ModeManager::getDriveMode(){
 	return drive_mode;
 }
+
 ModeManager::SERVICE_MODE ModeManager::getServiceMode(){
 	return service_mode;
 }

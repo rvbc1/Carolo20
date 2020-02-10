@@ -23,15 +23,18 @@
 
 
 class MotorManager {
-private:
-	void DriveModeCheck();
-	void RCModeCheck();
-	void setMaxVelocity();
 public:
 	void init();
 	void process();
 	MotorManager();
 	virtual ~MotorManager();
+
+private:
+	void DriveModeCheck();
+	void RCModeCheck();
+	void setMaxVelocity();
+
+	static const uint32_t task_dt = 1u;
 };
 
 extern MotorManager motor_manager;
