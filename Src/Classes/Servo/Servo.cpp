@@ -16,8 +16,8 @@ Servo::Servo(TIM_HandleTypeDef* htim, uint32_t channel) {
 	this->min_pwm_width = DEFAULT_MIN_PWM_WIDTH;
 	this->max_angle = DEFAULT_MAX_ANGLE;
 	this->min_angle = DEFAULT_MIN_ANGLE;
-	this->max_user_angle = 35;
-	this->min_user_angle = -40;
+	this->max_user_angle = DEFAULT_MAX_ANGLE;
+	this->min_user_angle = DEFAULT_MIN_ANGLE;
 	this->correction_angle = DEFAULT_CORRECTION_ANGLE;
 	timer_is_on = false;
 }
@@ -80,6 +80,15 @@ void Servo::setMaxAngle(int16_t max_angle){
 
 void Servo::setMinUserAngle(int16_t min_user_angle){
 	this->min_user_angle = min_user_angle;
+}
+
+void Servo::setMaxUserAngle(int16_t max_user_angle){
+	this->max_user_angle = max_user_angle;
+}
+
+void Servo::setUserAngleRange(int16_t min_user_angle, int16_t max_user_angle){
+	setMinUserAngle(min_user_angle);
+	setMaxUserAngle(max_user_angle);
 }
 
 void Servo::setPWMwidth(uint16_t min, uint16_t max){
