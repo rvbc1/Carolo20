@@ -23,7 +23,7 @@ extern osThreadId ModeManagerTaskHandle;
 extern osThreadId BTTaskHandle;
 extern osThreadId FutabaTaskHandle;
 extern osThreadId TelemetryTaskHandle;
-extern osThreadId USBTaskHandle;
+extern osThreadId USBLinkTaskHandle;
 extern osThreadId MotorControllerHandle;
 extern osThreadId BuzzerTaskHandle;
 extern osThreadId OdometryTaskHandle;

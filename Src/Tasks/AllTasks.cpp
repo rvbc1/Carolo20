@@ -40,7 +40,7 @@ osThreadId ModeManagerTaskHandle;
 osThreadId BTTaskHandle;
 osThreadId FutabaTaskHandle;
 osThreadId TelemetryTaskHandle;
-osThreadId USBTaskHandle;
+osThreadId USBLinkTaskHandle;
 osThreadId MotorControllerHandle;
 osThreadId BuzzerTaskHandle;
 osThreadId OdometryTaskHandle;
@@ -61,7 +61,7 @@ void StartBatteryManager(void const * argument);
 void StartModeManagerTask(void const * argument);
 void StartBTTask(void const * argument);
 void StartFutabaTask(void const * argument);
-void StartUSBTask(void const * argument);
+void StartUSBLinkTask(void const * argument);
 void StartTelemetryTask(void const * argument);
 void StartMotorController(void const * argument);
 void StartBuzzerTask(void const * argument);
@@ -107,11 +107,9 @@ void Allshit_begin(void) {
 	osThreadDef(BatteryManager, StartBatteryManager, osPriorityBelowNormal, 0, 256);
 	BatteryManagerHandle = osThreadCreate(osThread(BatteryManager), NULL);
 
-	/* definition and creation of USBTask */
-	//	osThreadDef(USBTask, StartUSBTask, osPriorityHigh, 0, 256);
-	//USBTaskHandle = osThreadCreate(osThread(USBTask), NULL);
-	osThreadDef(USBLink, StartUSBTask, osPriorityHigh, 0, 256);
-	USBTaskHandle = osThreadCreate(osThread(USBLink), NULL);
+	/* definition and creation of USBLink */
+	osThreadDef(USBLink, StartUSBLinkTask, osPriorityHigh, 0, 256);
+	USBLinkTaskHandle = osThreadCreate(osThread(USBLink), NULL);
 
 	/* definition and creation of TelemetryTask */
 	osThreadDef(TelemetryTask, StartTelemetryTask, osPriorityNormal, 0, 256);
@@ -189,7 +187,7 @@ void StartAHRSTask(void const * argument) {
 	ahrs.Init();
 	while(true) {
 		ahrs.Process();
-		osSignalSet(USBTaskHandle, USB_TX_signal);
+		osSignalSet(USBLinkTaskHandle, USB_TX_signal);
 	}
 }
 
@@ -210,7 +208,7 @@ void StartBatteryManager(void const * argument) {
 
 }
 
-void StartUSBTask(void const * argument) {
+void StartUSBLinkTask(void const * argument) {
 	USBLink::initHardware();
 	while(true){
 		usb_link.USB_Process();

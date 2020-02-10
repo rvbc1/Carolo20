@@ -399,7 +399,7 @@ void USBLink::initHardware(){
 int8_t USBLink::MAIN_USB_Receive(uint8_t* Buf, uint32_t *Len) {
 	dataBuffer.rx.bytes = Buf;
 	dataBuffer.rxSize = *Len;
-	osSignalSet(USBTaskHandle, USB_RX_signal);
+	osSignalSet(USBLinkTaskHandle, USB_RX_signal);
 	return 0;
 }
 
