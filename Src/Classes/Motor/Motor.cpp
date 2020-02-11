@@ -32,7 +32,7 @@ static void send_packet(unsigned char *data, unsigned int len) {
 
 void UART_Communication_Init(void) {
 	bldc_interface_uart_init(send_packet);
-	bldc_interface_reboot(); //not sure
+	//bldc_interface_reboot(); //not sure
 }
 
 uint8_t UART_data_buffer [10];
