@@ -32,20 +32,8 @@ class Motor {
 	void SetPWM(uint16_t value);
 	uint16_t GetPWM(void);
 #endif
-	/* Encoders Parameters */
-	const float impulses_per_revolution = 1024*10.f;
 
-	const float wheel_diameter = 65.f;
-	const float gear_invratio = 10.f/6.f;
 	const float _dt = 0.002f;
-
-	const float enc_to_mm = M_PI_FLOAT * wheel_diameter * gear_invratio / impulses_per_revolution;
-	const float enc_to_mms = M_PI_FLOAT * wheel_diameter * gear_invratio / impulses_per_revolution / _dt;
-
-	const float enc_to_rotations = 1.f/ (impulses_per_revolution);
-	const float enc_to_rpm = 60.f / impulses_per_revolution / _dt;
-
-	const float rpm_to_mms = M_PI_FLOAT * wheel_diameter * gear_invratio / 60.f ;
 
 	/* Motor Parameters */
 	float duty_deadband = 0.f;
@@ -54,7 +42,6 @@ class Motor {
 	float max_acceleration = 40000.f;
 
 	/* Controller Parameters */
-	PT1Filter lpf = PT1Filter(50, _dt);
 	PT1Filter dterm_lpf = PT1Filter(40, _dt);
 
 	float Kp = 60.0e-5f;
@@ -68,25 +55,13 @@ class Motor {
 
 	float prev_pid_value = 0;
 
-
-	/* Measurements & Setpoints*/
-	int32_t totalImpulses = 0;
-	int16_t impulses = 0;
-
-	float distance = 0.f;
-	float rotations = 0.f;
-
 	float set_duty = 0.f;
 	float prev_set_duty = 0.f;
 	bool passthrough = false;
 
 	bool controller_en = false;
 
-	float current_rpm = 0.f;
-	float current_velocity = 0.f;
-	float previous_velocity = 0.f;
 	float current_set_velocity = 0.f;
-	float current_acceleration = 0.f;
 
 	float set_velocity = 0.f;
 	float set_acceleration = 0.f;
@@ -114,13 +89,8 @@ public:
 	void SetVelocity(float velocity = 0.f, float acceleration = 0.f, float jerk = 0.f);
 	void setMaxVelocity(float velocity);
 
-	float getRPMs(void);
-	float getVelocity(void);
 	float getSetVelocity(void);
-	int32_t getImpulses(void);
-	float getDistance(void);
 	float getMaxVelocity(void);
-	float getAcceleration(void);
 	float getPIDvalue(void);
 
 	Motor(uint16_t middle, uint16_t band);

@@ -18,6 +18,7 @@
 #include "AHRS.h"
 #include "Tools.h"
 #include "ButtonsManager.h"
+#include "Encoder.h"
 
 ModeManager mode_manager;
 
@@ -35,7 +36,7 @@ static void StickCommandProccess(void) {
 	if (futaba.Stick_Command[4] != last_cmd) { // (.   )    (   .)   < - to nie sa cycki
 		last_cmd = futaba.Stick_Command[4];
 		gyro.StartCalibration();
-		odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
+		odometry.Reset(ahrs.attitude.values.yaw, encoder.getDistance(),tools.GetMicros());
 		odometry.SetCurrentPosition();
 	}
 }

@@ -7,6 +7,7 @@
 
 #include <tim.h>
 #include <string.h>
+#include "Encoder.h"
 
 
 #include <LightsManager.h>
@@ -181,18 +182,10 @@ void LightsManager::reset_data_buffer(){
 	}
 }
 void LightsManager::breakLightProcess(void){
-	acceleration[acc_counter] = motor.getAcceleration();
 
-	if(++acc_counter >= ACC_AVERAGE_NUM ) acc_counter = 0;
+	if((encoder.getAverageAcceleration() < -2000.f && encoder.getVelocity() > 0) ||
+	   (encoder.getAverageAcceleration() >  2000.f && encoder.getVelocity() < 0)){
 
-	float avr_acceleration = 0.0f, sum = 0.0f;
-	for(uint16_t i = 0; i < ACC_AVERAGE_NUM; i++) sum +=acceleration[i];
-	avr_acceleration = sum / ACC_AVERAGE_NUM;
-
-//	if((motor.getAcceleration() < -1000.f && motor.getVelocity() > 0) ||
-//	   (motor.getAcceleration() >  1000.f && motor.getVelocity() < 0)	){
-	if((avr_acceleration < -2000.f && motor.getVelocity() > 0) ||
-	   (avr_acceleration > 2000.f && motor.getVelocity() < 0)	){
 		break_lights.setActivated(true); 			// Break lights ON
 	}
 	else{

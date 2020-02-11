@@ -11,7 +11,10 @@
 #include "Tools.h"
 #include "usart.h"
 #include "tim.h"
+#include "Encoder.h"
 #include "../../Tasks&Callbacks/AllTasks.h"
+
+
 
 #define ELM 100
 
@@ -53,8 +56,6 @@ void set_duty_cycle(float dutyCycle){  //Sending duty cycle to VESC without libr
 
 
 void Motor::Init(){
-	MX_TIM3_Init();
-	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
 
 #ifdef PWM_ESC
 	MX_TIM4_Init();
@@ -73,8 +74,6 @@ void Motor::Init(){
 	SetPassthroughState(true);
 }
 void Motor::Process(void) {
-	Read();
-	Conversions();
 	SpeedTracking();
 	Controller();
 #ifdef PWM_ESC
@@ -85,25 +84,9 @@ void Motor::Process(void) {
 	osDelay(3);
 	//osDelay(_dt * 1000.f);
 }
-void Motor::Read(void){
-	static int16_t oldCount = 0;
-	int16_t count = TIM3->CNT;
-	impulses = - (count - oldCount);
-	oldCount = count;
-	totalImpulses += impulses;
-}
-void Motor::Conversions(void) {
-	float filtered_impulses = lpf.apply(impulses);
-
-	current_rpm = filtered_impulses * enc_to_rpm;
-	rotations = totalImpulses * enc_to_rotations;
-
-	current_velocity = filtered_impulses * enc_to_mms;
-
-	distance = totalImpulses * enc_to_mm;
 
 
-}
+
 void Motor::Controller(void){
 
 	static float previous_error = 0;
@@ -114,10 +97,10 @@ void Motor::Controller(void){
 
 	before = now;
 
-	set_rpm = current_set_velocity / rpm_to_mms;
+	set_rpm = current_set_velocity / encoder.getRPM_To_mms_Rate();
 
 	float setpoint = current_set_velocity;
-	float measurement = current_velocity;
+	float measurement = encoder.getVelocity();
 
 
 	float error = setpoint - measurement;
@@ -170,29 +153,17 @@ void Motor::Disarm(void) {
 	bldc_interface_set_duty_cycle(0.f);
 #endif
 }
-float Motor::getRPMs(void){
-	return current_rpm;
-}
-float Motor::getVelocity(void){
-	return current_velocity;
-}
-float Motor::getSetVelocity(void){
-	return current_set_velocity;
-}
-float Motor::getDistance(void){
-	return distance;
-}
-int32_t Motor::getImpulses(void){
-	return totalImpulses;
-}
+
 float Motor::getMaxVelocity(void){
 	return max_velocity;
 }
-float Motor::getAcceleration(void){
-	return current_acceleration;
-}
+
 float Motor::getPIDvalue(void){
 	return pid_value;
+}
+
+float Motor::getSetVelocity(void){
+	return current_set_velocity;
 }
 
 void Motor::setMaxVelocity(float velocity){
@@ -211,7 +182,6 @@ void Motor::SpeedTracking(void) {
 		//		} else {
 		//			current_acceleration = set_acceleration;
 		//		}
-		current_acceleration = (current_velocity - previous_velocity) / dt;
 
 		current_set_velocity += SIGNF(set_velocity - current_set_velocity) * set_acceleration * dt;
 		constrainf(current_set_velocity, -max_velocity, max_velocity);

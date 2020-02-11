@@ -20,6 +20,7 @@
 #include "Motor.h"
 #include "Tools.h"
 #include "Odometry.h"
+#include "Encoder.h"
 
 #include "usart.h"
 #include "../Tasks&Callbacks/AllTasks.h"
@@ -221,7 +222,7 @@ void Telemetry::processTelemetry(smartPortPayload_t *payload, volatile bool *cle
 			*clearToSend = false;
 			break;
 		case FSSP_DATAID_VARIO:
-			SendPackage(id, lrintf(motor.getVelocity()/ 10.f));
+			SendPackage(id, lrintf(encoder.getVelocity()/ 10.f));
 			*clearToSend = false;
 			break;
 		case FSSP_DATAID_HEADING:
@@ -257,12 +258,12 @@ void Telemetry::processTelemetry(smartPortPayload_t *payload, volatile bool *cle
 			*clearToSend = false;
 			break;
 		case FSSP_DATAID_RPM:
-			rpm = lrintf(motor.getRPMs());
+			rpm = lrintf(encoder.getRPMs());
 			SendPackage(id, rpm);
 			*clearToSend = false;
 			break;
 		case FSSP_DATAID_SPEED:
-			SendPackage(id, lrintf(motor.getVelocity() * 1943.8445f));
+			SendPackage(id, lrintf(encoder.getVelocity() * 1943.8445f));
 			*clearToSend = false;
 			break;
 		case FSSP_DATAID_TEMP:
