@@ -5,7 +5,6 @@
  *      Author: mice
  */
 
-#include <AllTasks.h>
 #include <ButtonsManager.h>
 #include "stdint.h"
 
@@ -18,8 +17,10 @@
 #include "AHRS.h"
 #include "Odometry.h"
 #include "tim.h"
+#include "Encoder.h"
 
 #include "string.h"
+#include "../../../Tasks&Callbacks/AllTasks.h"
 
 uint8_t terminal_tx[512];
 uint8_t terminal_rx[8];
@@ -50,8 +51,8 @@ void Bluetooth_Process(void) {
 			HAL_UART_Transmit_DMA(&huart8, terminal_tx, terminal_length);
 			break;
 		case 'e':
-			terminal_length = sprintf((char *) terminal_tx, "Current spd: %.1f. Setspeed: %.1f\nTotalCount: %d, TotalRoad: %.1f\n", motor.getVelocity(),
-					motor.getSetVelocity(), motor.getImpulses(), motor.getDistance());
+			terminal_length = sprintf((char *) terminal_tx, "Current spd: %.1f. Setspeed: %.1f\nTotalCount: %d, TotalRoad: %.1f\n", encoder.getVelocity(),
+					motor.getSetVelocity(), encoder.getImpulses(), encoder.getDistance());
 			HAL_UART_Transmit_DMA(&huart8, terminal_tx, terminal_length);
 			break;
 		case 'f':

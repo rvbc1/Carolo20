@@ -20,6 +20,7 @@
 #include <LightsManager.h>
 #include "Lights/Light.h"
 #include "ModeManager.h"
+#include "Encoder.h"
 
 USBLink::DataBuffer USBLink::dataBuffer;
 
@@ -73,8 +74,8 @@ void USBLink::transmitFrame(){
 
 	frame->values.timecode = HAL_GetTick();
 
-	frame->values.distance = motor.getDistance();
-	frame->values.velocity = motor.getVelocity();
+	frame->values.distance = encoder.getDistance();
+	frame->values.velocity = encoder.getVelocity();
 
 	quaternion orientation;
 	ahrs.getQuaternion(&orientation);
@@ -166,7 +167,7 @@ void USBLink::recieveCommand(){
 			break;
 		case 0x10:
 			gyro.StartCalibration();
-			odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
+			odometry.Reset(ahrs.attitude.values.yaw, encoder.getDistance(),tools.GetMicros());
 			odometry.SetCurrentPosition();
 			break;
 		case 0x20:
@@ -210,23 +211,27 @@ void USBLink::recieveCommand(){
 			break;
 
 		case 0x58:
-			left_indicator_front.setActivated(true);
-			left_indicator_back.setActivated(true);
+//			left_indicator_front.setActivated(true);
+//			left_indicator_back.setActivated(true);
+			setpoints_from_vision.left_inidcator = true;
 			break;
 
 		case 0x59:
-			left_indicator_front.setActivated(false);
-			left_indicator_back.setActivated(false);
+//			left_indicator_front.setActivated(false);
+//			left_indicator_back.setActivated(false);
+			setpoints_from_vision.left_inidcator = false;
 			break;
 
 		case 0x5A:
-			right_indicator_front.setActivated(true);
-			right_indicator_back.setActivated(true);
+//			right_indicator_front.setActivated(true);
+//			right_indicator_back.setActivated(true);
+			setpoints_from_vision.right_inidcator = true;
 			break;
 
 		case 0x5B:
-			right_indicator_front.setActivated(false);
-			right_indicator_back.setActivated(false);
+//			right_indicator_front.setActivated(false);
+//			right_indicator_back.setActivated(false);
+			setpoints_from_vision.right_inidcator = false;
 			break;
 
 		case 0x60:
@@ -262,7 +267,7 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getRideMode());
 		break;
 	case 'a':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Acceleration: %f\n", motor.getAcceleration());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "avrgAcc: %f\tavrgVel: %f\n", encoder.getAverageAcceleration(), encoder.getAverageVelocity());
 		break;
 	case 's':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Task:\t\tTick:\t\tRun Time %%\n");
@@ -280,7 +285,7 @@ void USBLink::recieveTerminal(){
 				powermanager.amperage, powermanager.analog_in, powermanager.temperature);
 		break;
 	case 'e':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Current spd: %.1f\tSetspeed: %.1f\nTotalCount: %ld\tTotalRoad: %.1f\n\n", motor.getVelocity(), motor.getSetVelocity(), motor.getImpulses(), motor.getDistance());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Current spd: %.1f\tSetspeed: %.1f\nTotalCount: %ld\tTotalRoad: %.1f\n\n", encoder.getVelocity(), motor.getSetVelocity(), encoder.getImpulses(), encoder.getDistance());
 		break;
 	case 'f':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "A: %d\tE: %d\tT: %d\tR: %d\nSwA: %d\tSwB: %d\tSwC: %d\tSwD: %d\tSwE: %d\tSwF: %d\n", futaba.sbusChannelData[0], futaba.sbusChannelData[1],
@@ -309,12 +314,12 @@ void USBLink::recieveTerminal(){
 		break;
 	case 'g':
 		gyro.StartCalibration();
-		odometry.Reset(ahrs.attitude.values.yaw, motor.getDistance(),tools.GetMicros());
+		odometry.Reset(ahrs.attitude.values.yaw, encoder.getDistance(),tools.GetMicros());
 		odometry.SetCurrentPosition();
 		dataBuffer.txSize = sprintf((char*) dataBuffer.tx.bytes, "Gyro recalibrating . . .\n\r");
 		break;
 	case 'M':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "velocity: %.1f\ndistance: %.1f\n\n", motor.getVelocity(), motor.getDistance());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "velocity: %.1f\ndistance: %.1f\n\n", encoder.getVelocity(), encoder.getDistance());
 		break;
 	case 'o':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "x: %.1f\ty: %.1f\nVx: %.1f\tVy: %.1f\n\n", odometry.getX(), odometry.getY(), odometry.getVx(), odometry.getVy());
@@ -384,6 +389,11 @@ USBLink::USBLink() {
 	//	dataBuffer.rx.bytes = new uint8_t [frame_RX_SIZE];
 
 	initFrameTX();
+
+	//************
+	setpoints_from_vision.left_inidcator = false;
+	setpoints_from_vision.right_inidcator = false;
+	//*******
 }
 
 void USBLink::initFrameTX(){

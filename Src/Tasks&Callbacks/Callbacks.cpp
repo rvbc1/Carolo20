@@ -5,7 +5,6 @@
  *      Author: mice
  */
 
-#include <AllTasks.h>
 #include "main.h"
 #include "usart.h"
 #include "gpio.h"
@@ -18,6 +17,7 @@
 #include "Gyro.h"
 #include "PowerManager.h"
 #include "MotorManager.h"
+#include "../Tasks&Callbacks/AllTasks.h"
 
 
 extern "C" void Stats_IncTick(void);

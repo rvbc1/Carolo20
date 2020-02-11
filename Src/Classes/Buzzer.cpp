@@ -5,7 +5,6 @@
  *      Author: mice
  */
 
-#include <AllTasks.h>
 #include <Buzzer.h>
 #include "math.h"
 #include "Tools.h"
@@ -14,6 +13,7 @@
 
 #include "string.h"
 #include "stdlib.h"
+#include "../Tasks&Callbacks/AllTasks.h"
 
 #define TIM1_FREQ 1000000
 
