@@ -23,7 +23,7 @@ void Encoder::Process(){
 	Read();
 	Conversions();
 
-	osDelay(3);
+	osDelay(2);
 }
 
 void Encoder::Read(){
@@ -53,6 +53,7 @@ void Encoder::AccelerationCalculate(){
 	static int32_t before = now + 1; //to avoid dividing by 0
 	float dt = (now - before) * 1e-6F;
 	current_acceleration = (current_velocity - previous_velocity) / dt;
+	before = now;
 }
 
 void Encoder::avrgVelocityProcess(){
@@ -98,7 +99,7 @@ float Encoder::getAverageAcceleration(){
 float Encoder::getAverageVelocity(){
 	return avrgVelocity;
 }
-float Encoder::getRPM_To_mms_Rate(){
+float Encoder::getRPM_To_mms_Rate() const{
 	return rpm_to_mms;
 }
 

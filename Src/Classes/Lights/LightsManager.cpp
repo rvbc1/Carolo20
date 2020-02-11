@@ -159,9 +159,16 @@ void LightsManager::ws2812_init() {
 
 void LightsManager::process(){
 	checkRCmode();
-	breakLightProcess();
+	if(breakLightProcess()){
+		break_counter++;
+	} else {
+		break_counter = 0;
+	}
 
 	if(process_counter % 10 == 0){
+		if(break_counter >= 50){
+			break_lights.setActivated(true);
+		} else  break_lights.setActivated(false);
 		lightsUpdate();
 	}
 
@@ -181,16 +188,22 @@ void LightsManager::reset_data_buffer(){
 		ws2812BitsBuffer[i]=LOW_PWM_BIT_VALUE;
 	}
 }
-void LightsManager::breakLightProcess(void){
+uint8_t LightsManager::breakLightProcess(void){
+	uint8_t return_value = false;
+//	if((encoder.getAverageAcceleration() < -3 * encoder.getAverageVelocity() && encoder.getAverageVelocity() > 250) ||
+//	   (encoder.getAverageAcceleration() >  3 * encoder.getAverageVelocity() && encoder.getAverageVelocity() < 250)){
+//
+//		if((encoder.getAverageAcceleration() < -3000.f) || (encoder.getAverageAcceleration() >  3000.f )) return_value = true; //break_lights.setActivated(true); 			// Break lights ON
+//	}
 
-	if((encoder.getAverageAcceleration() < -2000.f && encoder.getVelocity() > 0) ||
-	   (encoder.getAverageAcceleration() >  2000.f && encoder.getVelocity() < 0)){
+	if((encoder.getAverageAcceleration() < -1000 && encoder.getAverageVelocity() > 200) ||
+	   (encoder.getAverageAcceleration() >  1000 && encoder.getAverageVelocity() < 200)){ return_value = true;
+	}
 
-		break_lights.setActivated(true); 			// Break lights ON
-	}
-	else{
-		break_lights.setActivated(false); 		    // Break lights OFF
-	}
+//	else{
+//		break_lights.setActivated(false); 		    // Break lights OFF
+//	}
+	return return_value;
 }
 
 void LightsManager::checkRCmode(){

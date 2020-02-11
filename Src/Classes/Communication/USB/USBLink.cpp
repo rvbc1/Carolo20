@@ -267,7 +267,7 @@ void USBLink::recieveTerminal(){
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Service mode: %d\n", mode_manager.getRideMode());
 		break;
 	case 'a':
-		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Acceleration: %f\n", encoder.getAcceleration());
+		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "avrgAcc: %f\tavrgVel: %f\n", encoder.getAverageAcceleration(), encoder.getAverageVelocity());
 		break;
 	case 's':
 		dataBuffer.txSize = sprintf((char *) dataBuffer.tx.bytes, "Task:\t\tTick:\t\tRun Time %%\n");

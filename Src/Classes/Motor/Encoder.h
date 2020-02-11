@@ -13,8 +13,8 @@
 #include "Mathematics.h"
 #include "Average.h"
 
-#define ACCELERATION_AVERAGE_NUM 30
-#define VELOCITY_AVERAGE_NUM 30
+#define ACCELERATION_AVERAGE_NUM 100
+#define VELOCITY_AVERAGE_NUM 50
 
 
 
@@ -33,7 +33,7 @@ public:
 
 	float getAverageAcceleration();
 	float getAverageVelocity();
-	float getRPM_To_mms_Rate();
+	float getRPM_To_mms_Rate() const;
 
 
 	Encoder();
