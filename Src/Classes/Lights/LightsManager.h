@@ -56,8 +56,9 @@ private:
 
 	float acceleration[ACC_AVERAGE_NUM];
 	uint8_t acc_counter = 0;
+	uint16_t break_counter = 0;
 	void checkRCmode();
-	void breakLightProcess();
+	uint8_t breakLightProcess();
 
 	uint8_t needAnyLightUpdate();
 	void lightsUpdate();
