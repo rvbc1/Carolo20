@@ -196,8 +196,8 @@ uint8_t LightsManager::breakLightProcess(void){
 //		if((encoder.getAverageAcceleration() < -3000.f) || (encoder.getAverageAcceleration() >  3000.f )) return_value = true; //break_lights.setActivated(true); 			// Break lights ON
 //	}
 
-	if((encoder.getAverageAcceleration() < -800 && encoder.getAverageVelocity() > 150) ||
-	   (encoder.getAverageAcceleration() >  800 && encoder.getAverageVelocity() < 150)){ return_value = true;
+	if((encoder.getAverageAcceleration() < -500 && encoder.getAverageVelocity() > 110) ||
+	   (encoder.getAverageAcceleration() >  500 && encoder.getAverageVelocity() < 110)){ return_value = true;
 	}
 
 //	else{
