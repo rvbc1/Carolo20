@@ -34,6 +34,7 @@
 #include "WatchDogs.h"
 #include "USBLink.h"
 #include "Encoder.h"
+#include "Averager.h"
 
 osThreadId GyroTaskHandle;
 osThreadId AHRSTaskHandle;
@@ -55,6 +56,7 @@ osThreadId EncoderTaskHandle;
 
 osThreadId ServoManagerTaskHandle;
 osThreadId MotorManagerTaskHandle;
+osThreadId AveragingTaskHandle;
 
 
 void StartGyroTask(void const * argument);
@@ -77,6 +79,7 @@ void StartEncoderTask(void const * argument);
 
 void StartServoManagerTask(void const * argument);
 void StartMotorManagerTask(void const * argument);
+void StartAveragingTask(void const * argument);
 
 
 void Allshit_begin(void) {
@@ -156,13 +159,10 @@ void Allshit_begin(void) {
 	osThreadDef(EncoderTask, StartEncoderTask, osPriorityHigh, 0, 256);
 	EncoderTaskHandle = osThreadCreate(osThread(EncoderTask), NULL);
 
-}
+	/* Encoder - HIGH PRIORITY */
+	osThreadDef(AveragingTask, StartAveragingTask, osPriorityLow, 0, 256);
+	AveragingTaskHandle = osThreadCreate(osThread(AveragingTask), NULL);
 
-void StartEncoderTask(void const * argument){
-	encoder.Init();
-	for(;;){
-		encoder.Process();
-	}
 }
 
 void StartFutabaTask(void const * argument) {
@@ -298,5 +298,19 @@ void StartMotorManagerTask(void const * argument){
 	while(true){
 		motor_manager.process();
 
+	}
+}
+
+void StartEncoderTask(void const * argument){
+	encoder.Init();
+	while(true){
+		encoder.Process();
+	}
+}
+
+void StartAveragingTask(void const * argument){
+
+	while(true){
+		Averager::process();
 	}
 }

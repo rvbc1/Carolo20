@@ -12,7 +12,7 @@
 #include "usart.h"
 #include "tim.h"
 #include "Encoder.h"
-#include "../../Tasks&Callbacks/AllTasks.h"
+#include "AllTasks.h"
 
 
 

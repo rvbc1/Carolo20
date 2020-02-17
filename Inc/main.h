@@ -126,6 +126,8 @@ void systemResetToBootloader(void);
 #ifdef __cplusplus
  }
 #endif
+
+#define NULL 0
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -8,10 +8,10 @@
 #ifndef CLASSES_MOTOR_ENCODER_H_
 #define CLASSES_MOTOR_ENCODER_H_
 
+#include <Averager.h>
 #include "stdint.h"
 #include "Filters.h"
 #include "Mathematics.h"
-#include "Average.h"
 
 #define ACCELERATION_AVERAGE_NUM 100
 #define VELOCITY_AVERAGE_NUM 50
