@@ -27,7 +27,7 @@ void ArcoNotifierLED::Process(){
 		process_counter = 10;
 		OFF();
 	}
-	osDelay(100);
+	osDelay(50);
 }
 
 void ArcoNotifierLED::OFF(){
